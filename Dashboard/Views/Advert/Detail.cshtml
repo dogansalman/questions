@@ -1,0 +1,336 @@
+﻿
+@{
+    ViewBag.Title = ViewBag.advert.title;
+}
+
+<div class="modal inmodal" id="dynamic-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated flipInY">
+            Bekleyin...
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>İlanlar</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>İlan Detay</a></strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            @if (ViewBag.advert.is_cancel == true && ViewBag.advert.state == false)
+            {
+                <div class="bg-danger  p-xs b-r-sm">
+                    Bu ilan yayınlanamaktadır. İlanın durumu <strong>İptal Edildi</strong>
+                    <p><strong>Not:</strong> @ViewBag.advert.cancel_description</p>
+                </div>
+            }
+            @if (ViewBag.advert.is_cancel == false && ViewBag.advert.state == false)
+            {
+                <div class="bg-info  p-xs b-r-sm">
+                    Bu ilan yayınlanamaktadır. İlanın durumu <strong>Onay Bekleniyor</strong>
+                </div>
+            }
+            @if (ViewBag.advert.is_cancel == false && ViewBag.advert.state == true)
+            {
+                <div class="bg-primary  p-xs b-r-sm">
+                    Bu ilan yayınlanmakta. İlanın durumu <strong>Onaylandı</strong>
+                </div>
+            }
+            <br />
+        </div>
+
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <small class="pull-left">Detaylar</small>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                    
+                        <div class="col-md-6">
+                            <div class="text-center ">
+                                <h1 class="text-capitalize">@ViewBag.advert.user.name @ViewBag.advert.user.lastname</h1>
+                                <div class="m-b-sm">
+                                    <img alt="image" class="img-circle" src="@Html.SetImage((string)ViewBag.advert.user.photo, 100, 100)">
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-group">
+                                <label class="font-bold">Başlık</label>
+                                <div class="input-group">
+                                   @ViewBag.advert.title
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Açıklama</label>
+                                <div class="description" style="font-size:14px !important;">
+                                    @(new HtmlString(@ViewBag.advert.description))
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Adres</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.adress
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">İl / İlçe</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.city.name / @ViewBag.advert.town.name
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Menkul Tipi</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.type.name 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Giriş/Çıkış Saati</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.entry_time / @ViewBag.advert.exit_time
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="font-bold">Min. Konaklama</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.min_layover Gün.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Rez. İptal Süresi</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.cancel_time Gün.
+                                    </br>
+                                    <small>Check-in tarihinden @ViewBag.advert.cancel_time gün önce iptal edilebilir. </small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Görüntülenme</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.views
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-bold">Puan</label>
+                                <div class="input-group">
+                                    @ViewBag.advert.score
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="font-bold">Günlük Ücret</label>
+                                <div class="input-group">
+                                    <h2 class="font-bold">
+                                        @String.Format("{0:C}", ViewBag.advert.price)
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-bold">Müsaitlik Tarihleri</label>
+                                <br/>
+                                <small>İlanın rezervasyon ve arama sonuçlarına açık olan tarih aralıklarını temsil eder.</small>
+                                <div class="input-group">
+                                    @foreach (var item in ViewBag.advert.available_date)
+                                    {
+                                        <span class="pull-right label label-primary"> @String.Format("{0:MM/dd/yyyy}",item.from_date) - @String.Format("{0:MM/dd/yyyy}", item.to_date)</span>
+                                    } 
+                                </div>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                        <div class="col-md-6">
+                           
+                            <div class="wrapper wrapper-content">
+                                <h2>Görseller</h2>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="float-e-margins">
+                                            <p>
+                                                <strong>Not</strong> İlan görsellerinde reklam, telefon numarası, uygunsuz içerik bulunmamalıdır. Görsellerin kalitesi düşük olmamalıdır.
+                                            </p>
+                                            <div class="lightBoxGallery">
+                                                @foreach (var item in ViewBag.advert.images)
+                                                {
+                                                    <a href="@Html.SetImage((string)item.url, 800, 800)" data-gallery=""><img src="@Html.SetImage((string)item.url, 120, 120)"></a>
+                                                }
+                                                <!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+                                                <div id="blueimp-gallery" class="blueimp-gallery">
+                                                    <div class="slides"></div>
+                                                    <h3 class="title"></h3>
+                                                    <a class="prev">‹</a>
+                                                    <a class="next">›</a>
+                                                    <a class="close">×</a>
+                                                    <a class="play-pause"></a>
+                                                    <ol class="indicator"></ol>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <h2>Konum</h2>
+                                        <div class="google-map" id="map2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-12 no-padding pull-left">
+                        <button data-item="@ViewBag.advert.id" type="button" class="btn btn-w-m btn-primary approve">Onayla</button>
+                       
+                        <button data-item="@ViewBag.advert.id" type="button" class="btn btn-w-m btn-danger cancel">İptal Et</button>
+                    </div>
+                    <div class="m-t-md">
+                        <small class="pull-right">
+                            Kayıt: <label>@ViewBag.advert.created_date</label>
+                        </small>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div class="m-t-md">
+                        <small class="pull-right">
+                            Güncelleme: @if (ViewBag.advert.updated_date == null)
+                            { @Html.Label("Bulunmamakta") }
+                            else
+                            { @ViewBag.advert.updated_date }
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <style>
+        .description h1, .description h2, .description h3, .description h4, .description p {
+            font-size: 14px !important;
+        }
+        .lightBoxGallery{
+            text-align:left !important;
+        }
+    </style>
+    @Styles.Render("~/Content/plugins/blueimp/css/")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/toastrStyles")
+}
+
+
+
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/plugins/lightboxGallery")
+    @Scripts.Render("https://maps.googleapis.com/maps/api/js?key=AIzaSyDQTpXj82d8UpCi97wzo_nKXL7nYrd4G70")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/toastr")
+
+    <script>
+        $('button.approve').click(function (e) {
+            swal({
+                title: "Emin misiniz?",
+                text: "İlanı onaylamak istediğinize emin misiniz ?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#1ab394",
+                confirmButtonText: "Evet, Onayla!",
+                closeOnConfirm: false
+            }, function () {
+                $.post("/Advert/Approve/" + $(e.target).attr("data-item"))
+                    .done(function (response, status, jqxhr) {
+                        swal("Onaylandı!", "İlan kaydı onaylandı.", "success");
+                        setTimeout(() => window.location.reload(), 2000);
+                    })
+                    .fail(function (jqxhr, status, error) {
+                        swal("Hata", "İlan onaylanamadı. Tekrar deneyin.", "error");
+                    })
+               
+            });
+        });
+
+     
+        $('button.cancel').on('click', function (e) {
+            $('#dynamic-modal').removeData('bs.modal');
+            const id = $(e.target).attr("data-item").trim();
+            $('#dynamic-modal').modal({
+                keyboard: false,
+                remote: '/Advert/Partial/' + id
+            }).show();
+            
+        })
+    </script>
+
+
+
+    <script type="text/javascript">
+            // When the window has finished loading google map
+            google.maps.event.addDomListener(window, 'load', init);
+        
+            function init() {
+                // Options for Google map
+                // More info see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+                var coords = new google.maps.LatLng(@ViewBag.advert.latitude.Replace(",", "."), @ViewBag.advert.longitude.Replace(",", "."));
+
+
+
+                var mapOptions2 = {
+                    zoom: 15,
+                    center: coords,
+                };
+
+
+
+                // Get all html elements for map
+                var mapElement2 = document.getElementById('map2');
+
+                // Create the Google Map using elements
+                var map2 = new google.maps.Map(mapElement2, mapOptions2);
+
+                var marker = new google.maps.Marker({
+                    position: coords,
+                    map: map2,
+                    title: 'Konum'
+                });
+            }
+    </script>
+}

@@ -1,0 +1,9 @@
+### ignore packages
+/packages/
+Dashboard/obj
+Dashboard/bin
+Dashboard/.vs
+.vs/
+obj/
+bin/
+.well-know/

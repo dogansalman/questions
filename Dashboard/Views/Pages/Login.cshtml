@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+    ViewBag.Title = "Oturum Açın";
+}
+
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox-content text-center">
+                <h2>Oturum Açın</h2>
+                <p>
+                    Lütfen devam etmek için oturum açın
+                </p>
+                @using (Html.BeginForm("Login", "Account/Login", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        @Html.TextBox("Username", null, new { @class = "form-control", @placeholder = "E-posta" })
+                    </div>
+                    <div class="form-group">
+                        @Html.Password("password", null, new { @class = "form-control", @placeholder = "Şifreniz" })
+                    </div>
+                    <button type="submit" class="btn btn-primary block full-width m-b">Oturum Aç</button>
+                }
+                
+            </div>
+        </div>
+        
+    </div>
+
+
+</div>
+
+
+@section Styles {
+    @Styles.Render("~/plugins/toastrStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/toastr")
+
+    <script type="text/javascript">
+        if (location.search.indexOf("login=Failed") > -1) {
+            toastr.error("Kullanıcı adı veya parolanız hatalı.", "Hatalı Giriş")
+        }
+    </script>
+         
+
+}

@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = " Dashboard";
+}
+
+
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-success pull-right">0 Yeni</span>
+                        <h5>İlan</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">0</h1>
+                        <div class="stat-percent font-bold text-success"><i class="fa fa-home"></i></div>
+                        <small>Toplam ilan</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">0 Yeni</span>
+                        <h5>Kullanıcı</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">0 </h1>
+                        <div class="stat-percent font-bold text-info"><i class="fa fa-user"></i></div>
+                        <small>Toplam Kullanıcı</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary pull-right">2018</span>
+                        <h5>Rezervasyon</h5>
+                    </div>
+                    <div class="ibox-content">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h1 class="no-margins">0 TL</h1>
+                                <div class="font-bold text-navy"><i class="fa fa-check text-navy"></i> <small>Onaylanan</small></div>
+                            </div>
+                            <div class="col-md-4">
+                                <h1 class="no-margins">0 TL</h1>
+                                <div class="font-bold text-danger"><i class="fa fa-ban"></i> <small>İptal Edilen</small></div>
+                            </div>
+                            <div class="col-md-4">
+                                <h1 class="no-margins">0 TL</h1>
+                                <div class="font-bold text-info"><i class="fa fa-clock-o"></i> <small>Onay Beklenen</small></div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Onay Bekleyen İlanlar</h5>
+
+
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+
+                       
+                  
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    @section Styles{
+        @Styles.Render("~/plugins/sweetAlertStyles")
+        
+     
+    }
+
+    @section Scripts {
+      
+
+        @Scripts.Render("~/plugins/sweetAlert")
+        
+        <script>
+            $('a.approve').click(function (e) {
+                swal({
+                    title: "Emin misiniz?",
+                    text: "İlanı onaylamak istediğinize emin misiniz ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1ab394",
+                    confirmButtonText: "Evet, Onayla!",
+                    closeOnConfirm: false
+                }, function () {
+                   
+                    $.post("/Advert/Approve/" + $(e.target).attr("data-item"))
+                        .done(function (response, status, jqxhr) {
+                            swal("Onaylandı!", "İlan kaydı onaylandı.", "success");
+                            setTimeout(() => window.location.reload(), 2000);
+                        })
+                        .fail(function (jqxhr, status, error) {
+                            swal("Hata", "İlan onaylanamadı. Tekrar deneyin.", "error");
+                        })
+
+                });
+            });
+           
+        </script>
+
+    }
