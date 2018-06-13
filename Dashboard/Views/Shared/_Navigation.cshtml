@@ -4,7 +4,7 @@
             <li class="nav-header">
                 <div class="dropdown profile-element">
                     <span>
-                        <h2>SoruBankası</h2>
+                        <h2>Soru Bankası</h2>
                     </span>
                 </div>
                 <div class="logo-element">
@@ -15,14 +15,19 @@
             <li class="@Html.IsSelected(controller: "Dashboards")">
                 <a href="@Url.Action("Index", "Dashboards")"><i class="fa fa-window-maximize"></i> <span class="nav-label">Yönetim</span> </a>
             </li>
-            <li class="@Html.IsSelected(controller: "Advert")">
-                <a href="@Url.Action("Index", "Advert")"><i class="fa fa-question"></i> <span class="nav-label">Sorular</span> </a>
+
+            <li class="@Html.IsSelected(controller: "Question")">
+                <a href="@Url.Action("Index", "Question")"><i class="fa fa-question"></i> <span class="nav-label">Sorular</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
+                    <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Question")">Tüm Sorular</a></li>
+                    <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Question")">Yeni Soru</a></li>
+                </ul>
             </li>
-            <li class="@Html.IsSelected(controller: "Users")">
-                <a href="@Url.Action("Index", "Users")"><i class="fa fa-user"></i> <span class="nav-label" data-i18n="nav.users">Kullanıcılar</span> </a>
+            <li class="@Html.IsSelected(controller: "Personnel")">
+                <a href="@Url.Action("Index", "Personnel")"><i class="fa fa-user"></i> <span class="nav-label" data-i18n="nav.users">Kullanıcılar</span> </a>
             </li>
-            <li class="@Html.IsSelected(controller: "FeedBacks")">
-                <a href="@Url.Action("Index", "FeedBacks")"><i class="fa fa-exclamation-triangle"></i> <span class="nav-label" data-i18n="nav.feedbacks">Kaynaklar</span> </a>
+            <li class="@Html.IsSelected(controller: "Source")">
+                <a href="@Url.Action("Index", "Source")"><i class="fa fa-exclamation-triangle"></i> <span class="nav-label" data-i18n="nav.feedbacks">Kaynaklar</span> </a>
             </li>
             <li class="@Html.IsSelected(controller: "Comments")">
                 <a href="@Url.Action("Index", "Comments")"><i class="fa fa-quote-right"></i> <span class="nav-label">Durumlar</span> </a>

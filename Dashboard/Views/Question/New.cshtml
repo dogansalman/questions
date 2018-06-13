@@ -1,0 +1,94 @@
+﻿@model IEnumerable<QuestionsSYS.ModelViews.PersonnelView>
+
+@{
+    ViewBag.Title = "Yeni Soru";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Personel</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Question")">Sorular</a>
+            </li>
+            <li class="active">
+                <strong><a>Yeni Soru</a></strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+
+        <div class="ibox-content">
+        
+                <h3 class="m-t-none m-b">Yeni Soru Ekle</h3>
+                <form action="Add" method="post" role="form">
+                    <div class="form-group">
+                        <label for="name">Ad</label>
+                        <input type="text" placeholder="Ad" name="name" id="name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Soyad</label>
+                        <input type="text" placeholder="Soyad" name="lastname" id="lastname" class="form-control">
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="phone">Tel</label>
+                        <input type="number" placeholder="Tel" name="phone" id="phone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone2">Tel 2</label>
+                        <input type="number" placeholder="Tel" name="phone2" id="phone2" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="question">Soru</label>
+                        <textarea placeholder="Soru" name="question" id="question" class="form-control" cols="3" rows="3" ></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="question">Not</label>
+                        <textarea placeholder="Not" name="question" id="note" class="form-control" cols="3" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="source">Kaynak</label>
+                        <br/>
+                        <select name="source" id="source" class="source_select form-control">
+                            <option></option> 
+                            @foreach (var item in ViewBag.soruces)
+                            {
+                                <option value="@item.id">@item.name</option>
+                            }
+                           
+                        </select>
+                    </div>
+                    <button class="btn  btn-primary no-margins" type="submit">Ekle</button>                    
+                </form>
+        </div>
+
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/select2Styles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+
+    <script type="text/javascript">
+        if (location.search.indexOf("login=Failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+
+
+        $(".source_select").select2({
+            placeholder: "Kaynak seçin",
+            allowClear: true
+        });
+
+    </script>
+}

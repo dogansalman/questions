@@ -1,0 +1,140 @@
+﻿@model IEnumerable<QuestionsSYS.ModelViews.PersonnelView>
+
+@{
+    ViewBag.Title = "Personel";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Personel</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Personel</a></strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Yeni Peronsel Ekle</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form role="form" action="Add" method="post" class="form-inline">
+                    <div class="form-group">
+                        <label for="name" class="sr-only">Ad</label>
+                        <input type="text" placeholder="Ad" name="name" id="name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="surname" class="sr-only">Soyad</label>
+                        <input type="text" placeholder="Soyad" name="surname" id="surname" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="sr-only">Kullancı Adı</label>
+                        <input type="text" placeholder="Kullanıcı Adı" name="username"  id="username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="sr-only">Şifre</label>
+                        <input type="password" placeholder="Şifre" name="password" id="password" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="role" class="sr-only">Rol</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn  btn-primary no-margins" type="submit">Ekle</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                 
+                                    @Html.DisplayFor(modelItem => item.Name) @Html.DisplayFor(modelItem => item.Surname)
+                                </td>
+                                <td>
+                                        @if (@item.Role == "Admin")
+                                        {
+                                            <span class="label label-primary">@Html.DisplayFor(modelItem => item.Role)</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-warning">@Html.DisplayFor(modelItem => item.Role)</span>
+                                        }
+                                   
+                                   
+                                </td>
+                                <td>
+                                    @Html.ActionLink(
+                                                            linkText: "Detay",
+                                                            actionName: "Detail",
+                                                            controllerName: "Personnel",
+
+                                                            routeValues: new
+                                                            {
+                                                                id = item.Id
+                                                            },
+                                                            htmlAttributes: new { @class= "btn btn-success btn-sm pull-right" }
+                                                        )
+
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                <div class="m-t-md">
+                    <small class="pull-right">
+                        Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+                    </small>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+
+    <script type="text/javascript">
+        if (location.search.indexOf("success=failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Kayıt oluşturuldu.", "Tamam")
+        }
+    </script>
+}

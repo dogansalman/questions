@@ -1,0 +1,81 @@
+﻿@model QuestionsSYS.ModelViews.PersonnelView
+
+@{
+    ViewBag.Title = "Personel";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Detay</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Personnel")">Personel</a>
+            </li>
+            <li class="active">
+                <strong><a>@Html.DisplayFor(modelItem => modelItem.Name) @Html.DisplayFor(modelItem => modelItem.Surname)</a></strong>
+            </li>
+        </ol>
+    </div>
+
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="ibox-content">
+
+                <form role="form" action="/Personnel/Update/ @Html.DisplayFor(modelItem => modelItem.Id)" method="post">
+                    <div class="form-group">
+                        <label for="name">Ad</label>
+                        <input type="text" placeholder="Ad" name="name" id="name" value="@Html.DisplayFor(modelItem => modelItem.Name)" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Soyad</label>
+                        <input type="text" placeholder="Soyad" name="surname" id="surname" value="@Html.DisplayFor(modelItem => modelItem.Surname)" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Kullancı Adı</label>
+                        <input type="text" placeholder="Kullanıcı Adı" name="username" id="username" value="@Html.DisplayFor(modelItem => modelItem.Username)" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Rol</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="Admin" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Admin" ? "selected" : String.Empty)>Admin</option>
+                            <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "User" ? "selected" : String.Empty)>User</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Şifre</label>
+                        <input type="password" placeholder="Şifre" name="password" id="password" class="form-control">
+                        <small>Yeni şifre belirtmek için lütfen aşağıdaki şifre alanını doldurunuz.</small>
+                    </div>
+
+                    <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
+                </form>
+            </div>
+
+        
+
+        
+
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+
+    <script type="text/javascript">
+        if (location.search.indexOf("success=failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Kayıt güncellendi.", "Tamam")
+        }
+    </script>
+}

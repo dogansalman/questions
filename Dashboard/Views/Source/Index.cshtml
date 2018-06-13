@@ -1,0 +1,115 @@
+﻿@model IEnumerable<QuestionsSYS.Models.Soruce>
+
+@{
+    ViewBag.Title = "Kaynaklar";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Kaynak</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Kaynaklar</a></strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+     
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Yeni Kaynak Ekle</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form role="form" action="Add" method="post">
+                    <div class="input-group">
+                        <input type="text" name="name" placeholder="Kaynak" class="form-control"> <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">
+                                Ekle
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="ibox-content">
+            
+
+   
+
+            <div class="table-responsive">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Adı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                   <input type="text" class="form-control" style="border-color:#fff" placeholder="Kaynak" value="@Html.DisplayFor(modelItem => item.name)" />
+                                    
+                                </td>
+                                
+                                <td>
+                                    <button class="btn btn-primary btn-sm pull-right" style="margin-left:5px;">Güncelle</button>
+                                    @Html.ActionLink(
+                                                            linkText: "Sil",
+                                                            actionName: "Delete",
+                                                            controllerName: "Source",
+
+                                                            routeValues: new
+                                                            {
+                                                                id = item.id
+                                                            },
+                                                            htmlAttributes: new { @class = "btn btn-danger btn-sm pull-right" }
+                                                        )
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    
+                </table>
+
+                
+       
+                <div class="m-t-md">
+                    <small class="pull-right">
+                        Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+                    </small>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+
+    <script type="text/javascript">
+        if (location.search.indexOf("success=failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Kayıt başarılı.", "Tamam")
+        }
+    </script>
+}
