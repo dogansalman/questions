@@ -8,43 +8,44 @@ using QuestionsSYS.Context;
 
 namespace QuestionsSYS.Controllers
 {
-    public class SourceController : Controller
+    public class StatesController : Controller
     {
 
         DatabaseContexts db = new DatabaseContexts();
-        // GET: Soruce
+        // GET: States
         public ActionResult Index()
         {
-            return View(db.sources.ToList());
+            return View(db.states.ToList());
         }
         
         [HttpPost]
-        public ActionResult Add([Bind(Include = "name")] Soruce model)
+        public ActionResult Add([Bind(Include = "name")] States model)
         {
-            if (!ModelState.IsValid) return RedirectToAction("Index", "Source", new { success = "failed" });
+            if (!ModelState.IsValid) return RedirectToAction("Index", "States", new { success = "failed" });
 
             try
             {
-                Soruce s = new Soruce { name = model.name };
-                db.sources.Add(s);
+                
+                States s = new States { name = model.name };
+                db.states.Add(s);
                 db.SaveChanges();
                 
             }
             catch (Exception ex)
             {
-                if (!ModelState.IsValid) return RedirectToAction("Index", "Source", new { success = "failed" });
+                if (!ModelState.IsValid) return RedirectToAction("Index", "States", new { success = "failed" });
             }
 
-            return RedirectToAction("Index", "Source", new { success = "ok" });
+            return RedirectToAction("Index", "States", new { success = "ok" });
 
         }
         [HttpPost]
-        public ActionResult Update([Bind(Include = "id,name")] Soruce model)
+        public ActionResult Update([Bind(Include = "id,name")] States model)
         {
-            if (!ModelState.IsValid) return RedirectToAction("Index", "Source", new { success = "failed" });
+            if (!ModelState.IsValid) return RedirectToAction("Index", "States", new { success = "failed" });
             try
             {
-                Soruce s = db.sources.Where(src => src.id == model.id).FirstOrDefault();
+                States s = db.states.Where(src => src.id == model.id).FirstOrDefault();
                 if(s == null) return new HttpStatusCodeResult(404);
                 s.name = model.name;
                 db.SaveChanges();
@@ -63,9 +64,9 @@ namespace QuestionsSYS.Controllers
             
             try
             {
-                Soruce s = db.sources.Where(src => src.id == id).FirstOrDefault();
+                States s = db.states.Where(src => src.id == id).FirstOrDefault();
                 if (s == null) return new HttpStatusCodeResult(404);
-                db.sources.Remove(s);
+                db.states.Remove(s);
                 db.SaveChanges();
                 return new HttpStatusCodeResult(200);
             }
