@@ -90,14 +90,27 @@ namespace QuestionsSYS.Controllers
         [HttpPost]
         public ActionResult Update(string id, [Bind(Include = "password,name,surname,role,username")] PersonnelView person)
         {
+            id = id.Trim();
             UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
             UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(userStore);
             
-            ApplicationUser user = userManager.FindById(id);
+            ApplicationUser user = userManager.FindById(id.Trim());
+            if(user == null) return RedirectToAction("Detail", new RouteValueDictionary(new { controller = "Personnel", action = "Detail", Id = id, success = "failed" }));
+
             user.Name = person.Name;
             user.Surname = person.Surname;
             user.UserName = person.Username;
-            
+
+
+            string role_id = user.Roles.SingleOrDefault().RoleId;
+            string role_name = db.Roles.SingleOrDefault(r => r.Id == role_id).Name;
+            if(role_name.ToLower().Trim() != person.Role.ToLower().Trim())
+            {
+                userManager.RemoveFromRole(user.Id, role_name);
+                userManager.AddToRole(user.Id, person.Role);
+            }
+           
+
             if (!String.IsNullOrEmpty(person.Password)) user.PasswordHash = userManager.PasswordHasher.HashPassword(person.Password);
 
             var result =  userManager.Update(user);

@@ -6,7 +6,7 @@ namespace QuestionsSYS.Context
 {
     public class IdentityContexts: IdentityDbContext<Identity.ApplicationUser>
     {
-        public IdentityContexts() : base("ConnectionStrStaff") { }
+        public IdentityContexts() : base(System.Configuration.ConfigurationManager.AppSettings["connection:name"]) { }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

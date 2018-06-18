@@ -21,6 +21,7 @@
                 <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
                     <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Question")">Tüm Sorular</a></li>
                     <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Question")">Yeni Soru</a></li>
+                    <li class="@Html.IsSelected(action: "Import")"><a href="@Url.Action("Import", "Question")">Excel Import</a></li>
                 </ul>
             </li>
             <li class="@Html.IsSelected(controller: "Personnel")">

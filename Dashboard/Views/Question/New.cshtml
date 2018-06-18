@@ -6,7 +6,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Personel</h2>
+        <h2>Yeni Soru</h2>
         <ol class="breadcrumb">
             <li>
                 <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
@@ -25,8 +25,6 @@
     <div class="row">
 
         <div class="ibox-content">
-        
-                <h3 class="m-t-none m-b">Yeni Soru Ekle</h3>
                 <form action="Add" method="post" role="form">
                     <div class="form-group">
                         <label for="name">Ad</label>
@@ -51,7 +49,7 @@
                     </div>
                     <div class="form-group">
                         <label for="question">Not</label>
-                        <textarea placeholder="Not" name="question" id="note" class="form-control" cols="3" rows="3"></textarea>
+                        <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="source">Kaynak</label>
@@ -60,11 +58,12 @@
                             <option></option> 
                             @foreach (var item in ViewBag.soruces)
                             {
-                                <option value="@item.id">@item.name</option>
+                                <option value="@item.name">@item.name</option>
                             }
                            
                         </select>
                     </div>
+              
                     <button class="btn  btn-primary no-margins" type="submit">Ekle</button>                    
                 </form>
         </div>
@@ -80,8 +79,11 @@
     @Scripts.Render("~/plugins/select2")
 
     <script type="text/javascript">
-        if (location.search.indexOf("login=Failed") > -1) {
+        if (location.search.indexOf("success=failed") > -1) {
             toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Yeni soru kayıt edildi..", "Tamam")
         }
 
 

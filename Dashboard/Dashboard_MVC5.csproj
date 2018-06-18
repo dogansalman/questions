@@ -1750,6 +1750,8 @@
     <Content Include="Views\Comments\Index.cshtml" />
     <Content Include="Views\Users\Detail.cshtml" />
     <Content Include="Views\States\Index.cshtml" />
+    <Content Include="Views\Question\Detail.cshtml" />
+    <Content Include="Views\Question\Import.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

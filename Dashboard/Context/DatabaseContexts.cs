@@ -7,7 +7,7 @@ namespace QuestionsSYS.Context
     {
 
 
-        public DatabaseContexts() : base("Name=ConnectionStr")
+        public DatabaseContexts() : base(System.Configuration.ConfigurationManager.AppSettings["connection:name"])
         {
             Database.SetInitializer<DatabaseContexts>(null);
 

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using QuestionsSYS.ModelViews;
-using QuestionsSYS.Models;
 using QuestionsSYS.Identity;
 
 namespace QuestionsSYS.ModelViews
@@ -21,7 +15,7 @@ namespace QuestionsSYS.ModelViews
         public string phone { get; set; }
         public string phone2 { get; set; }
         public ApplicationUser user { get; set; }
-        public int source_id { get; set; }
+        public string source { get; set; }
         public DateTime added { get; set; } = DateTime.Now;
     }
 }

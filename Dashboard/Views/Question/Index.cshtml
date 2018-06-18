@@ -1,4 +1,4 @@
-﻿@model IEnumerable<QuestionsSYS.ModelViews.PersonnelView>
+﻿@model IEnumerable<QuestionsSYS.Models.Question>
 
 @{
     ViewBag.Title = "Tüm Sorular";
@@ -6,7 +6,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Personel</h2>
+        <h2>Sorular</h2>
         <ol class="breadcrumb">
             <li>
                 <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
@@ -27,7 +27,10 @@
                     <thead>
                         <tr>
                             <th>Ad Soyad</th>
-                            <th>Rol</th>
+                            <th>Telefon</th>
+                            <th>Soru</th>
+                            <th>Not</th>
+                            <th>Kaynak</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,22 +38,53 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Name) @Html.DisplayFor(modelItem => item.Surname)
+                                    @Html.DisplayFor(modelItem => item.name) @Html.DisplayFor(modelItem => item.lastname)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Role)
+                                    @Html.DisplayFor(modelItem => item.phone) / @Html.DisplayFor(modelItem => item.phone2)
+                                </td>
+                                <td>
+                                    @if(item.question.Length > 100)
+                                    {
+                                         @item.question.Substring(0, 100);
+                                        <a class="links" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.question">
+                                            Devamı...
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                         @item.question.ToString();
+                                    }
+
+                                </td>
+                                <td>
+                                    @if ( item.note != null && item.note.Length > 50)
+                                    {
+                                        @item.note.Substring(0, 50);
+                                        <a class="links" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.note">
+                                            Devamı...
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @item.note;
+                                    }
+
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.source)
                                 </td>
                                 <td>
                                     @Html.ActionLink(
                                                             linkText: "Detay",
                                                             actionName: "Detail",
-                                                            controllerName: "Personnel",
+                                                            controllerName: "Question",
 
                                                             routeValues: new
                                                             {
-                                                                id = item.Id
+                                                                id = item.id
                                                             },
-                                                            htmlAttributes: new { @class = "btn btn-success pull-right" }
+                                                            htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
                                                         )
 
                                 </td>
