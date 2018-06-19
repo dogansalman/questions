@@ -166,6 +166,7 @@
   <ItemGroup>
     <Folder Include="App_Data\uploads\" />
     <Folder Include="Views\AppUser\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />

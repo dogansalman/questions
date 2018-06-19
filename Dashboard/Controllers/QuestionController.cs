@@ -35,7 +35,23 @@ namespace QuestionsSYS.Controllers
             if (q == null) return new HttpStatusCodeResult(404);
             return View(q);
         }
-
+        [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            try
+            {
+                Question s = db.questions.Where(q => q.id == id).FirstOrDefault();
+                if (s == null) return new HttpStatusCodeResult(404);
+                db.questions.Remove(s);
+                db.SaveChanges();
+                return RedirectToAction("Index", new RouteValueDictionary(new { controller = "Question", action = "Index", Id = id, success = "failed_remove" }));
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500);
+                throw;
+            }
+        }
         public ActionResult Import()
         {
             return View();

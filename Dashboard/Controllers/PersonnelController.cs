@@ -62,7 +62,24 @@ namespace QuestionsSYS.Controllers
             
 
         }
-        
+
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+            try
+            {
+                ApplicationUser s = db.Users.Where(q => q.Id == id).FirstOrDefault();
+                if (s == null) return new HttpStatusCodeResult(404);
+                db.Users.Remove(s);
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500);
+                throw;
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult> Add([Bind(Include = "password,name,surname,role,username")] PersonnelView person)

@@ -10,7 +10,7 @@
     <WebStackScaffolding_DbContextTypeFullName>Inspinia_MVC5.Models.ScaffoldingContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsViewGenerationSelected>True</WebStackScaffolding_IsViewGenerationSelected>
     <ProjectView>ProjectFiles</ProjectView>
-    <NameOfLastUsedPublishProfile>DashboardMVC520180618033631 - Web Deploy</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>CustomProfile</NameOfLastUsedPublishProfile>
     <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
     <UseIISExpress>true</UseIISExpress>
     <WebStackScaffolding_ControllerDialogWidth>600</WebStackScaffolding_ControllerDialogWidth>

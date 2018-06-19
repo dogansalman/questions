@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using QuestionsSYS.ModelViews;
 using QuestionsSYS.Context;
+using System.Security.Claims;
 
 namespace QuestionsSYS.Controllers
 {
@@ -35,6 +36,7 @@ namespace QuestionsSYS.Controllers
        
         public ActionResult Index()
         {
+            
             return View();
         }
 

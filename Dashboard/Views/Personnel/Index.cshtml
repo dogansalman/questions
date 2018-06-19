@@ -22,9 +22,15 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
+    <div class="row personnel-form ibox-content">
+
+        <div class="sk-spinner sk-spinner-double-bounce">
+            <div class="sk-double-bounce1"></div>
+            <div class="sk-double-bounce2"></div>
+        </div>
+
         <div class="ibox float-e-margins">
-            <div class="ibox-title">
+            <div class="ibox-title no-top-border">
                 <h5>Yeni Peronsel Ekle</h5>
                 <div class="ibox-tools">
                     <a class="collapse-link">
@@ -32,37 +38,54 @@
                     </a>
                 </div>
             </div>
-            <div class="ibox-content">
-                <form role="form" action="Add" method="post" class="form-inline">
+            <div class="ibox-content add-form">
+
+              
+
+                @using (Ajax.BeginForm("Add", "Personnel", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess(this);", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }, new { id = "personnel_add_form", @class = "form-inline" }))
+                {
                     <div class="form-group">
                         <label for="name" class="sr-only">Ad</label>
-                        <input type="text" placeholder="Ad" name="name" id="name" class="form-control">
+                        @Html.TextBox("name", null, new { @placeholder = "Ad", @name = "name", @class = "form-control" })
                     </div>
+
                     <div class="form-group">
                         <label for="surname" class="sr-only">Soyad</label>
-                        <input type="text" placeholder="Soyad" name="surname" id="surname" class="form-control">
+                        @Html.TextBox("surname", null, new { @placeholder = "Soyad", @name = "surname", @class = "form-control" })
                     </div>
+
                     <div class="form-group">
-                        <label for="username" class="sr-only">Kullancı Adı</label>
-                        <input type="text" placeholder="Kullanıcı Adı" name="username"  id="username" class="form-control">
+                        <label for="username" class="sr-only">Kullanıcı Adı</label>
+                        @Html.TextBox("username", null, new { @placeholder = "Kullanıcı Adı", @name = "username", @class = "form-control" })
                     </div>
+
                     <div class="form-group">
                         <label for="password" class="sr-only">Şifre</label>
-                        <input type="password" placeholder="Şifre" name="password" id="password" class="form-control">
+                        @Html.TextBox("password", null, new { @placeholder = "Şifre", @name = "password", @class = "form-control" })
                     </div>
+
                     <div class="form-group">
                         <label for="role" class="sr-only">Rol</label>
-                        <select id="role" name="role" class="form-control">
-                            <option value="Admin">Admin</option>
-                            <option value="User">User</option>
-                        </select>
+                         @Html.DropDownList("role",
+                             new List<SelectListItem> {
+                                 new SelectListItem {
+                                    Text="User",
+                                    Value="User",
+                                    Selected = true
+                                 },
+                                 new SelectListItem {
+                                    Text="Admin",
+                                    Value="Admin",
+                                 },
+                             }, new { @class="form-control", @name="role" })
                     </div>
-                    
                     <button class="btn  btn-primary no-margins" type="submit">Ekle</button>
-                </form>
-            </div>
-        </div>
 
+                        
+                     }
+
+         </div>
+        </div>
         <div class="ibox-content">
             <div class="table-responsive">
                 <table class="table table-responsive">
@@ -104,6 +127,7 @@
                                                             },
                                                             htmlAttributes: new { @class= "btn btn-success btn-sm pull-right" }
                                                         )
+                                    @Ajax.ActionLink("Sil", "Delete", new { id = item.Id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "OnDeleting()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-right: 5px;" })
 
                                 </td>
                             </tr>
@@ -128,13 +152,44 @@
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
 
     <script type="text/javascript">
-        if (location.search.indexOf("success=failed") > -1) {
-            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        
+
+
+        function AddSuccess(e) {
+            toastr.success("Yeni kullanıcı eklendi.", "Tamam");
+            location.reload();
         }
-        if (location.search.indexOf("success=ok") > -1) {
-            toastr.success("Kayıt oluşturuldu.", "Tamam")
+        function AddFailed() {
+            toastr.error("Tekrar deneyin.", "Hata")
         }
+
+        function OnAdding() {
+            $('.personnel-form').toggleClass('sk-loading');
+        }
+
+        function OnAddComplate() {
+            $('.personnel-form').toggleClass('sk-loading');
+        }
+
+
+        function DeleteSuccess(e) {
+            $(e).parents("tr").remove();
+            toastr.success("Kayıt silindi.", "Tamam");
+        }
+        function DeleteFailed() {
+            toastr.error("Kayıt silinmedi. tekrar deneyin.", "Hata")
+        }
+
+        function OnDeleting() {
+            $('.personnel-form').toggleClass('sk-loading');
+        }
+
+        function OnComplate() {
+            $('.personnel-form').toggleClass('sk-loading');
+        }
+
     </script>
 }

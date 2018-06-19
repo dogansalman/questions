@@ -22,6 +22,10 @@
     <div class="row">
 
         <div class="ibox-content">
+            <div class="sk-spinner sk-spinner-double-bounce">
+                <div class="sk-double-bounce1"></div>
+                <div class="sk-double-bounce2"></div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-responsive">
                     <thead>
@@ -44,9 +48,9 @@
                                     @Html.DisplayFor(modelItem => item.phone) / @Html.DisplayFor(modelItem => item.phone2)
                                 </td>
                                 <td>
-                                    @if(item.question.Length > 100)
+                                    @if(item.question.Length > 50)
                                     {
-                                         @item.question.Substring(0, 100);
+                                         @item.question.Substring(0, 50);
                                         <a class="links" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.question">
                                             Devamı...
                                         </a>
@@ -58,9 +62,9 @@
 
                                 </td>
                                 <td>
-                                    @if ( item.note != null && item.note.Length > 50)
+                                    @if ( item.note != null && item.note.Length > 20)
                                     {
-                                        @item.note.Substring(0, 50);
+                                        @item.note.Substring(0, 20);
                                         <a class="links" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.note">
                                             Devamı...
                                         </a>
@@ -86,6 +90,7 @@
                                                             },
                                                             htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
                                                         )
+                                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete= "OnComplate();", OnFailure = "DeleteFailed();", OnBegin= "OnDeleting()", Confirm= "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style= "margin-right: 5px;" })
 
                                 </td>
                             </tr>
@@ -110,10 +115,37 @@
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
-
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
     <script type="text/javascript">
-        if (location.search.indexOf("login=Failed") > -1) {
-            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+
+        function DeleteSuccess(e)
+        {
+            $(e).parents("tr").remove();
+            toastr.success("Kayıt silindi.", "Tamam");
+
         }
+        function DeleteFailed() {
+            toastr.error("Kayıt silinmedi. tekrar deneyin.", "Hata")
+        }
+
+        function OnDeleting()
+        {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function OnComplate()
+        {
+            $('.ibox-content').toggleClass('sk-loading');
+
+        }
+
+        if (location.search.indexOf("success=failed_remove") > -1) {
+            toastr.error("Kayıt silinmedi. tekrar deneyin.", "Hata")
+        }
+        if (location.search.indexOf("success=delete_ok") > -1) {
+            toastr.success("Kayıt silindi.", "Tamam")
+        }
+
+       
     </script>
 }
