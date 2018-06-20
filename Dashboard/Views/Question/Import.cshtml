@@ -59,16 +59,11 @@
 
 @section Styles{
     @Styles.Render("~/plugins/toastrStyles")
-
     @Styles.Render("~/plugins/jasnyBootstrapStyles")
-
-
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
-
     @Scripts.Render("~/plugins/jasnyBootstrap")
-
     <script>
         if (location.search.indexOf("success=failed") > -1) {
             toastr.error("Excel kaynağında bir hata mevcut.", "Hata")
@@ -76,7 +71,6 @@
         if (location.search.indexOf("success=ok") > -1) {
             toastr.success("Excel başarıyla aktarıldı.", "Tamam")
         }
-
     </script>
 
 

@@ -25,47 +25,62 @@
     <div class="row">
 
         <div class="ibox-content">
-                <form action="Add" method="post" role="form">
-                    <div class="form-group">
-                        <label for="name">Ad</label>
-                        <input type="text" placeholder="Ad" name="name" id="name" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">Soyad</label>
-                        <input type="text" placeholder="Soyad" name="lastname" id="lastname" class="form-control">
-                    </div>
-                   
-                    <div class="form-group">
-                        <label for="phone">Tel</label>
-                        <input type="number" placeholder="Tel" name="phone" id="phone" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone2">Tel 2</label>
-                        <input type="number" placeholder="Tel" name="phone2" id="phone2" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="question">Soru</label>
-                        <textarea placeholder="Soru" name="question" id="question" class="form-control" cols="3" rows="3" ></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="question">Not</label>
-                        <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="source">Kaynak</label>
-                        <br/>
-                        <select name="source" id="source" class="source_select form-control">
-                            <option></option> 
-                            @foreach (var item in ViewBag.soruces)
-                            {
-                                <option value="@item.name">@item.name</option>
-                            }
-                           
-                        </select>
-                    </div>
-              
-                    <button class="btn  btn-primary no-margins" type="submit">Ekle</button>                    
-                </form>
+
+            <div class="sk-spinner sk-spinner-double-bounce">
+                <div class="sk-double-bounce1"></div>
+                <div class="sk-double-bounce2"></div>
+            </div>
+
+           @using (Ajax.BeginForm("Add", "Question", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+           {
+
+            <div class="form-group">
+                <label for="name">Ad</label>
+                @Html.TextBox("name", null, new { @placeholder = "Ad", @name = "name", @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <label for="lastname">Soyad</label>
+                @Html.TextBox("lastname", null, new { @placeholder = "Soyad", @name = "lastname", @class = "form-control" })
+            </div>
+
+
+            <div class="form-group">
+                <label for="phone">Tel</label>
+                @Html.TextBox("phone", null, new { @placeholder= "Tel", @name="phone", @class="form-control", @type="number" })
+            </div>
+
+            <div class="form-group">
+                <label for="phone2">Tel 2</label>
+                @Html.TextBox("phone2", null, new { @placeholder = "Tel", @name = "phone2", @class = "form-control", @type = "number" })
+            </div>
+
+            <div class="form-group">
+                <label for="question">Soru</label>
+                @Html.TextArea("question", null, new { @placeholder = "Soru", @name = "question", @class = "form-control", @cols = "3", @rows="3" })
+            </div>
+
+            <div class="form-group">
+                <label for="note">Not</label>
+                @Html.TextArea("note", null, new { @placeholder = "Not", @name = "note", @class = "form-control", @cols = "3", @rows = "3" })
+            </div>
+
+            <div class="form-group">
+                <label for="source">Kaynak</label>
+                <br />
+                <select name="source" id="source" class="source_select form-control">
+                    <option></option>
+                    @foreach (var item in ViewBag.soruces)
+                    {
+                        <option value="@item.name">@item.name</option>
+                    }
+
+                </select>
+            </div>
+
+            <button class="btn  btn-primary no-margins" type="submit">Ekle</button>
+           }
+               
         </div>
 
     </div>
@@ -77,15 +92,25 @@
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
     @Scripts.Render("~/plugins/select2")
-
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
     <script type="text/javascript">
-        if (location.search.indexOf("success=failed") > -1) {
-            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        
+        
+        function AddSuccess() {
+            toastr.success("Soru eklendi.", "Tamam");
+            document.getElementById("form0").reset();
         }
-        if (location.search.indexOf("success=ok") > -1) {
-            toastr.success("Yeni soru kayıt edildi..", "Tamam")
+        function AddFailed() {
+            toastr.error("Numara kullanılıyor veya bir hata oluştu tekrar deneyin.", "Hata")
         }
 
+        function OnAdding() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function OnAddComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
 
         $(".source_select").select2({
             placeholder: "Kaynak seçin",

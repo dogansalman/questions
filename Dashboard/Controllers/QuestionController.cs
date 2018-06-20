@@ -9,6 +9,7 @@ using QuestionsSYS.Context;
 using System.Web.Routing;
 using System.Data;
 using System.Data.OleDb;
+using PagedList;
 
 namespace QuestionsSYS.Controllers
 {
@@ -17,9 +18,9 @@ namespace QuestionsSYS.Controllers
 
         DatabaseContexts db = new DatabaseContexts();
         // GET: Question
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
-            return View(db.questions.ToList().OrderByDescending(q => q.id));
+            return View(db.questions.OrderByDescending(q => q.id).ToPagedList(page, 40));
         }
 
         public ActionResult New([Bind(Include = "question,note,state,name,lastname,phone,phone2,source")] Question model)
@@ -124,9 +125,7 @@ namespace QuestionsSYS.Controllers
 
                     }
 
-                    
 
-                 
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
                         string source_name = ds.Tables[0].Rows[i][6].ToString();
@@ -141,6 +140,7 @@ namespace QuestionsSYS.Controllers
                             db.SaveChanges();
                         }
 
+                        var date =  String.IsNullOrEmpty(ds.Tables[0].Rows[i][7].ToString()) ? DateTime.Now :  Convert.ToDateTime(ds.Tables[0].Rows[i][7].ToString());
 
                         Question q = new Question
                         {
@@ -151,7 +151,7 @@ namespace QuestionsSYS.Controllers
                             question = ds.Tables[0].Rows[i][4].ToString(),
                             note = ds.Tables[0].Rows[i][5].ToString(),
                             source = ds.Tables[0].Rows[i][6].ToString(),
-                            added = DateTime.Now,
+                            added = date
 
 
                         };
@@ -180,7 +180,26 @@ namespace QuestionsSYS.Controllers
         [HttpPost]
         public ActionResult Add([Bind(Include = "question,note,state,name,lastname,phone,phone2,source")] Question model)
         {
-            if (!ModelState.IsValid) return RedirectToAction("New", "Question", new { success = "failed" });
+            if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
+
+            
+            if (!String.IsNullOrEmpty(model.phone))
+            {
+                if (db.questions.Any(qu => qu.phone == model.phone || qu.phone2 == model.phone ))
+                {
+                    return new HttpStatusCodeResult(501);
+                }
+            }
+
+            if (!String.IsNullOrEmpty(model.phone2))
+            {
+                if (db.questions.Any(qu => qu.phone == model.phone2 || qu.phone2 == model.phone2))
+                {
+                    return new HttpStatusCodeResult(501);
+                }
+            }
+
+
 
             Question q = new Question
             {
@@ -197,7 +216,7 @@ namespace QuestionsSYS.Controllers
 
             db.questions.Add(q);
             db.SaveChanges();
-            return RedirectToAction("New", "Question", new { success = "ok" });
+            return new HttpStatusCodeResult(200);
         }
 
         [HttpPost]
