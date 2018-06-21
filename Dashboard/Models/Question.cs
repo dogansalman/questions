@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuestionsSYS.Models
 {
@@ -13,13 +12,10 @@ namespace QuestionsSYS.Models
         public string question { get; set; }
         public string note { get; set; }
         [Required]
-        public int state { get; set; }
+        public bool state { get; set; }
         [Required]
         [StringLength(255)]
-        public string name { get; set; }
-        [Required]
-        [StringLength(255)]
-        public string lastname { get; set; }
+        public string fullname{ get; set; }
         [StringLength(255)]
         public string phone { get; set; }
         [StringLength(255)]

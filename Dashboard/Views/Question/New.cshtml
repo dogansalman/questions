@@ -35,16 +35,10 @@
            {
 
             <div class="form-group">
-                <label for="name">Ad</label>
-                @Html.TextBox("name", null, new { @placeholder = "Ad", @name = "name", @class = "form-control" })
+                <label for="name">Ad Soyad</label>
+                @Html.TextBox("fullname", null, new { @placeholder = "Ad", @name = "fullname", @class = "form-control" })
             </div>
-
-            <div class="form-group">
-                <label for="lastname">Soyad</label>
-                @Html.TextBox("lastname", null, new { @placeholder = "Soyad", @name = "lastname", @class = "form-control" })
-            </div>
-
-
+            
             <div class="form-group">
                 <label for="phone">Tel</label>
                 @Html.TextBox("phone", null, new { @placeholder= "Tel", @name="phone", @class="form-control", @type="number" })

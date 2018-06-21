@@ -6,6 +6,7 @@
     ViewBag.Title = "Tüm Sorular";
 }
 
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Sorular</h2>
@@ -23,99 +24,25 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
 
+   
+
+        
+        
         <div class="ibox-content">
             <div class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
                 <div class="sk-double-bounce2"></div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Ad Soyad</th>
-                            <th>Telefon</th>
-                            <th>Soru</th>
-                            <th>Not</th>
-                            <th>Kaynak</th>
-                            <th>Tarih / Saat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.name) @Html.DisplayFor(modelItem => item.lastname)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.phone) / @Html.DisplayFor(modelItem => item.phone2)
-                                </td>
-                                <td>
-                                    @if(item.question.Length > 50)
-                                    {
-                                         @item.question.Substring(0, 50);
-                                        <a class="links" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.question">
-                                            Devamı...
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                         @item.question.ToString();
-                                    }
-
-                                </td>
-                                <td>
-                                    @if ( item.note != null && item.note.Length > 20)
-                                    {
-                                        @item.note.Substring(0, 20);
-                                        <a class="links" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.note">
-                                            Devamı...
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        @item.note;
-                                    }
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.source)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.added)
-                                </td>
-                                <td>
-                                    @Html.ActionLink(
-                                                            linkText: "Detay",
-                                                            actionName: "Detail",
-                                                            controllerName: "Question",
-
-                                                            routeValues: new
-                                                            {
-                                                                id = item.id
-                                                            },
-                                                            htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
-                                                        )
-                                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete= "OnComplate();", OnFailure = "DeleteFailed();", OnBegin= "OnDeleting()", Confirm= "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style= "margin-right: 5px;" })
-
-                                </td>
-                            </tr>
-                        }
-                        
-
-                    </tbody>
-                </table>
-                <div class="pagedList">
-                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), PagedListRenderOptions.PageNumbersOnly)
-                </div>
-                <div class="m-t-md">
-                    <small class="pull-right">
-                        Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
-                    </small>
-
-                </div>
+            <div id="question-list" class="table-responsive">
+                
+                
             </div>
+            <div class="m-t-md">
+                <small class="pull-right">
+                    Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+                </small>
 
+            </div>
         </div>
 
     </div>
@@ -128,25 +55,36 @@
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
     <script type="text/javascript">
 
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "All",
+                success: function (responseData) {
+                    $('#question-list').html(responseData);
+                }
+            })
+        });
+   
         function DeleteSuccess(e)
         {
             $(e).parents("tr").remove();
+            $(".pagination-container").first().remove();
             toastr.success("Kayıt silindi.", "Tamam");
-
         }
         function DeleteFailed() {
             toastr.error("Kayıt silinmedi. tekrar deneyin.", "Hata")
         }
 
-        function OnDeleting()
+        function Begin()
         {
             $('.ibox-content').toggleClass('sk-loading');
         }
 
         function OnComplate()
         {
+           
             $('.ibox-content').toggleClass('sk-loading');
-
+            $('.ibox-content').removeClass('sk-loading');
         }
 
         if (location.search.indexOf("success=failed_remove") > -1) {
@@ -155,7 +93,5 @@
         if (location.search.indexOf("success=delete_ok") > -1) {
             toastr.success("Kayıt silindi.", "Tamam")
         }
-
-       
     </script>
 }

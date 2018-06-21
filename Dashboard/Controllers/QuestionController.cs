@@ -20,10 +20,22 @@ namespace QuestionsSYS.Controllers
         // GET: Question
         public ActionResult Index(int page = 1)
         {
-            return View(db.questions.OrderByDescending(q => q.id).ToPagedList(page, 40));
+            return View();
         }
 
-        public ActionResult New([Bind(Include = "question,note,state,name,lastname,phone,phone2,source")] Question model)
+        public ActionResult Tasks(int page = 1)
+        {
+            PagedList<Question> model = new PagedList<Question>(db.questions.Where(qu => !qu.state).OrderByDescending(q => q.id), page, 20);
+            return View(model);
+        }
+
+        public ActionResult All(int page = 1)
+        {
+            PagedList<Question> model = new PagedList<Question>(db.questions.OrderByDescending(q => q.id), page, 20);
+            return View(model);
+        }
+
+        public ActionResult New([Bind(Include = "question,note,state,fullname,phone,phone2,source")] Question model)
         {
             ViewBag.soruces = db.sources.ToList();
             return View();
@@ -128,29 +140,28 @@ namespace QuestionsSYS.Controllers
 
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
-                        string source_name = ds.Tables[0].Rows[i][6].ToString();
+                        string source_name = ds.Tables[0].Rows[i][5].ToString();
                         Soruce s = db.sources.Where(sc => sc.name == source_name).FirstOrDefault();
                         if(s == null)
                         {
                             Soruce n_sc = new Soruce
                             {
-                                name = ds.Tables[0].Rows[i][6].ToString()
+                                name = ds.Tables[0].Rows[i][5].ToString()
                             };
                             db.sources.Add(n_sc);
                             db.SaveChanges();
                         }
 
-                        var date =  String.IsNullOrEmpty(ds.Tables[0].Rows[i][7].ToString()) ? DateTime.Now :  Convert.ToDateTime(ds.Tables[0].Rows[i][7].ToString());
+                        var date =  String.IsNullOrEmpty(ds.Tables[0].Rows[i][6].ToString()) ? DateTime.Now :  Convert.ToDateTime(ds.Tables[0].Rows[i][6].ToString());
 
                         Question q = new Question
                         {
-                            name = ds.Tables[0].Rows[i][0].ToString(),
-                            lastname = ds.Tables[0].Rows[i][1].ToString(),
-                            phone = ds.Tables[0].Rows[i][2].ToString(),
-                            phone2 = ds.Tables[0].Rows[i][3].ToString(),
-                            question = ds.Tables[0].Rows[i][4].ToString(),
-                            note = ds.Tables[0].Rows[i][5].ToString(),
-                            source = ds.Tables[0].Rows[i][6].ToString(),
+                            fullname = ds.Tables[0].Rows[i][0].ToString(),
+                            phone = ds.Tables[0].Rows[i][1].ToString(),
+                            phone2 = ds.Tables[0].Rows[i][2].ToString(),
+                            question = ds.Tables[0].Rows[i][3].ToString(),
+                            note = ds.Tables[0].Rows[i][4].ToString(),
+                            source = ds.Tables[0].Rows[i][5].ToString(),
                             added = date
 
 
@@ -178,7 +189,7 @@ namespace QuestionsSYS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add([Bind(Include = "question,note,state,name,lastname,phone,phone2,source")] Question model)
+        public ActionResult Add([Bind(Include = "question,note,state,fullname,phone,phone2,source")] Question model)
         {
             if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
 
@@ -204,8 +215,7 @@ namespace QuestionsSYS.Controllers
             Question q = new Question
             {
                 added = DateTime.Now,
-                lastname = model.lastname,
-                name = model.name,
+                fullname = model.fullname,
                 note = model.note,
                 phone = model.phone,
                 phone2 = model.phone2,
@@ -220,15 +230,13 @@ namespace QuestionsSYS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(int? id, [Bind(Include = "question,note,state,name,lastname,phone,phone2,source")] Question model)
+        public ActionResult Update(int? id, [Bind(Include = "question,note,state,fullname,phone,phone2,source")] Question model)
         {
             Question q = db.questions.Where(qu => qu.id == id).FirstOrDefault();
 
-            if (q == null) return RedirectToAction("Detail", new RouteValueDictionary(new { controller = "Question", action = "Detail", Id = id, success = "failed" }));
+            if (q == null) return new HttpStatusCodeResult(404);
 
-
-            q.lastname = model.lastname;
-            q.name = model.name;
+            q.fullname = model.fullname;
             q.note = model.note;
             q.phone = model.phone;
             q.phone2 = model.phone2;
@@ -238,7 +246,7 @@ namespace QuestionsSYS.Controllers
             q.note = model.note;
           
             db.SaveChanges();
-            return  RedirectToAction("Detail", new RouteValueDictionary(new { controller = "Question", action = "Detail", Id = id, success = "ok" }));
+            return new HttpStatusCodeResult(200);
         }
 
       

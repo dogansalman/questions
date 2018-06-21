@@ -1761,6 +1761,9 @@
     <Content Include="Views\States\Index.cshtml" />
     <Content Include="Views\Question\Detail.cshtml" />
     <Content Include="Views\Question\Import.cshtml" />
+    <Content Include="Views\Question\Tasks.cshtml" />
+    <Content Include="Views\Shared\_Layout_Empty_White.cshtml" />
+    <Content Include="Views\Question\All.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

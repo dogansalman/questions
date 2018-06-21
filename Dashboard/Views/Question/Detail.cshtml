@@ -30,23 +30,19 @@
             </div>
 
             <h3 class="m-t-none m-b">Düzenle</h3>
-            <form action="/Question/Update/ @Html.DisplayFor(modelItem => modelItem.id)" method="post" role="form">
+            @using (Ajax.BeginForm("Update/" + Html.DisplayFor(modelItem => modelItem.id), "Question", new AjaxOptions { HttpMethod = "POST", OnSuccess = "Success();", OnComplete = "Complate();", OnFailure = "Failed();", OnBegin = "Begin()" }))
+            {
                 <div class="form-group">
-                    <label for="name">Ad</label>
-                    <input type="text" placeholder="Ad" name="name" id="name" value="@Html.DisplayFor(modelItem => modelItem.name)" class="form-control">
+                    <label for="name">Ad Soyad</label>
+                    <input type="text" placeholder="Ad" name="fullname" id="fullname" value="@Html.DisplayFor(modelItem => modelItem.fullname)" class="form-control">
                 </div>
-                <div class="form-group">
-                    <label for="lastname">Soyad</label>
-                    <input type="text" placeholder="Soyad" name="lastname" id="lastname" value="@Html.DisplayFor(modelItem => modelItem.lastname)" class="form-control">
-                </div>
-
                 <div class="form-group">
                     <label for="phone">Tel</label>
-                    <input type="number" placeholder="Tel" name="phone" id="phone" value="@Html.DisplayFor(modelItem => modelItem.phone)" class="form-control">
+                    <input type="text" data-mask="(9999) 999-9999" placeholder="Tel" name="phone" id="phone" value="@Html.DisplayFor(modelItem => modelItem.phone)" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="phone2">Tel 2</label>
-                    <input type="number" placeholder="Tel" name="phone2" id="phone2" value="@Html.DisplayFor(modelItem => modelItem.phone2)"class="form-control">
+                    <input type="text" data-mask="(9999) 999-9999" placeholder="Tel" name="phone2" id="phone2" value="@Html.DisplayFor(modelItem => modelItem.phone2)" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="question">Soru</label>
@@ -56,7 +52,7 @@
                 </div>
                 <div class="form-group">
                     <label for="question">Not</label>
-                    <textarea placeholder="Not" name="note" id="note" class="form-control"  cols="3" rows="3">
+                    <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3">
 @Html.DisplayFor(modelItem => modelItem.note)
                     </textarea>
                 </div>
@@ -72,21 +68,19 @@
 
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="source">Tarih</label>
                     <br />
-                   @(Html.DisplayFor(modelItem => modelItem.added).ToString())
+                    @(Html.DisplayFor(modelItem => modelItem.added).ToString())
                 </div>
-
                 <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
-               
-                @Ajax.ActionLink("Sil", "Delete", new { id = Html.DisplayFor(modelItem => modelItem.id) }, new AjaxOptions { HttpMethod = "POST", Confirm= "Devam etmek istediğiniz emin misiniz ?",  OnBegin = " $('.ibox-content').toggleClass('sk-loading');",  OnSuccess = "window.location.href = '/Question/Index?success=delete_ok'", OnFailure= "window.location.href = '/Question/Index?success=failed_remove'" }, new { @class = "btn btn-danger no-margins" })
+                @Ajax.ActionLink("Sil", "Delete", new { id = Html.DisplayFor(modelItem => modelItem.id) }, new AjaxOptions { HttpMethod = "POST", Confirm = "Devam etmek istediğiniz emin misiniz ?", OnBegin = " $('.ibox-content').toggleClass('sk-loading');", OnSuccess = "window.location.href = '/Question/Index?success=delete_ok'", OnFailure = "window.location.href = '/Question/Index?success=failed_remove'" }, new { @class = "btn btn-danger no-margins" })
 
 
+            }
 
+     
 
-            </form>
         </div>
 
     </div>
@@ -99,15 +93,24 @@
     @Scripts.Render("~/plugins/toastr")
     @Scripts.Render("~/plugins/select2")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+    @Scripts.Render("~/plugins/jasnyBootstrap")
 
     <script type="text/javascript">
-        if (location.search.indexOf("success=failed") > -1) {
-            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+
+        function Success() {
+            toastr.success("Soru güncellendi.", "Tamam");
         }
-        if (location.search.indexOf("success=ok") > -1) {
-            toastr.success("Yeni soru kayıt edildi..", "Tamam")
+        function Failed() {
+            toastr.error("Numara kullanılıyor veya bir hata oluştu tekrar deneyin.", "Hata")
         }
-     
+
+        function Begin() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function Complate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
 
 
         $(".source_select").select2({

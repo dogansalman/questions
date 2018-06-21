@@ -1,0 +1,110 @@
+﻿@model IPagedList<QuestionsSYS.Models.Question>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+    Layout = "~/Views/Shared/_Layout_Empty_White.cshtml";
+}
+
+
+<table id="question_tasked" class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Ad Soyad</th>
+            <th>Telefon</th>
+            <th>Soru/Not</th>
+            <th>Durum</th>
+            <th>Kaynak</th>
+            <th>Tarih / Saat</th>
+            <th>
+                <label class="pull-right bold" style="margin-right:5px;">@Ajax.ActionLink("Tüm Soruları Listele", "All", null, new AjaxOptions { UpdateTargetId = "question-list", OnBegin = "Begin()", OnComplete = "OnComplate();", OnSuccess = "OnComplate();" }, new { @class = "btn btn-primary btn-xs" })</label>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody >
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fullname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.phone) / @Html.DisplayFor(modelItem => item.phone2)
+                </td>
+                <td>
+                    <button class="btn btn-info btn-sm" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.question" type="button"> Soru</button>
+                    @if (!String.IsNullOrEmpty(item.note))
+                    {
+                        <button class="btn btn-warning btn-sm" type="button" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.note"><span class="bold">Not</span></button>
+                    }
+
+                </td>
+                <td>
+                    @if (item.state == false)
+                    {
+                        <span class="label label-danger">Görev Bulunamadı</span>
+                    }
+                    else
+                    {
+                        <span class="label label-primary">Atandı</span>
+                    }
+
+
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.source)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.added)
+                </td>
+                <td>
+                    @Html.ActionLink(
+                                                            linkText: "Detay",
+                                                            actionName: "Detail",
+                                                            controllerName: "Question",
+
+                                                            routeValues: new
+                                                            {
+                                                                id = item.id
+                                                            },
+                                                            htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
+                                                        )
+                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "OnDeleting()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-right: 5px;" })
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<div class="pagedList">
+    @Html.PagedListPager(
+    Model,
+    page => Url.Action("Tasks", new { page = page }),
+    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "question_tasked", OnBegin= "PageBegin()", OnComplete= "PageComplate()" })
+    )
+
+</div>
+@section Scripts{
+    
+    <script>
+        function PageBegin()
+        {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function PageComplate()
+        {
+
+            $('.ibox-content').toggleClass('sk-loading');
+            $('.ibox-content').removeClass('sk-loading');
+            if ($(".pagedList")[1]) $(".pagedList")[1].remove();
+        }
+    </script>
+    }
+
