@@ -18,12 +18,15 @@ namespace QuestionsSYS.Context
         public DbSet<Question> questions { get; set; }
         public DbSet<Soruce> sources { get; set; }
 
+        public DbSet<Tasks> tasks { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<States>().ToTable("States");
             modelBuilder.Entity<Question>().ToTable("Questions");
             modelBuilder.Entity<Soruce>().ToTable("Soruce");
+            modelBuilder.Entity<Tasks>().ToTable("Tasks");
         }
     }
       

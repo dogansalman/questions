@@ -10,6 +10,7 @@ using System.Web.Routing;
 using System.Data;
 using System.Data.OleDb;
 using PagedList;
+using QuestionsSYS.Identity;
 
 namespace QuestionsSYS.Controllers
 {
@@ -17,9 +18,12 @@ namespace QuestionsSYS.Controllers
     {
 
         DatabaseContexts db = new DatabaseContexts();
+        IdentityContexts db_identity = new IdentityContexts();
+
         // GET: Question
         public ActionResult Index(int page = 1)
         {
+            ViewBag.personnel = db_identity.Users.ToList();
             return View();
         }
 

@@ -1,0 +1,97 @@
+﻿@model IPagedList<QuestionsSYS.ModelViews.TaskListView>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+    Layout = "~/Views/Shared/_Layout_Empty_White.cshtml";
+}
+
+<table id="question_tasked" class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Ad Soyad</th>
+            <th>Tel</th>
+            <th>Kaynak</th>
+            <th>Soru/Not</th>
+            <th>Sipariş</th>
+            <th>Soru Tarihi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @item.fullname
+                </td>
+                <td>
+                    @item.phone / @item.phone2
+                </td>
+                <td>
+                    @item.source
+                </td>
+                <td>
+                    <button class="btn btn-info btn-sm" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.question" type="button"> Soru</button>
+                    @if (!String.IsNullOrEmpty(item.note))
+                    {
+                        <button class="btn btn-warning btn-sm" type="button" data-container="body" data-toggle="popover" data-placement="top" data-content="@item.note"><span class="bold">Not</span></button>
+                    }
+
+                </td>
+                <td>
+                    @if (item.state == false)
+                    {
+                        <span class="label label-danger">Alınmadı</span>
+                    }
+                    else
+                    {
+                        <span class="label label-primary">Alındı </span>
+                    }
+                </td>
+                <td>
+                    @item.created_date
+                </td>
+                <td>
+                    @Html.ActionLink(
+                                                    linkText: "Detay",
+                                                    actionName: "Detail",
+                                                    controllerName: "Task",
+
+                                                    routeValues: new
+                                                    {
+                                                        id = item.id
+                                                    },
+                                                    htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
+                                                )
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="pagedList">
+  
+
+    @Html.PagedListPager(
+        Model,
+        page => Url.Action("All", new { page = page, SearchString = ViewBag.SearchString }),
+        PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "list-container", OnBegin = "PageBegin()", OnComplete = "PageComplate()" })
+        )
+
+</div>
+
+@section Scripts{
+<script>
+
+
+
+    function PageBegin()
+    {
+        $('.ibox-content').toggleClass('sk-loading');
+    }
+
+    function PageComplate()
+    {
+        $('.ibox-content').toggleClass('sk-loading');
+    }
+</script>
+}

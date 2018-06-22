@@ -1,21 +1,10 @@
-﻿
-@RenderBody()
+﻿<!-- Handler for local scripts -->
+@RenderSection("Scripts", required: false)
 
-@if (IsSectionDefined("Styles"))
-{@RenderSection("Styles", required: false)}
+@RenderSection("Styles", required: false)
 
-
-@Styles.Render("~/Content/css")
-@Styles.Render("~/font-awesome/css")
-<!-- End wrapper-->
-<!-- Section for main scripts render -->
-@Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/bootstrap")
-@Scripts.Render("~/plugins/slimScroll")
 @Scripts.Render("~/bundles/menkule")
+@Scripts.Render("~/plugins/slimScroll")
 
-<!-- Skin config script - only for demo purpose-->
-@Scripts.Render("~/bundles/skinConfig")
 
-<!-- Handler for local scripts -->
-@RenderSection("scripts", required: false)
+@RenderBody()

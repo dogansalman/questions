@@ -1,0 +1,112 @@
+﻿@model IPagedList<QuestionsSYS.ModelViews.TaskListView>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Görevler";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Görevler</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Görevler</a></strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2"></div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row ibox-content">
+        <div class="sk-spinner sk-spinner-double-bounce">
+            <div class="sk-double-bounce1"></div>
+            <div class="sk-double-bounce2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+
+                <div class="input-group">
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
+                    <span class="input-group-btn">
+                        <input type="button" id="search-btn"  class="btn btn-sm btn-primary search" value="Ara" />
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="list-container"></div>
+            
+        <div class="m-t-md">
+            <small class="pull-right">
+                Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+            </small>
+
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/select2Styles")
+}
+
+@section Scripts{
+@Scripts.Render("~/plugins/toastr")
+@Scripts.Render("~/plugins/select2")
+@Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+<script>
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    function PageBegin() {
+        $('.ibox-content').toggleClass('sk-loading');
+    }
+
+    function PageComplate() {
+        $('.ibox-content').toggleClass('sk-loading');
+    }
+
+
+    $(document).ready(function () {
+
+        $("#search-btn").on("click", function () {
+            
+            var SearchString = $(".searchterm").val();
+            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?SearchString=' + SearchString;
+            window.history.pushState({ path: newurl }, '', newurl);
+
+            $.ajax({
+                type: "GET",
+                url: "All?SearchString=" + SearchString,
+                success: function (responseData) {
+                    $('#list-container').html(responseData);
+                }
+            });
+        });
+
+        $.ajax({
+            type: "GET",
+            url: "All",
+            success: function (responseData) {
+                $('#list-container').html(responseData);
+            }
+        });
+
+     
+
+    });
+
+</script>
+}

@@ -10,6 +10,7 @@
 <table id="question_tasked" class="table table-responsive">
     <thead>
         <tr>
+            <th>Görev</th>
             <th>Ad Soyad</th>
             <th>Telefon</th>
             <th>Soru/Not</th>
@@ -27,6 +28,12 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    <div class="checkbox checkbox-success">
+                        <input id="selected_task_@item.id" data-item="@item.id" type="checkbox">
+                        <label for="selected_task_@item.id"> </label>
+                    </div>
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.fullname)
                 </td>
@@ -79,8 +86,6 @@
         }
     </tbody>
 </table>
-
-
 
 <div class="pagedList">
     @Html.PagedListPager(

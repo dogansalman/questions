@@ -13,6 +13,9 @@
             <li class="@Html.IsSelected(controller: "Dashboards")">
                 <a href="@Url.Action("Index", "Dashboards")"><i class="fa fa-window-maximize"></i> <span class="nav-label">Yönetim</span> </a>
             </li>
+            <li class="@Html.IsSelected(controller: "Task")">
+                <a href="@Url.Action("Index", "Task")"><i class="fa fa-check"></i> <span class="nav-label">Görevler</span> </a>
+            </li>
 
             <li class="@Html.IsSelected(controller: "Question")">
                 <a href="@Url.Action("Index", "Question")"><i class="fa fa-question"></i> <span class="nav-label">Sorular</span> <span class="fa arrow"></span></a>

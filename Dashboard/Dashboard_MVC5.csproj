@@ -202,6 +202,7 @@
     <Compile Include="Controllers\StatesController.cs" />
     <Compile Include="Controllers\SourceController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UIElementsController.cs" />
     <Compile Include="Controllers\WidgetsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -218,9 +219,12 @@
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\Soruce.cs" />
     <Compile Include="Models\States.cs" />
+    <Compile Include="Models\Tasks.cs" />
     <Compile Include="ModelViews\Login.cs" />
     <Compile Include="ModelViews\PersonnelView.cs" />
     <Compile Include="ModelViews\QuestionView.cs" />
+    <Compile Include="ModelViews\TaskAdd.cs" />
+    <Compile Include="ModelViews\TaskListView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1764,6 +1768,8 @@
     <Content Include="Views\Question\Tasks.cshtml" />
     <Content Include="Views\Shared\_Layout_Empty_White.cshtml" />
     <Content Include="Views\Question\All.cshtml" />
+    <Content Include="Views\Task\Index.cshtml" />
+    <Content Include="Views\Task\All.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
