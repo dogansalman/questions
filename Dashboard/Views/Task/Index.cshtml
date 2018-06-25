@@ -27,15 +27,26 @@
             <div class="sk-double-bounce2"></div>
         </div>
         <div class="row">
-            <div class="col-md-4 col-md-offset-8">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select name="state" id="state" class="state_select inline form-control">
+                        <option></option>
+                        @foreach (var item in ViewBag.states)
+                        {
+                            <option value="@item.name">@item.name</option>
+                        }
 
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-md-4 col-md-offset-5">
                 <div class="input-group">
                     @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
                     <span class="input-group-btn">
                         <input type="button" id="search-btn"  class="btn btn-sm btn-primary search" value="Ara" />
                     </span>
                 </div>
-
             </div>
         </div>
 
@@ -81,6 +92,16 @@
 
     $(document).ready(function () {
 
+        $(".state_select").select2({
+            placeholder: "Görev Durumu",
+            allowClear: true
+        });
+
+        $("#state").on("change", function (e) {
+            console.log($(e.target).val());
+        })
+        var query = getParameterByName("filter") || "All";
+
         $("#search-btn").on("click", function () {
             
             var SearchString = $(".searchterm").val();
@@ -96,9 +117,11 @@
             });
         });
 
+        
+
         $.ajax({
             type: "GET",
-            url: "All",
+            url: query,
             success: function (responseData) {
                 $('#list-container').html(responseData);
             }

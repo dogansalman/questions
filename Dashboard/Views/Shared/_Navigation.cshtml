@@ -14,7 +14,14 @@
                 <a href="@Url.Action("Index", "Dashboards")"><i class="fa fa-window-maximize"></i> <span class="nav-label">Yönetim</span> </a>
             </li>
             <li class="@Html.IsSelected(controller: "Task")">
-                <a href="@Url.Action("Index", "Task")"><i class="fa fa-check"></i> <span class="nav-label">Görevler</span> </a>
+                <a href="@Url.Action("Index", "Task")"><i class="fa fa-check"></i> <span class="nav-label">Görevler</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Task", cssClass: "in")">
+                    <li class="@Html.IsSelected(action: "Task")"><a href="@Url.Action("Index", "Task")"><span class="nav-label">Tüm Görevler</span> </a></li>
+                    <li class="@Html.IsSelected(action: "Uncomplate")"><a href="@Url.Action("Index", "Task",  new { filter= "uncomplate"})">Sipariş Alınmayan</a></li>
+                    <li class="@Html.IsSelected(action: "Complate")"><a href="@Url.Action("Index", "Task", new { filter= "complate"})">Sipariş Alınan</a></li>
+                </ul>
+
+               
             </li>
 
             <li class="@Html.IsSelected(controller: "Question")">

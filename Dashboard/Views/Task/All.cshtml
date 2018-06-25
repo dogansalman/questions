@@ -39,14 +39,14 @@
 
                 </td>
                 <td>
-                    @if (item.state == false)
-                    {
-                        <span class="label label-danger">Alınmadı</span>
-                    }
-                    else
-                    {
-                        <span class="label label-primary">Alındı </span>
-                    }
+                @if (!item.state)
+                {
+                    <span class="label label-danger">Alınmadı</span>
+                }
+                else
+                {
+                    <span class="label label-primary">Alındı</span> 
+                }
                 </td>
                 <td>
                     @item.created_date
@@ -69,11 +69,9 @@
     </tbody>
 </table>
 <div class="pagedList">
-  
-
     @Html.PagedListPager(
         Model,
-        page => Url.Action("All", new { page = page, SearchString = ViewBag.SearchString }),
+        page => Url.Action(String.IsNullOrEmpty(Request.QueryString["filter"]) ? Request.QueryString["filter"] : "All", new { page = page, SearchString = ViewBag.SearchString }),
         PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "list-container", OnBegin = "PageBegin()", OnComplete = "PageComplate()" })
         )
 

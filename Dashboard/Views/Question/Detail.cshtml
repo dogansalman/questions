@@ -75,12 +75,7 @@
                 </div>
                 <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
                 @Ajax.ActionLink("Sil", "Delete", new { id = Html.DisplayFor(modelItem => modelItem.id) }, new AjaxOptions { HttpMethod = "POST", Confirm = "Devam etmek istediğiniz emin misiniz ?", OnBegin = " $('.ibox-content').toggleClass('sk-loading');", OnSuccess = "window.location.href = '/Question/Index?success=delete_ok'", OnFailure = "window.location.href = '/Question/Index?success=failed_remove'" }, new { @class = "btn btn-danger no-margins" })
-
-
             }
-
-     
-
         </div>
 
     </div>
@@ -88,6 +83,7 @@
 @section Styles{
     @Styles.Render("~/plugins/toastrStyles")
     @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")

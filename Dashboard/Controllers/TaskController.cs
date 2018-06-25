@@ -28,13 +28,44 @@ namespace QuestionsSYS.Controllers
              select role.Name).FirstOrDefault();
              */
 
-
-
+            ViewBag.states = db.states.ToList();
 
             return View();
         }
 
+        public ActionResult Detail(int? id)
+        {
+            ViewBag.soruces = db.sources.ToList();
+            ViewBag.states = db.states.ToList();
+            if (id == null) RedirectToAction("Index", "Task");
+            var user_id = User.Identity.GetUserId();
 
+            TaskListView tasks = (
+               from t in db.tasks
+               join q in db.questions on t.question_id equals q.id
+               where t.user_id == user_id && t.id == id
+               select new TaskListView
+               {
+                   id = t.id,
+                   created_date = q.added,
+                   fullname = q.fullname,
+                   note = t.note,
+                   question_note = q.note,
+                   order_state = t.order_state,
+                   phone = q.phone,
+                   phone2 = q.phone2,
+                   question = q.question,
+                   source = q.source,
+                   state = t.state,
+                   order_price = t.order_price,
+                   offer_price = t.offer_price,
+                   feedback_date = t.feedback_date,
+                   order_unit = t.order_unit
+               }
+               ).FirstOrDefault();
+            if (tasks == null) return new HttpStatusCodeResult(404);
+            return View(tasks);
+        }
 
         public ActionResult All(int page = 1, string SearchString = null)
         {
@@ -70,7 +101,6 @@ namespace QuestionsSYS.Controllers
             
         }
 
-
         [HttpPost]
         public ActionResult Add(TaskAdd model)
         {
@@ -99,5 +129,128 @@ namespace QuestionsSYS.Controllers
           
             return new HttpStatusCodeResult(200);
         }
+
+        [HttpPost]
+        public ActionResult Update(int id, TaskListView model)
+        {
+            if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
+            var user_id = User.Identity.GetUserId();
+
+            try
+            {
+                TaskListView task = (
+                 from t in db.tasks
+                 join q in db.questions on t.question_id equals q.id
+                 where t.user_id == user_id && t.id == id
+                 select new TaskListView
+                 {
+                     id = t.id,
+                     created_date = q.added,
+                     fullname = q.fullname,
+                     note = q.note,
+                     order_state = t.order_state,
+                     phone = q.phone,
+                     phone2 = q.phone2,
+                     question = q.question,
+                     source = q.source,
+                     state = t.state,
+                     order_price = t.order_price,
+                     offer_price = t.offer_price,
+                     feedback_date = t.feedback_date,
+                     order_unit = t.order_unit
+                 }
+                 ).FirstOrDefault();
+
+                if(task == null) return new HttpStatusCodeResult(404);
+
+
+                task.note = model.note;
+                task.offer_price = model.offer_price;
+                task.order_price = model.order_price;
+                task.order_state = model.order_state;
+                task.order_unit = model.order_unit;
+                task.feedback_date = model.feedback_date;
+
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200);
+
+
+
+            }
+            catch (Exception exs)
+            {
+                return new HttpStatusCodeResult(500, exs.Message.ToString());
+            }
+
+            return new HttpStatusCodeResult(200);
+        }
+
+ 
+        public ActionResult uncomplate(int page = 1, string SearchString = null)
+        {
+            ViewBag.SearchString = SearchString;
+
+            var user_id = User.Identity.GetUserId();
+            var tasks = (
+               from t in db.tasks
+               join q in db.questions on t.question_id equals q.id
+               where t.user_id == user_id && !t.state 
+               select new TaskListView
+               {
+                   id = t.id,
+                   created_date = q.added,
+                   fullname = q.fullname,
+                   note = q.note,
+                   order_state = t.order_state,
+                   phone = q.phone,
+                   phone2 = q.phone2,
+                   question = q.question,
+                   source = q.source,
+                   state = t.state
+               }
+               );
+
+            if (SearchString != null)
+            {
+                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
+            }
+
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.state), page, 20);
+            return View("All",model);
+        }
+
+        public ActionResult complate(int page = 1, string SearchString = null)
+        {
+            ViewBag.SearchString = SearchString;
+
+            var user_id = User.Identity.GetUserId();
+            var tasks = (
+               from t in db.tasks
+               join q in db.questions on t.question_id equals q.id
+               where t.user_id == user_id && t.state
+               select new TaskListView
+               {
+                   id = t.id,
+                   created_date = q.added,
+                   fullname = q.fullname,
+                   note = q.note,
+                   order_state = t.order_state,
+                   phone = q.phone,
+                   phone2 = q.phone2,
+                   question = q.question,
+                   source = q.source,
+                   state = t.state
+               }
+               );
+
+            if (SearchString != null)
+            {
+                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
+            }
+
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.state), page, 20);
+            return View("All", model);
+        }
     }
+
 }

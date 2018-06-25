@@ -28,6 +28,7 @@ namespace QuestionsSYS.Controllers
                                   Id = user.Id,
                                   Name = user.Name,
                                   Surname = user.Surname,
+                                  Username = user.UserName,
                                   Role = (from userRole in user.Roles
                                           where userRole.UserId == user.Id
                                           join role in db.Roles on userRole.RoleId

@@ -1770,6 +1770,7 @@
     <Content Include="Views\Question\All.cshtml" />
     <Content Include="Views\Task\Index.cshtml" />
     <Content Include="Views\Task\All.cshtml" />
+    <Content Include="Views\Task\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
