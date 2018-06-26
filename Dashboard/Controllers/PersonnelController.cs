@@ -12,11 +12,12 @@ using System.Web.Routing;
 
 namespace QuestionsSYS.Controllers
 {
+ 
     public class PersonnelController : Controller
     {
 
         IdentityContexts db = new IdentityContexts();
-     
+        [Authorize(Roles = "Admin")]
         // GET: Personnel
         public ActionResult Index()
         {
@@ -38,7 +39,7 @@ namespace QuestionsSYS.Controllers
                              );
             return View(Personnels);
         }
-
+        [Authorize]
         public ActionResult Detail(string id)
         {
             var Person = (from user in db.Users
@@ -64,6 +65,7 @@ namespace QuestionsSYS.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Delete(string id)
         {
@@ -81,7 +83,7 @@ namespace QuestionsSYS.Controllers
                 throw;
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> Add([Bind(Include = "password,name,surname,role,username")] PersonnelView person)
         {
@@ -106,6 +108,7 @@ namespace QuestionsSYS.Controllers
             return RedirectToAction("Index", "Personnel", new { success = "ok" });
         }
         [HttpPost]
+        [Authorize]
         public ActionResult Update(string id, [Bind(Include = "password,name,surname,role,username")] PersonnelView person)
         {
             id = id.Trim();

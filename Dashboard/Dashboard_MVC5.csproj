@@ -1757,11 +1757,6 @@
     <Content Include="Views\Miscellaneous\PasswordMeter.cshtml" />
     <Content Include="Views\Miscellaneous\SpinnersUsage.cshtml" />
     <Content Include="Views\AppViews\ActivityStream.cshtml" />
-    <Content Include="Views\Advert\Index.cshtml" />
-    <Content Include="Views\Users\Index.cshtml" />
-    <Content Include="Views\Feedbacks\Index.cshtml" />
-    <Content Include="Views\Comments\Index.cshtml" />
-    <Content Include="Views\Users\Detail.cshtml" />
     <Content Include="Views\States\Index.cshtml" />
     <Content Include="Views\Question\Detail.cshtml" />
     <Content Include="Views\Question\Import.cshtml" />
@@ -1776,13 +1771,9 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Advert\Detail.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\Shared\_Layout_Empty.cshtml" />
     <Content Include="Views\Rezervations\Index.cshtml" />
-    <Content Include="Views\Advert\Cancel.cshtml" />
     <Content Include="Views\Personnel\Index.cshtml" />
     <Content Include="Views\Personnel\Detail.cshtml" />
     <Content Include="Views\Question\Index.cshtml" />

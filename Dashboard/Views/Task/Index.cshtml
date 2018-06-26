@@ -31,10 +31,12 @@
                 <div class="form-group">
                     <select name="state" id="state" class="state_select inline form-control">
                         <option></option>
+                       
                         @foreach (var item in ViewBag.states)
                         {
                             <option value="@item.name">@item.name</option>
                         }
+                        <option value="İşlem Bekleniyor">İşlem Bekleniyor</option>
 
                     </select>
                 </div>
@@ -72,6 +74,38 @@
 @Scripts.Render("~/plugins/select2")
 @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
 <script>
+    function updateQueryStringParameter(uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + "=" + value + '$2');
+        }
+        else {
+            return uri + separator + key + "=" + value;
+        }
+    }
+    function removeURLParameter(url, parameter) {
+        //prefer to use l.search if you have a location/link object
+        var urlparts = url.split('?');
+        if (urlparts.length >= 2) {
+
+            var prefix = encodeURIComponent(parameter) + '=';
+            var pars = urlparts[1].split(/[&;]/g);
+
+            //reverse iteration as may be destructive
+            for (var i = pars.length; i-- > 0;) {
+                //idiom for string.startsWith
+                if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                    pars.splice(i, 1);
+                }
+            }
+
+            url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+            return url;
+        } else {
+            return url;
+        }
+    }
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -84,7 +118,6 @@
     function PageBegin() {
         $('.ibox-content').toggleClass('sk-loading');
     }
-
     function PageComplate() {
         $('.ibox-content').toggleClass('sk-loading');
     }
@@ -98,20 +131,55 @@
         });
 
         $("#state").on("change", function (e) {
-            console.log($(e.target).val());
+
+            var typeName = $(e.target).val();
+            var QueryString = getParameterByName("filter") || "All";
+
+            var url = updateQueryStringParameter(location.href, "type", typeName);
+           
+            window.history.pushState({ path: url }, '', url);
+            
+            if (!typeName) url = removeURLParameter(url, "type");
+
+            $.ajax({
+                type: "GET",
+                url: QueryString + new URL(url).search,
+                beforeSend: function () {
+                    PageBegin();
+                },
+                success: function (responseData) {
+                    PageComplate();
+                    $('#list-container').html(responseData);
+                }
+            });
+          
+            
+            
+           
+
         })
         var query = getParameterByName("filter") || "All";
 
         $("#search-btn").on("click", function () {
             
             var SearchString = $(".searchterm").val();
-            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?SearchString=' + SearchString;
+            var QueryString = getParameterByName("filter") || "All";
+
+
+            var url = updateQueryStringParameter(location.href, "filter", QueryString);
+            url = updateQueryStringParameter(url, "SearchString", SearchString);
+
+            var newurl = url;
             window.history.pushState({ path: newurl }, '', newurl);
 
             $.ajax({
                 type: "GET",
-                url: "All?SearchString=" + SearchString,
+                url: QueryString + "?SearchString=" + SearchString,
+                beforeSend: function () {
+                    PageBegin();
+                },
                 success: function (responseData) {
+                    PageComplate();
                     $('#list-container').html(responseData);
                 }
             });
@@ -122,7 +190,11 @@
         $.ajax({
             type: "GET",
             url: query,
+            beforeSend: function () {
+                PageBegin();
+            },
             success: function (responseData) {
+                PageComplate();
                 $('#list-container').html(responseData);
             }
         });

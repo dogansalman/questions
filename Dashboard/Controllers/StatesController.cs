@@ -8,6 +8,7 @@ using QuestionsSYS.Context;
 
 namespace QuestionsSYS.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class StatesController : Controller
     {
 

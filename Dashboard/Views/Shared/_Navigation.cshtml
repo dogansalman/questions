@@ -9,7 +9,7 @@
                     SB
                 </div>
             </li>
-
+           
             <li class="@Html.IsSelected(controller: "Dashboards")">
                 <a href="@Url.Action("Index", "Dashboards")"><i class="fa fa-window-maximize"></i> <span class="nav-label">Yönetim</span> </a>
             </li>
@@ -24,26 +24,32 @@
                
             </li>
 
-            <li class="@Html.IsSelected(controller: "Question")">
-                <a href="@Url.Action("Index", "Question")"><i class="fa fa-question"></i> <span class="nav-label">Sorular</span> <span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
-                    <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Question")">Tüm Sorular</a></li>
-                    <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Question")">Yeni Soru</a></li>
-                    <li class="@Html.IsSelected(action: "Import")"><a href="@Url.Action("Import", "Question")">Excel Import</a></li>
-                </ul>
-            </li>
-            <li class="@Html.IsSelected(controller: "Personnel")">
-                <a href="@Url.Action("Index", "Personnel")"><i class="fa fa-user"></i> <span class="nav-label" data-i18n="nav.users">Kullanıcılar</span> </a>
-            </li>
-            <li class="@Html.IsSelected(controller: "Source")">
-                <a href="@Url.Action("Index", "Source")"><i class="fa fa-exclamation-triangle"></i> <span class="nav-label" data-i18n="nav.feedbacks">Kaynaklar</span> </a>
-            </li>
-            <li class="@Html.IsSelected(controller: "Comments")">
-                <a href="@Url.Action("Index", "States")"><i class="fa fa-quote-right"></i> <span class="nav-label">Durumlar</span> </a>
-            </li>
+            @if (User.IsInRole("Admin"))
+            {
+                <li class="@Html.IsSelected(controller: "Question")">
+                    <a href="@Url.Action("Index", "Question")"><i class="fa fa-question"></i> <span class="nav-label">Sorular</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
+                        <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Question")">Tüm Sorular</a></li>
+                        <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Question")">Yeni Soru</a></li>
+                        <li class="@Html.IsSelected(action: "Import")"><a href="@Url.Action("Import", "Question")">Excel Import</a></li>
+                    </ul>
+                </li>
+                <li class="@Html.IsSelected(controller: "Personnel")">
+                    <a href="@Url.Action("Index", "Personnel")"><i class="fa fa-user"></i> <span class="nav-label" data-i18n="nav.users">Kullanıcılar</span> </a>
+                </li>
+                <li class="@Html.IsSelected(controller: "Source")">
+                    <a href="@Url.Action("Index", "Source")"><i class="fa fa-exclamation-triangle"></i> <span class="nav-label" data-i18n="nav.feedbacks">Kaynaklar</span> </a>
+                </li>
+                <li class="@Html.IsSelected(controller: "States")">
+                    <a href="@Url.Action("Index", "States")"><i class="fa fa-quote-right"></i> <span class="nav-label">Durumlar</span> </a>
+                </li>
+            }
+           
+         
+         
           
        
-            @if (Request.Url.Host.Contains("localhost"))
+            @if (Request.Url.Host.Contains("localhost").ToString() == "sad")
             {
                 <li class="@Html.IsSelected(controller: "Dashboards1")">
                     <a href="@Url.Action("Dashboard_1", "Dashboards1")"><i class="fa fa-th-large"></i> <span class="nav-label" data-i18n="nav.dashboard">Dashboards</span> <span class="fa arrow"></span></a>

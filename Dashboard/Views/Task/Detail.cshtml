@@ -27,7 +27,7 @@
                 <div class="sk-double-bounce1"></div>
                 <div class="sk-double-bounce2"></div>
             </div>
-            @using (Ajax.BeginForm("Update", "Task", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+            @using (Ajax.BeginForm("Update/" + Html.DisplayFor(modelItem => modelItem.id), "Task", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
             {
                 <div class="form-group">
                     <label for="name">Ad Soyad</label>
@@ -70,6 +70,16 @@
                         <option></option>                       
                         <option @((Model.state) == true ? "selected" : String.Empty) value="true">Alındı</option>
                         <option @((Model.state) == false ? "selected" : String.Empty) value="false">Alınmadı</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="order_state">Görev Durumu</label>
+                    <br />
+                    <select name="order_state" id="order_state" class="task_state form-control">
+                        @foreach (var item in ViewBag.states)
+                        {
+                            <option @(Model.order_state == item.name ? "selected" : String.Empty) value="@item.name">@item.name</option>
+                        }
                     </select>
                 </div>
 
@@ -123,7 +133,9 @@
             keyboardNavigation: false,
             forceParse: false,
             calendarWeeks: true,
-            autoclose: true
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            
         });
 
 
@@ -149,6 +161,10 @@
         });
         $(".state_select").select2({
             placeholder: "Sipariş Durumu",
+            allowClear: true
+        });
+        $(".task_state").select2({
+            placeholder: "Görev Durumu",
             allowClear: true
         });
 

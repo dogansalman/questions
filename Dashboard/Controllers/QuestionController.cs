@@ -14,6 +14,7 @@ using QuestionsSYS.Identity;
 
 namespace QuestionsSYS.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class QuestionController : Controller
     {
 
@@ -21,12 +22,13 @@ namespace QuestionsSYS.Controllers
         IdentityContexts db_identity = new IdentityContexts();
 
         // GET: Question
+      
         public ActionResult Index(int page = 1)
         {
             ViewBag.personnel = db_identity.Users.ToList();
             return View();
         }
-
+ 
         public ActionResult Tasks(int page = 1)
         {
             PagedList<Question> model = new PagedList<Question>(db.questions.Where(qu => !qu.state).OrderByDescending(q => q.id), page, 20);
