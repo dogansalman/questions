@@ -14,9 +14,7 @@ namespace QuestionsSYS.Controllers
     public class TaskController : Controller
     {
         DatabaseContexts db = new DatabaseContexts();
-        IdentityContexts db_identity = new IdentityContexts();
-
-
+       
         // GET: Task
         
         public ActionResult Index()
@@ -35,7 +33,7 @@ namespace QuestionsSYS.Controllers
             TaskListView tasks = (
                from t in db.tasks
                join q in db.questions on t.question_id equals q.id
-               where t.user_id == user_id && t.id == id
+               where t.id == id
                select new TaskListView
                {
                    id = t.id,
@@ -52,9 +50,17 @@ namespace QuestionsSYS.Controllers
                    order_price = t.order_price,
                    offer_price = t.offer_price,
                    feedback_date = t.feedback_date,
-                   order_unit = t.order_unit
+                   order_unit = t.order_unit,
+                   user_id = t.user_id,
+                   user_fullname = (from u in db.Users
+                                    where u.Id == t.user_id
+                                    select u.Name + " " + u.Surname
+                                    ).FirstOrDefault()
                }
                ).FirstOrDefault();
+
+            if (!User.IsInRole("Admin") && tasks.user_id != user_id) return new HttpStatusCodeResult(404);
+
             if (tasks == null) return new HttpStatusCodeResult(404);
             return View(tasks);
         }
@@ -64,14 +70,14 @@ namespace QuestionsSYS.Controllers
             ViewBag.SearchString = SearchString;
 
             var user_id = User.Identity.GetUserId();
+
             var tasks = (
                from t in db.tasks
                join q in db.questions on t.question_id equals q.id
-               where t.user_id == user_id
                select new TaskListView
                {
                    id = t.id,
-                   created_date = q.added,
+                   created_date = t.created_date,
                    fullname = q.fullname,
                    note = q.note,
                    order_state = t.order_state,
@@ -79,10 +85,18 @@ namespace QuestionsSYS.Controllers
                    phone2 = q.phone2,
                    question = q.question,
                    source = q.source,
-                   state = t.state
+                   state = t.state,
+                   user_id = t.user_id,
+                   user_fullname = (from u in db.Users
+                                    where u.Id == t.user_id
+                                    select u.Name + " " + u.Surname 
+                                    ).FirstOrDefault()
                }
                );
-
+            if (!User.IsInRole("Admin"))
+            {
+                tasks = tasks.Where(t => t.user_id == user_id);
+            }
             if(SearchString != null)
             {
                 tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
@@ -93,9 +107,104 @@ namespace QuestionsSYS.Controllers
             }
 
 
-            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.state), page, 20);
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
             return View(model);
             
+        }
+
+        public ActionResult uncomplate(int page = 1, string SearchString = null, string type = null)
+        {
+            ViewBag.SearchString = SearchString;
+
+            var user_id = User.Identity.GetUserId();
+            var tasks = (
+               from t in db.tasks
+               join q in db.questions on t.question_id equals q.id
+               where !t.state
+               select new TaskListView
+               {
+                   id = t.id,
+                   created_date = t.created_date,
+                   fullname = q.fullname,
+                   note = q.note,
+                   order_state = t.order_state,
+                   phone = q.phone,
+                   phone2 = q.phone2,
+                   question = q.question,
+                   source = q.source,
+                   state = t.state,
+                   user_id = t.user_id,
+                   user_fullname = (from u in db.Users
+                                    where u.Id == t.user_id
+                                    select u.Name + " " + u.Surname
+                                    ).FirstOrDefault()
+               }
+               );
+
+            if (!User.IsInRole("Admin"))
+            {
+                tasks = tasks.Where(t => t.user_id == user_id);
+            }
+
+            if (SearchString != null)
+            {
+                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
+            }
+
+            if (type != null)
+            {
+                tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
+            }
+
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
+            return View("All", model);
+        }
+
+        public ActionResult complate(int page = 1, string SearchString = null, string type = null)
+        {
+            ViewBag.SearchString = SearchString;
+
+            var user_id = User.Identity.GetUserId();
+            var tasks = (
+               from t in db.tasks
+               join q in db.questions on t.question_id equals q.id
+               where t.state
+               select new TaskListView
+               {
+                   id = t.id,
+                   created_date = t.created_date,
+                   fullname = q.fullname,
+                   note = q.note,
+                   order_state = t.order_state,
+                   phone = q.phone,
+                   phone2 = q.phone2,
+                   question = q.question,
+                   source = q.source,
+                   state = t.state,
+                   user_id = t.user_id,
+                   user_fullname = (from u in db.Users
+                                    where u.Id == t.user_id
+                                    select u.Name + " " + u.Surname
+                                    ).FirstOrDefault()
+               }
+               );
+
+            if (!User.IsInRole("Admin"))
+            {
+                tasks = tasks.Where(t => t.user_id == user_id);
+            }
+
+            if (SearchString != null)
+            {
+                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
+            }
+            if (type != null)
+            {
+                tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
+            }
+
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
+            return View("All", model);
         }
 
         [HttpPost]
@@ -115,6 +224,7 @@ namespace QuestionsSYS.Controllers
                 model.questions.ToList().ForEach(q =>
                 {
                     db.tasks.Add(new Tasks { created_date = DateTime.Now, question_id = Convert.ToInt32(q), user_id = model.user_id, order_state= "İşlem Bekleniyor" });
+                    db.question_tasks.Add(new QuestionTasks { question_id = Convert.ToInt32(q), user_id = model.user_id });
                     db.SaveChanges();
                 });
                
@@ -158,81 +268,7 @@ namespace QuestionsSYS.Controllers
             }
         }
 
- 
-        public ActionResult uncomplate(int page = 1, string SearchString = null, string type = null)
-        {
-            ViewBag.SearchString = SearchString;
 
-            var user_id = User.Identity.GetUserId();
-            var tasks = (
-               from t in db.tasks
-               join q in db.questions on t.question_id equals q.id
-               where t.user_id == user_id && !t.state 
-               select new TaskListView
-               {
-                   id = t.id,
-                   created_date = q.added,
-                   fullname = q.fullname,
-                   note = q.note,
-                   order_state = t.order_state,
-                   phone = q.phone,
-                   phone2 = q.phone2,
-                   question = q.question,
-                   source = q.source,
-                   state = t.state
-               }
-               );
-
-            if (SearchString != null)
-            {
-                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
-            }
-
-            if(type != null)
-            {
-                tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
-            }
-
-            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.state), page, 20);
-            return View("All",model);
-        }
-
-        public ActionResult complate(int page = 1, string SearchString = null, string type = null)
-        {
-            ViewBag.SearchString = SearchString;
-
-            var user_id = User.Identity.GetUserId();
-            var tasks = (
-               from t in db.tasks
-               join q in db.questions on t.question_id equals q.id
-               where t.user_id == user_id && t.state
-               select new TaskListView
-               {
-                   id = t.id,
-                   created_date = q.added,
-                   fullname = q.fullname,
-                   note = q.note,
-                   order_state = t.order_state,
-                   phone = q.phone,
-                   phone2 = q.phone2,
-                   question = q.question,
-                   source = q.source,
-                   state = t.state
-               }
-               );
-
-            if (SearchString != null)
-            {
-                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
-            }
-            if (type != null)
-            {
-                tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
-            }
-
-            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.state), page, 20);
-            return View("All", model);
-        }
 
         
 

@@ -16,7 +16,7 @@ namespace QuestionsSYS.Controllers
     public class PersonnelController : Controller
     {
 
-        IdentityContexts db = new IdentityContexts();
+        DatabaseContexts db = new DatabaseContexts();
         [Authorize(Roles = "Admin")]
         // GET: Personnel
         public ActionResult Index()

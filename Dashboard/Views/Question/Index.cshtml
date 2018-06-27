@@ -1,4 +1,4 @@
-﻿@model IPagedList<QuestionsSYS.Models.Question>
+﻿@model IPagedList<QuestionsSYS.ModelViews.QuestionsListView>
 @using PagedList
 @using PagedList.Mvc
 
@@ -81,7 +81,11 @@
                 $.ajax({
                     type: "GET",
                     url: "All",
+                    beforeSend: function () {
+                        $(".task-container").toggleClass('sk-loading');
+                    },
                     success: function (responseData) {
+                        $(".task-container").toggleClass('sk-loading');
                         $('#question-list').html(responseData);
                     }
                 })

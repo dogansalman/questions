@@ -1,4 +1,4 @@
-﻿@model IPagedList<QuestionsSYS.Models.Question>
+﻿@model IPagedList<QuestionsSYS.ModelViews.QuestionsListView>
 @using PagedList
 @using PagedList.Mvc
 
@@ -15,6 +15,7 @@
             <th>Telefon</th>
             <th>Soru/Not</th>
             <th>Durum</th>
+            <th>Görevli</th>
             <th>Kaynak</th>
             <th>Tarih / Saat</th>
             <th>
@@ -56,9 +57,17 @@
                     {
                         <span class="label label-primary">Atandı</span>
                     }
-
-
-
+                </td>
+                <td>
+                    @if (String.IsNullOrEmpty(item.user_fullname))
+                    {
+                        <span class="label label-danger">Bulunamadı</span>
+                    }
+                    else
+                    {
+                        <strong class="text-capitalize">@item.user_fullname</strong>
+                        
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.source)

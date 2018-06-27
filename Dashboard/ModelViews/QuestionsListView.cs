@@ -1,29 +1,23 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
-namespace QuestionsSYS.Models
+namespace QuestionsSYS.ModelViews
 {
-    public class Question
+    public class QuestionsListView
     {
-        [Key]
+    
         public int id { get; set; }
-        [Required]
-        [StringLength(5000)]
         public string question { get; set; }
         public string note { get; set; }
-        [Required]
         public bool state { get; set; }
-        [Required]
-        [StringLength(255)]
-        public string fullname{ get; set; }
-        [StringLength(255)]
+        public string fullname { get; set; }
         public string phone { get; set; }
-        [StringLength(255)]
         public string phone2 { get; set; }
-        [Required]
+        public string user_id { get; set; }
         public string source { get; set; }
         public DateTime added { get; set; } = DateTime.Now;
-
-
+        public string user_fullname { get; set; }
     }
 }

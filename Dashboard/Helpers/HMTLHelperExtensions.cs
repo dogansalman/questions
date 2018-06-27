@@ -11,7 +11,7 @@ namespace QuestionsSYS
 {
     public static class HMTLHelperExtensions
     {
-      public static IdentityContexts db = new IdentityContexts();
+      public static DatabaseContexts db = new DatabaseContexts();
 
         public static string IsSelected(this HtmlHelper html, string controller = null, string action = null, string cssClass = null)
         {

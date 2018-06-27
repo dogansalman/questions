@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+
 
 namespace QuestionsSYS.ModelViews
 {
@@ -16,6 +14,8 @@ namespace QuestionsSYS.ModelViews
         public string phone { get; set; }
         public string source { get; set; }
         public string order_state { get; set; }
+        public string user_id { get; set; }
+        public string user_fullname { get; set; }
         public bool state { get; set; }
         public int order_unit { get; set; }
         public double order_price { get; set; }

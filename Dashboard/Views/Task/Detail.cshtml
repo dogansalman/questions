@@ -39,6 +39,10 @@
                     <p> @Html.DisplayFor(modelItem => modelItem.phone) / @Html.DisplayFor(modelItem => modelItem.phone2)</p>
                 </div>
                 <div class="form-group">
+                    <label for="question">Kaynak</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.source)</p>
+                </div>
+                <div class="form-group">
                     <label for="question">Soru</label>
                     <p>@Html.DisplayFor(modelItem => modelItem.question)</p>
                 </div>
@@ -47,21 +51,14 @@
                     <p>@Html.DisplayFor(modelItem => modelItem.question_note)</p>
                 </div>
                 <div class="form-group">
+                    <label>Görevli</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.user_fullname)</p>
+                </div>
+                <div class="form-group">
                     <label for="question">Görev Notu</label>
                     <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3">
 @Html.DisplayFor(modelItem => modelItem.note)
                     </textarea>
-                </div>
-                <div class="form-group">
-                    <label for="source">Kaynak</label>
-                    <br />
-                    <select name="source" id="source" class="source_select form-control">
-                        <option></option>
-                        @foreach (var item in ViewBag.soruces)
-                        {
-                            <option @(Html.DisplayFor(modelItem => modelItem.source).ToString() == item.name ? "selected" : String.Empty) value="@item.name">@item.name</option>
-                        }
-                    </select>
                 </div>
                 <div class="form-group">
                     <label for="source">Sipariş Durumu</label>

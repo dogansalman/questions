@@ -19,25 +19,50 @@ namespace QuestionsSYS.Controllers
     {
 
         DatabaseContexts db = new DatabaseContexts();
-        IdentityContexts db_identity = new IdentityContexts();
+        
 
         // GET: Question
       
         public ActionResult Index(int page = 1)
         {
-            ViewBag.personnel = db_identity.Users.ToList();
+            ViewBag.personnel = db.Users.ToList();
             return View();
         }
  
         public ActionResult Tasks(int page = 1)
         {
-            PagedList<Question> model = new PagedList<Question>(db.questions.Where(qu => !qu.state).OrderByDescending(q => q.id), page, 20);
+            PagedList<Question> model = new PagedList<Question>(db.questions.Where(qu => !qu.state).OrderByDescending(q => q.added), page, 20);
             return View(model);
         }
 
         public ActionResult All(int page = 1)
         {
-            PagedList<Question> model = new PagedList<Question>(db.questions.OrderByDescending(q => q.id), page, 20);
+
+            var questions = (
+              from q in db.questions
+              select new QuestionsListView
+              {
+                  added = q.added,
+                  id = q.id,
+                  fullname = q.fullname,
+                  note = q.note,
+                  phone = q.phone,
+                  phone2 = q.phone2,
+                  question = q.question,
+                  source = q.source,
+                  state = q.state,
+                  user_fullname = (from ut in db.question_tasks
+                                   where ut.question_id == q.id
+                                   join u in db.Users on ut.user_id equals u.Id
+                                   select u.Name + " " + u.Surname
+                                   ).FirstOrDefault()
+
+               }
+               );
+             
+
+
+            PagedList<QuestionsListView> model = new PagedList<QuestionsListView>(questions.OrderByDescending(q => q.added), page, 20);
             return View(model);
         }
 

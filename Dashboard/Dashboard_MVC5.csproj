@@ -179,7 +179,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
-    <Compile Include="Context\IdentityContexts.cs" />
+    <Compile Include="Context\DatabaseContexts.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppViewsController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
@@ -213,15 +213,15 @@
     <Compile Include="Helpers\XMLSmsService.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationRole.cs" />
-    <Compile Include="Migrations\IdentityConfig.cs" />
-    <Compile Include="Context\DatabaseContexts.cs" />
     <Compile Include="Migrations\DatabaseConfig.cs" />
     <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\QuestionTasks.cs" />
     <Compile Include="Models\Soruce.cs" />
     <Compile Include="Models\States.cs" />
     <Compile Include="Models\Tasks.cs" />
     <Compile Include="ModelViews\Login.cs" />
     <Compile Include="ModelViews\PersonnelView.cs" />
+    <Compile Include="ModelViews\QuestionsListView.cs" />
     <Compile Include="ModelViews\QuestionView.cs" />
     <Compile Include="ModelViews\TaskAdd.cs" />
     <Compile Include="ModelViews\TaskListView.cs" />

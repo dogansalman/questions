@@ -17,7 +17,7 @@ namespace QuestionsSYS.Controllers
         private RoleManager<ApplicationRole> roleManager;
         public AccountController()
         {
-            IdentityContexts db = new IdentityContexts();
+            DatabaseContexts db = new DatabaseContexts();
 
             UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
             userManager = new UserManager<ApplicationUser>(userStore);
