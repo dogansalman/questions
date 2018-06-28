@@ -227,7 +227,7 @@ namespace QuestionsSYS.Controllers
             
             if (!String.IsNullOrEmpty(model.phone))
             {
-                if (db.questions.Any(qu => qu.phone == model.phone || qu.phone2 == model.phone ))
+                if (!db.questions.Any(qu => qu.phone == model.phone || qu.phone2 == model.phone ))
                 {
                     return new HttpStatusCodeResult(501);
                 }
@@ -235,7 +235,7 @@ namespace QuestionsSYS.Controllers
 
             if (!String.IsNullOrEmpty(model.phone2))
             {
-                if (db.questions.Any(qu => qu.phone == model.phone2 || qu.phone2 == model.phone2))
+                if (!db.questions.Any(qu => qu.phone == model.phone2 || qu.phone2 == model.phone2))
                 {
                     return new HttpStatusCodeResult(501);
                 }

@@ -19,6 +19,7 @@ namespace QuestionsSYS.Models
         public double order_price { get; set; }
         public double offer_price { get; set; }
         public DateTime? feedback_date { get; set; }
+        public DateTime? contact_date { get; set; }
         public string note { get; set; }
     }
 }

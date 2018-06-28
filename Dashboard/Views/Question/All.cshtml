@@ -11,13 +11,17 @@
     <thead>
         <tr>
             <th>Görev</th>
+            <th>Tarih / Saat</th>
             <th>Ad Soyad</th>
             <th>Telefon</th>
             <th>Soru/Not</th>
             <th>Durum</th>
             <th>Görevli</th>
-            <th>Kaynak</th>
-            <th>Tarih / Saat</th>
+            @if (User.IsInRole("Admin"))
+            {
+                <th>Kaynak</th>
+            }
+           
             <th>
                 <label class="pull-right bold" style="margin-right:5px;">@Ajax.ActionLink("Görevlendirilmemiş Sorular", "Tasks", null, new AjaxOptions { UpdateTargetId = "question-list", OnBegin = "Begin()", OnComplete = "OnComplate();", OnSuccess = "OnComplate();" }, new { @class = "btn btn-danger btn-xs" })</label>
 
@@ -28,11 +32,15 @@
         @foreach (var item in Model)
         {
             <tr>
+
                 <td>
                     <div class="checkbox checkbox-success">
                         <input id="selected_task_@item.id" data-item="@item.id" type="checkbox">
                         <label for="selected_task_@item.id"> </label>
                     </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.added)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.fullname)
@@ -69,13 +77,16 @@
                         
                     }
                 </td>
+                 @if (User.IsInRole("Admin"))
+                 {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.source)
+                    </td>
+                 }
+             
+              
                 <td>
-                    @Html.DisplayFor(modelItem => item.source)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.added)
-                </td>
-                <td>
+                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "DeleteComplate();", OnFailure = "DeleteFailed();", OnBegin = "PageBegin()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
                     @Html.ActionLink(
                                                             linkText: "Detay",
                                                             actionName: "Detail",
@@ -87,7 +98,7 @@
                                                             },
                                                             htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
                                                         )
-                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "OnDeleting()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-right: 5px;" })
+                   
 
                 </td>
             </tr>
@@ -108,6 +119,20 @@
 
 @section Scripts{
     <script>
+
+        function DeleteSuccess(e) {
+            $(e).parents("tr").remove();
+            toastr.success("Kayıt silindi.", "Tamam");
+        }
+
+        function DeleteFailed() {
+            toastr.error("Kayıt silinmedi. tekrar deneyin.", "Hata");
+        }
+        function DeleteComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+
         function PageBegin()
         {
             $('.ibox-content').toggleClass('sk-loading');

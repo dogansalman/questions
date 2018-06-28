@@ -68,6 +68,7 @@
                     @Html.DisplayFor(modelItem => item.added)
                 </td>
                 <td>
+                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "OnDeleting()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
                     @Html.ActionLink(
                                                             linkText: "Detay",
                                                             actionName: "Detail",
@@ -79,7 +80,7 @@
                                                             },
                                                             htmlAttributes: new { @class = "btn btn-sm btn-success pull-right" }
                                                         )
-                    @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "OnDeleting()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-right: 5px;" })
+                   
 
                 </td>
             </tr>

@@ -77,7 +77,7 @@ namespace QuestionsSYS.Controllers
                select new TaskListView
                {
                    id = t.id,
-                   created_date = t.created_date,
+                   created_date = q.added,
                    fullname = q.fullname,
                    note = q.note,
                    order_state = t.order_state,
@@ -124,7 +124,7 @@ namespace QuestionsSYS.Controllers
                select new TaskListView
                {
                    id = t.id,
-                   created_date = t.created_date,
+                   created_date = q.added,
                    fullname = q.fullname,
                    note = q.note,
                    order_state = t.order_state,
@@ -172,7 +172,7 @@ namespace QuestionsSYS.Controllers
                select new TaskListView
                {
                    id = t.id,
-                   created_date = t.created_date,
+                   created_date = q.added,
                    fullname = q.fullname,
                    note = q.note,
                    order_state = t.order_state,
@@ -268,9 +268,28 @@ namespace QuestionsSYS.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult Delete(int? id)
+        {
+            try
+            {
+                Tasks s = db.tasks.Where(q => q.id == id).FirstOrDefault();
+                db.question_tasks.RemoveRange(db.question_tasks.Where(x => x.question_id== s.question_id && x.user_id == s.user_id));
+                if (s == null) return new HttpStatusCodeResult(404);
+
+                db.tasks.Remove(s);
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500);
+                throw;
+            }
+        }
 
 
-        
 
     }
 
