@@ -17,10 +17,7 @@
             <th>Soru/Not</th>
             <th>Durum</th>
             <th>Görevli</th>
-            @if (User.IsInRole("Admin"))
-            {
-                <th>Kaynak</th>
-            }
+            <th>Kaynak</th>
            
             <th>
                 <label class="pull-right bold" style="margin-right:5px;">@Ajax.ActionLink("Görevlendirilmemiş Sorular", "Tasks", null, new AjaxOptions { UpdateTargetId = "question-list", OnBegin = "Begin()", OnComplete = "OnComplate();", OnSuccess = "OnComplate();" }, new { @class = "btn btn-danger btn-xs" })</label>
@@ -77,13 +74,9 @@
                         
                     }
                 </td>
-                 @if (User.IsInRole("Admin"))
-                 {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.source)
-                    </td>
-                 }
-             
+                <td>
+                    @Html.DisplayFor(modelItem => item.source)
+                </td>
               
                 <td>
                     @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "DeleteComplate();", OnFailure = "DeleteFailed();", OnBegin = "PageBegin()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
