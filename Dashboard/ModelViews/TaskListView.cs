@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace QuestionsSYS.ModelViews
 {
@@ -20,7 +20,11 @@ namespace QuestionsSYS.ModelViews
         public int order_unit { get; set; }
         public double order_price { get; set; }
         public double offer_price { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? feedback_date { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? contact_date { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime created_date { get; set; }
     }
 }

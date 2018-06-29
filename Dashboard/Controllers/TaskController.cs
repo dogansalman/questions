@@ -7,6 +7,7 @@ using QuestionsSYS.Context;
 using QuestionsSYS.Models;
 using Microsoft.AspNet.Identity;
 using PagedList;
+using System.Globalization;
 
 namespace QuestionsSYS.Controllers
 {
@@ -50,6 +51,7 @@ namespace QuestionsSYS.Controllers
                    order_price = t.order_price,
                    offer_price = t.offer_price,
                    feedback_date = t.feedback_date,
+                   contact_date = t.contact_date,
                    order_unit = t.order_unit,
                    user_id = t.user_id,
                    user_fullname = (from u in db.Users
@@ -88,6 +90,7 @@ namespace QuestionsSYS.Controllers
                    source = q.source,
                    state = t.state,
                    user_id = t.user_id,
+                   contact_date = t.contact_date,
                    user_fullname = (from u in db.Users
                                     where u.Id == t.user_id
                                     select u.Name + " " + u.Surname 
@@ -136,6 +139,7 @@ namespace QuestionsSYS.Controllers
                    source = q.source,
                    state = t.state,
                    user_id = t.user_id,
+                   contact_date = t.contact_date,
                    user_fullname = (from u in db.Users
                                     where u.Id == t.user_id
                                     select u.Name + " " + u.Surname
@@ -185,6 +189,7 @@ namespace QuestionsSYS.Controllers
                    source = q.source,
                    state = t.state,
                    user_id = t.user_id,
+                   contact_date = t.contact_date,
                    user_fullname = (from u in db.Users
                                     where u.Id == t.user_id
                                     select u.Name + " " + u.Surname
@@ -208,6 +213,68 @@ namespace QuestionsSYS.Controllers
 
             PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
             return View("All", model);
+        }
+
+
+        public ActionResult getfeedback(int page = 1, string SearchString = null, string date = null)
+        {
+            ViewBag.SearchString = SearchString;
+
+            var user_id = User.Identity.GetUserId();
+
+            var tasks = (
+               from t in db.tasks
+               join q in db.questions on t.question_id equals q.id
+               where t.feedback_date != null
+               select new TaskListView
+               {
+                   id = t.id,
+                   created_date = q.added,
+                   fullname = q.fullname,
+                   note = t.note,
+                   order_state = t.order_state,
+                   phone = q.phone,
+                   phone2 = q.phone2,
+                   question_note = q.note,
+                   question = q.question,
+                   source = q.source,
+                   state = t.state,
+                   user_id = t.user_id,
+                   contact_date = t.contact_date,
+                   feedback_date = t.feedback_date,
+                   user_fullname = (from u in db.Users
+                                    where u.Id == t.user_id
+                                    select u.Name + " " + u.Surname
+                                    ).FirstOrDefault()
+               }
+               );
+            if (!User.IsInRole("Admin"))
+            {
+                tasks = tasks.Where(t => t.user_id == user_id);
+            }
+            if (SearchString != null)
+            {
+                tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
+            }
+            if (date != null)
+            {
+               
+                var a = date.Split(',')[0];
+                var b = date.Split(',')[1];
+                DateTime s_date = DateTime.ParseExact(a, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                DateTime e_date = DateTime.ParseExact(b, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                tasks = tasks.Where(t => t.feedback_date >= s_date && t.feedback_date <= e_date);
+            }
+
+
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
+            return View("All",model);
+
+        }
+
+        public ActionResult Feedback()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -260,6 +327,7 @@ namespace QuestionsSYS.Controllers
                 task.order_state = model.order_state;
                 task.order_unit = model.order_unit;
                 task.feedback_date = model.feedback_date;
+                task.contact_date = model.contact_date;
 
                 db.SaveChanges();
                 return new HttpStatusCodeResult(200);

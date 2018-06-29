@@ -36,12 +36,21 @@ namespace QuestionsSYS.Controllers
        
         public ActionResult Index()
         {
-            string totalQuestion = db.questions.ToList().Count().ToString();
-            string totalPersonnel = db.Users.ToList().Count().ToString();
-            string totalTasks= db.tasks.ToList().Count().ToString();
-            ViewBag.totalQuestion = totalQuestion;
-            ViewBag.totalPersonnel = totalPersonnel;
-            ViewBag.totalTasks = totalTasks;
+            if (User.IsInRole("Admin"))
+            {
+                string totalQuestion = db.questions.ToList().Count().ToString();
+                string totalPersonnel = db.Users.ToList().Count().ToString();
+                string totalTasks = db.tasks.ToList().Count().ToString();
+                string ordered_tasks = db.tasks.Where(t => t.state == true).Count().ToString();
+
+                ViewBag.totalQuestion = totalQuestion;
+                ViewBag.totalPersonnel = totalPersonnel;
+                ViewBag.totalTasks = totalTasks;
+                ViewBag.ordertedTasks = ordered_tasks;
+
+            }
+
+
 
             return View();
         }

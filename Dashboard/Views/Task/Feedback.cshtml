@@ -1,0 +1,252 @@
+﻿@model IPagedList<QuestionsSYS.ModelViews.TaskListView>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Geri Dönüşüm";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Görevler</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <a href="@Url.Action("Index", "Task")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Geri Dönüşüm</a></strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2"></div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row ibox-content">
+        <div class="sk-spinner sk-spinner-double-bounce">
+            <div class="sk-double-bounce1"></div>
+            <div class="sk-double-bounce2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="col-md-10 no-padding">
+                    <div class="form-group" id="data_5">
+                        <div class="input-daterange input-group" id="datepicker">
+                            <input type="text" id="start-date" class="input-sm form-control" name="start" value="" />
+                            <span class="input-group-addon">to</span>
+                            <input type="text" id="end-date" class="input-sm form-control" name="end" value="" />
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-2 no-padding">
+                    <span class="input-group-btn" style="margin-left:10px;">
+                        <input type="button" id="filter-date-btn" class="btn btn-sm btn-primary search" value="Ara" />
+                    </span>
+                </div>
+                
+                </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="input-group">
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
+                    <span class="input-group-btn">
+                        <input type="button" id="search-btn" class="btn btn-sm btn-primary search" value="Ara" />
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div id="list-container"></div>
+
+        <div class="m-t-md">
+            <small class="pull-right">
+                Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+            </small>
+
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/select2Styles")
+@Styles.Render("~/plugins/dateRangeStyles")
+@Styles.Render("~/plugins/dataPickerStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+@Scripts.Render("~/plugins/dateRange")
+@Scripts.Render("~/plugins/dataPicker")
+    <script>
+
+        $.fn.datepicker.dates['tr'] = {
+            days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+            daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
+            daysMin: ["Pz", "Pzt", "Sa", "Çr", "Pr", "Cu", "Ct"],
+            months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+            today: "Bugün",
+            clear: "Temizle",
+            weekStart: 1,
+            format: "dd.mm.yyyy"
+        };
+
+        $('#data_5 .input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            language: 'tr'
+        });
+
+    function updateQueryStringParameter(uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + "=" + value + '$2');
+        }
+        else {
+            return uri + separator + key + "=" + value;
+        }
+    }
+    function removeURLParameter(url, parameter) {
+        //prefer to use l.search if you have a location/link object
+        var urlparts = url.split('?');
+        if (urlparts.length >= 2) {
+
+            var prefix = encodeURIComponent(parameter) + '=';
+            var pars = urlparts[1].split(/[&;]/g);
+
+            //reverse iteration as may be destructive
+            for (var i = pars.length; i-- > 0;) {
+                //idiom for string.startsWith
+                if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                    pars.splice(i, 1);
+                }
+            }
+
+            url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+            return url;
+        } else {
+            return url;
+        }
+    }
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+
+
+
+    function PageBegin() {
+        $('.ibox-content').toggleClass('sk-loading');
+    }
+    function PageComplate() {
+        $('.ibox-content').toggleClass('sk-loading');
+    }
+
+
+    $(document).ready(function () {
+
+        $(".state_select").select2({
+            placeholder: "Görev Durumu",
+            allowClear: true
+        });
+
+        
+        var query = getParameterByName("filter") || "getfeedback";
+
+        $("#search-btn").on("click", function () {
+
+            var SearchString = $(".searchterm").val();
+            var QueryString = getParameterByName("filter") || "getfeedback";
+
+
+            var url = updateQueryStringParameter(location.href, "filter", QueryString);
+            url = updateQueryStringParameter(url, "SearchString", SearchString);
+
+            var newurl = url;
+            window.history.pushState({ path: newurl }, '', newurl);
+
+            $.ajax({
+                type: "GET",
+                url: QueryString + new URL(url).search,
+                beforeSend: function () {
+                    PageBegin();
+                },
+                success: function (responseData) {
+                    PageComplate();
+                    $('#list-container').html(responseData);
+                }
+            });
+        });
+
+
+        $("#filter-date-btn").on("click", function () {
+
+            var url = "";
+            var SearchString = $(".searchterm").val();
+
+            
+            var date = $("#start-date").val();
+            var date1 = $("#end-date").val();
+            if (!date || !date1) {
+                toastr.error('Tarih aralığı seçin', 'Hata');
+                return;
+            }
+
+            url = updateQueryStringParameter(location.href, "date", date + "," + date1);
+
+            if (SearchString != "") {
+                url = updateQueryStringParameter(url, "SearchString", SearchString);
+            }
+
+            var newurl = url;
+            window.history.pushState({ path: newurl }, '', newurl);
+       
+            $.ajax({
+                type: "GET",
+                url: "getfeedback" + new URL(url).search,
+                beforeSend: function () {
+                    PageBegin();
+                },
+                success: function (responseData) {
+                    PageComplate();
+                    $('#list-container').html(responseData);
+                }
+            });
+        });
+
+
+        $.ajax({
+            type: "GET",
+            url: query,
+            beforeSend: function () {
+                PageBegin();
+            },
+            success: function (responseData) {
+                PageComplate();
+                $('#list-container').html(responseData);
+            }
+        });
+
+       
+
+
+
+    });
+
+    </script>
+}

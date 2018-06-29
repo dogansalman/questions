@@ -14,37 +14,49 @@
     </div>
 </div>
 
-<div class="wrapper wrapper-content animated fadeInRight">
-    <div class="ibox-content">
-        <table class="table">
-            <tbody>
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-danger m-r-sm">@ViewBag.totalQuestion</button>
-                       Toplam Soru
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary m-r-sm">@ViewBag.totalPersonnel</button>
-                        Toplam Personel
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-info m-r-sm">@ViewBag.totalTasks</button>
-                        Toplam Görev
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+@if (User.IsInRole("Admin"))
+{
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="ibox-content">
+
+
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-danger m-r-sm">@ViewBag.totalQuestion</button>
+                            Toplam Soru
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary m-r-sm">@ViewBag.totalPersonnel</button>
+                            Toplam Personel
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-info m-r-sm">@ViewBag.totalTasks</button>
+                            Toplam Görev
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger m-r-sm">@ViewBag.ordertedTasks</button>
+                            Toplam Sipariş
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+
+
 
     </div>
-        
+}
 
-    </div>
 
 
     @section Styles{
         @Styles.Render("~/plugins/sweetAlertStyles")
-
-
     }
 
     @section Scripts {

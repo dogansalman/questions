@@ -1766,6 +1766,7 @@
     <Content Include="Views\Task\Index.cshtml" />
     <Content Include="Views\Task\All.cshtml" />
     <Content Include="Views\Task\Detail.cshtml" />
+    <Content Include="Views\Task\Feedback.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

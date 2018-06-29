@@ -1,9 +1,39 @@
-﻿<nav class="navbar-default navbar-static-side" role="navigation">
+﻿@using Microsoft.AspNet.Identity
+
+@{ 
+    QuestionsSYS.Context.DatabaseContexts db = new QuestionsSYS.Context.DatabaseContexts();
+
+    string totalTasks = "";
+    string orderedTasks = "";
+    string unorderedTasks = "";
+    string feedbackTasks = "";
+
+    if (User.IsInRole("Admin"))
+    {
+
+        totalTasks = db.tasks.Count().ToString();
+        orderedTasks = db.tasks.Where(t => t.state == true).Count().ToString();
+        unorderedTasks = db.tasks.Where(t => !t.state).Count().ToString();
+        feedbackTasks = db.tasks.Where(t => t.feedback_date != null).Count().ToString();
+    }
+    else
+    {
+        string user_id = User.Identity.GetUserId();
+        totalTasks = db.tasks.Where(t => t.user_id == user_id).Count().ToString();
+        orderedTasks = db.tasks.Where(t => t.state == true && t.user_id == user_id).Count().ToString();
+        unorderedTasks = db.tasks.Where(t => !t.state && t.user_id == user_id).Count().ToString();
+        feedbackTasks = db.tasks.Where(t => t.feedback_date != null && t.user_id == user_id).Count().ToString();
+    }
+
+
+}
+
+<nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
-                    <span class="label">Soru Bankası </span>
+                    <span class="label">Soru Bankası @ViewBag.Deneme </span>
                 </div>
                 <div class="logo-element">
                     SB
@@ -16,9 +46,10 @@
             <li class="@Html.IsSelected(controller: "Task")">
                 <a href="@Url.Action("Index", "Task")"><i class="fa fa-check"></i> <span class="nav-label">Görevler</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Task", cssClass: "in")">
-                    <li class="@Html.IsSelected(action: "Task")"><a href="@Url.Action("Index", "Task")"><span class="nav-label">Tüm Görevler</span> </a></li>
-                    <li class="@Html.IsSelected(action: "Uncomplate")"><a href="@Url.Action("Index", "Task",  new { filter= "uncomplate"})">Sipariş Alınmayan</a></li>
-                    <li class="@Html.IsSelected(action: "Complate")"><a href="@Url.Action("Index", "Task", new { filter= "complate"})">Sipariş Alınan</a></li>
+                    <li class="@Html.IsSelected(action: "Task")"><a href="@Url.Action("Index", "Task")"><span class="nav-label">Tüm Görevler</span> <span class="label label-default pull-right">@totalTasks</span> </a></li>
+                    <li class="@Html.IsSelected(action: "Uncomplate")"><a href="@Url.Action("Index", "Task",  new { filter= "uncomplate"})">Sipariş Alınmayan <span class="label label-danger pull-right">@unorderedTasks</span></a></li>
+                    <li class="@Html.IsSelected(action: "Complate")"><a href="@Url.Action("Index", "Task", new { filter= "complate"})">Sipariş Alınan <span class="label label-primary pull-right">@orderedTasks</span></a></li>
+                    <li class="@Html.IsSelected(action: "Feedback")"><a href="@Url.Action("Feedback", "Task")">Geri Dönüşüm <span class="label label-warning pull-right">@feedbackTasks</span></a></li>
                 </ul>
 
                
@@ -44,11 +75,7 @@
                     <a href="@Url.Action("Index", "States")"><i class="fa fa-quote-right"></i> <span class="nav-label">Durumlar</span> </a>
                 </li>
             }
-           
-         
-         
-          
-       
+
             @if (Request.Url.Host.Contains("localhost").ToString() == "sad")
             {
                 <li class="@Html.IsSelected(controller: "Dashboards1")">

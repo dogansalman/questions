@@ -17,11 +17,7 @@ namespace QuestionsSYS.Controllers
     [Authorize(Roles = "Admin")]
     public class QuestionController : Controller
     {
-
         DatabaseContexts db = new DatabaseContexts();
-        
-
-        // GET: Question
       
         public ActionResult Index(int page = 1)
         {
@@ -29,13 +25,21 @@ namespace QuestionsSYS.Controllers
             return View();
         }
  
-        public ActionResult Tasks(int page = 1)
+        public ActionResult Tasks(int page = 1, string SearchString = null)
         {
-            PagedList<Question> model = new PagedList<Question>(db.questions.Where(qu => !qu.state).OrderByDescending(q => q.added), page, 20);
+            var questions = db.questions.Where(qu => !qu.state);
+
+            if (SearchString != null)
+            {
+                questions = questions.Where(q => q.phone.Contains(SearchString) || q.phone2.Contains(SearchString) || q.fullname.Contains(SearchString));
+            }
+
+            PagedList<Question> model = new PagedList<Question>(questions.OrderByDescending(q => q.added), page, 20);
+
             return View(model);
         }
 
-        public ActionResult All(int page = 1)
+        public ActionResult All(int page = 1, string SearchString = null)
         {
 
             var questions = (
@@ -60,7 +64,10 @@ namespace QuestionsSYS.Controllers
                }
                );
              
-
+            if(SearchString != null)
+            {
+                questions = questions.Where(q => q.phone.Contains(SearchString) || q.phone2.Contains(SearchString) || q.fullname.Contains(SearchString));
+            }
 
             PagedList<QuestionsListView> model = new PagedList<QuestionsListView>(questions.OrderByDescending(q => q.added), page, 20);
             return View(model);
@@ -72,6 +79,7 @@ namespace QuestionsSYS.Controllers
             return View();
 
         }
+
         public ActionResult Detail(int? id)
         {
             ViewBag.soruces = db.sources.ToList();
@@ -79,6 +87,7 @@ namespace QuestionsSYS.Controllers
             if (q == null) return new HttpStatusCodeResult(404);
             return View(q);
         }
+
         [HttpPost]
         public ActionResult Delete(int? id)
         {
@@ -96,10 +105,12 @@ namespace QuestionsSYS.Controllers
                 throw;
             }
         }
+
         public ActionResult Import()
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult ImportExcelFileToDatabase(HttpPostedFileBase FileUpload)
         {
@@ -227,7 +238,7 @@ namespace QuestionsSYS.Controllers
             
             if (!String.IsNullOrEmpty(model.phone))
             {
-                if (!db.questions.Any(qu => qu.phone == model.phone || qu.phone2 == model.phone ))
+                if (db.questions.Any(qu => qu.phone.Trim() == model.phone || qu.phone2.Trim() == model.phone ))
                 {
                     return new HttpStatusCodeResult(501);
                 }
@@ -235,7 +246,7 @@ namespace QuestionsSYS.Controllers
 
             if (!String.IsNullOrEmpty(model.phone2))
             {
-                if (!db.questions.Any(qu => qu.phone == model.phone2 || qu.phone2 == model.phone2))
+                if (db.questions.Any(qu => qu.phone.Trim() == model.phone2 || qu.phone2.Trim() == model.phone2))
                 {
                     return new HttpStatusCodeResult(501);
                 }
