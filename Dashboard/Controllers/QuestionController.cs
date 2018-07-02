@@ -114,6 +114,9 @@ namespace QuestionsSYS.Controllers
         [HttpPost]
         public ActionResult ImportExcelFileToDatabase(HttpPostedFileBase FileUpload)
         {
+            int total = 0;
+            int used_phones = 0; 
+
             try
             {
                 DataSet ds = new DataSet();
@@ -179,6 +182,7 @@ namespace QuestionsSYS.Controllers
 
                     }
 
+                    total = ds.Tables[0].Rows.Count; 
 
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
@@ -195,26 +199,54 @@ namespace QuestionsSYS.Controllers
                         }
 
                         var date =  String.IsNullOrEmpty(ds.Tables[0].Rows[i][6].ToString()) ? DateTime.Now :  Convert.ToDateTime(ds.Tables[0].Rows[i][6].ToString());
+                        string phone = ds.Tables[0].Rows[i][1].ToString();
+                        string phone2 = ds.Tables[0].Rows[i][2].ToString();
 
-                        Question q = new Question
+                        bool used_phone_status = false;
+
+                        if (!String.IsNullOrEmpty(phone))
                         {
-                            fullname = ds.Tables[0].Rows[i][0].ToString(),
-                            phone = ds.Tables[0].Rows[i][1].ToString(),
-                            phone2 = ds.Tables[0].Rows[i][2].ToString(),
-                            question = ds.Tables[0].Rows[i][3].ToString(),
-                            note = ds.Tables[0].Rows[i][4].ToString(),
-                            source = ds.Tables[0].Rows[i][5].ToString(),
-                            added = date
+                            if (db.questions.Any(qu => qu.phone.Trim() == phone || qu.phone2.Trim() == phone))
+                            {
+                                used_phone_status = true;
+                                used_phones = used_phones + 1;
+                            }
+                        }
+
+                        if (!String.IsNullOrEmpty(phone2))
+                        {
+                            if (db.questions.Any(qu => qu.phone.Trim() == phone2 || qu.phone2.Trim() == phone2))
+                            {
+                                used_phone_status = true;
+                                if (!used_phone_status) used_phones = used_phones + 1;
+                            }
+                        }
+                        if (!used_phone_status)
+                        {
+                            Question q = new Question
+                            {
+                                fullname = ds.Tables[0].Rows[i][0].ToString(),
+                                phone = ds.Tables[0].Rows[i][1].ToString(),
+                                phone2 = ds.Tables[0].Rows[i][2].ToString(),
+                                question = ds.Tables[0].Rows[i][3].ToString(),
+                                note = ds.Tables[0].Rows[i][4].ToString(),
+                                source = ds.Tables[0].Rows[i][5].ToString(),
+                                added = date
 
 
-                        };
+                            };
 
-                        db.questions.Add(q);
+                            db.questions.Add(q);
+                        }
+                    
                         db.SaveChanges();
+
+
+                        total = (total - used_phones) < 0 ? 0 : total - used_phones;
 
                     }
 
-                   return  RedirectToAction("Import", new RouteValueDictionary(new { controller = "Question", action = "Import",  success = "ok" }));
+                   return  RedirectToAction("Import", new RouteValueDictionary(new { controller = "Question", action = "Import",  success = "ok", added = total, unadded = used_phones }));
                 }
                 else
                 {

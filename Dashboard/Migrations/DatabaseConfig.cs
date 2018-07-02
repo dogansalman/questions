@@ -22,7 +22,7 @@ namespace QuestionsSYS.Migrations
             UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
             userManager = new UserManager<ApplicationUser>(userStore);
 
-
+            
             // Add roles
             RoleStore<ApplicationRole> roleStore = new RoleStore<ApplicationRole>(db);
             RoleManager<ApplicationRole> roleManager = new RoleManager<ApplicationRole>(roleStore);
@@ -45,6 +45,8 @@ namespace QuestionsSYS.Migrations
             user.UserName = "admin";
             IdentityResult Iresult = userManager.Create(user, "password");
             userManager.AddToRole(user.Id, "Admin");
+            
+
 
         }
     }

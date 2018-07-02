@@ -117,7 +117,7 @@
    
         @Html.PagedListPager(
             Model,
-            page => Url.Action(String.IsNullOrEmpty(Request.QueryString["filter"]) ? Request.QueryString["filter"] : "All", new { page = page, SearchString = ViewBag.SearchString, date = String.IsNullOrEmpty(Request.QueryString["date"]) ? "" : Request.QueryString["date"] }),
+            page => Url.Action(String.IsNullOrEmpty(Request.QueryString["filter"]) ? Request.QueryString["filter"] : "All", new { page = page, SearchString = ViewBag.SearchString, personnel = ViewBag.personnel, date = String.IsNullOrEmpty(Request.QueryString["date"]) ? "" : Request.QueryString["date"] }),
         PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "list-container", OnBegin = "PageBegin()", OnComplete = "PageComplate()" })
         )
 

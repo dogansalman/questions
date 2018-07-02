@@ -123,9 +123,15 @@
                             toastr.success("Görev atandı.", "Tamam");
                             $(".task-container").toggleClass('sk-loading');
                         },
-                        error: function () {
-                            toastr.error("Personel seçmediniz veya bir hata oluştu. Sayfayı yenileyip tekrar deneyin.", "Hata");
+                        error: function (e) {
                             $(".task-container").toggleClass('sk-loading');
+
+                            if (e.status == 501) {
+                                toastr.error("Seçtiğiniz personele daha önce seçtiğiniz soru aktarılmış", "Hata");
+                                return;
+                            }
+                            toastr.error("Personel seçmediniz veya bir hata oluştu. Sayfayı yenileyip tekrar deneyin.", "Hata");
+                            
                         }
                     })
                 })

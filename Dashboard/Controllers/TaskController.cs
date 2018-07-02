@@ -20,6 +20,7 @@ namespace QuestionsSYS.Controllers
         
         public ActionResult Index()
         {
+            ViewBag.personnel = db.Users.ToList();
             ViewBag.states = db.states.ToList();
             return View();
         }
@@ -67,9 +68,10 @@ namespace QuestionsSYS.Controllers
             return View(tasks);
         }
 
-        public ActionResult All(int page = 1, string SearchString = null, string type = null)
+        public ActionResult All(int page = 1, string SearchString = null, string type = null, string personnel = null)
         {
             ViewBag.SearchString = SearchString;
+            ViewBag.personnel = personnel;
 
             var user_id = User.Identity.GetUserId();
 
@@ -109,16 +111,20 @@ namespace QuestionsSYS.Controllers
             {
                 tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
             }
-
+            if (User.IsInRole("Admin") && !String.IsNullOrEmpty(personnel))
+            {
+                tasks = tasks.Where(t => t.user_id == personnel);
+            }
 
             PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
             return View(model);
             
         }
 
-        public ActionResult uncomplate(int page = 1, string SearchString = null, string type = null)
+        public ActionResult uncomplate(int page = 1, string SearchString = null, string type = null, string personnel = null)
         {
             ViewBag.SearchString = SearchString;
+            ViewBag.personnel = personnel;
 
             var user_id = User.Identity.GetUserId();
             var tasks = (
@@ -162,13 +168,19 @@ namespace QuestionsSYS.Controllers
                 tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
             }
 
+            if (User.IsInRole("Admin") && !String.IsNullOrEmpty(personnel))
+            {
+                tasks = tasks.Where(t => t.user_id == personnel);
+            }
+
             PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
             return View("All", model);
         }
 
-        public ActionResult complate(int page = 1, string SearchString = null, string type = null)
+        public ActionResult complate(int page = 1, string SearchString = null, string type = null, string personnel = null)
         {
             ViewBag.SearchString = SearchString;
+            ViewBag.personnel = personnel;
 
             var user_id = User.Identity.GetUserId();
             var tasks = (
@@ -211,10 +223,14 @@ namespace QuestionsSYS.Controllers
                 tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
             }
 
+            if (User.IsInRole("Admin") && !String.IsNullOrEmpty(personnel))
+            {
+                tasks = tasks.Where(t => t.user_id == personnel);
+            }
+
             PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
             return View("All", model);
         }
-
 
         public ActionResult getfeedback(int page = 1, string SearchString = null, string date = null)
         {
@@ -284,12 +300,13 @@ namespace QuestionsSYS.Controllers
 
             try
             {
-                using (var db = new DatabaseContexts())
-                {
-                    var questions = db.questions.Where(q => model.questions.Contains(q.id.ToString())).ToList();
-                    questions.ForEach(qs => qs.state = true);
-                    db.SaveChanges();
-                }
+
+                if (db.question_tasks.Any(qt => model.questions.Contains(qt.question_id.ToString()) && qt.user_id == model.user_id)) return new HttpStatusCodeResult(501);
+
+                var questions = db.questions.Where(q => model.questions.Contains(q.id.ToString())).ToList();
+                
+                questions.ForEach(qs => qs.state = true);
+                db.SaveChanges();
 
                 model.questions.ToList().ForEach(q =>
                 {

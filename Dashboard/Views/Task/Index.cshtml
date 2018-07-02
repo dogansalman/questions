@@ -36,12 +36,29 @@
                             <option value="@item.name">@item.name</option>
                         }
                         <option value="İşlem Bekleniyor">İşlem Bekleniyor</option>
-
                     </select>
                 </div>
 
             </div>
-            <div class="col-md-4 col-md-offset-5">
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select name="personnel" id="personnel" class="personnel_select inline form-control">
+                            <option></option>
+                            @foreach (var item in ViewBag.personnel)
+                            {
+                                <option value="@item.Id">@item.Name  @item.Surname</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+            }
+            
+            
+            <div class="col-md-6 pull-right">
                 <div class="input-group">
                     @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
                     <span class="input-group-btn">
@@ -128,6 +145,38 @@
             placeholder: "Görev Durumu",
             allowClear: true
         });
+        $(".personnel_select").select2({
+            placeholder: "Personel seçin",
+            allowClear: true
+        });
+
+
+        $("#personnel").on("change", function (e) {
+
+           // $('.state_select').val(null).trigger('change');
+           // $('.searchterm').val('');
+
+            var personnelId = $(e.target).val();
+            var QueryString = getParameterByName("filter") || "All";
+
+            var url = updateQueryStringParameter(location.href, "personnel", personnelId);
+
+            window.history.pushState({ path: url }, '', url);
+
+            if (!personnelId) url = removeURLParameter(url, "personnel");
+
+            $.ajax({
+                type: "GET",
+                url: QueryString + new URL(url).search,
+                beforeSend: function () {
+                    PageBegin();
+                },
+                success: function (responseData) {
+                    PageComplate();
+                    $('#list-container').html(responseData);
+                }
+            });
+        })
 
         $("#state").on("change", function (e) {
 
@@ -151,11 +200,6 @@
                     $('#list-container').html(responseData);
                 }
             });
-          
-            
-            
-           
-
         })
         var query = getParameterByName("filter") || "All";
 
