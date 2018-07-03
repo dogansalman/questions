@@ -301,7 +301,7 @@ namespace QuestionsSYS.Controllers
             try
             {
 
-                if (db.question_tasks.Any(qt => model.questions.Contains(qt.question_id.ToString()) && qt.user_id == model.user_id)) return new HttpStatusCodeResult(501);
+                if (db.question_tasks.Any(qt => model.questions.Contains(qt.question_id.ToString()))) return new HttpStatusCodeResult(501);
 
                 var questions = db.questions.Where(q => model.questions.Contains(q.id.ToString())).ToList();
                 

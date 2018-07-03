@@ -90,7 +90,7 @@
         function AddSuccess() {
             toastr.success("Soru eklendi.", "Tamam");
             document.getElementById("form0").reset();
-            $('.source_select').val(null).trigger('change');
+            $('.source_select').val($("#select2-source-container").attr("title")).trigger('change');
         }
         function AddFailed() {
             toastr.error("Numara kullanılıyor veya bir hata oluştu tekrar deneyin.", "Hata")

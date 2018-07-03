@@ -21,8 +21,11 @@
             <th>Sipariş</th>
             <th>Görev Notu</th>
             <th>Durum</th>
-            <th>Görüşme Tarihi</th>
-
+            <th>Görüşme</th>
+            @if (Request.Path.ToString().Contains("/Task/getfeedback"))
+            {
+                <th>Geri Dönüşüm</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -33,7 +36,7 @@
                     @item.created_date.ToShortDateString()
                 </td>
                 <td>
-                   @item.fullname
+                   @item.fullname 
                 </td>
                 <td>
                     @item.phone / @item.phone2
@@ -44,7 +47,6 @@
                         @item.source
                     </td>
                 }
-
                 <td>
                     <strong class="text-capitalize">@item.user_fullname</strong>
                 </td>
@@ -91,6 +93,13 @@
                     }
 
                 </td>
+                @if (Request.Path.ToString().Contains("Task/getfeedback"))
+                {
+                    <td>
+                        <span class="label label-primary">@item.feedback_date.Value.ToShortDateString()</span>
+                    </td>
+                }
+            
                 <td>
                     @if(User.IsInRole("Admin"))
                     { 

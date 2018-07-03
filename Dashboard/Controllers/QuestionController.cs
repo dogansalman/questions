@@ -95,6 +95,11 @@ namespace QuestionsSYS.Controllers
             {
                 Question s = db.questions.Where(q => q.id == id).FirstOrDefault();
                 if (s == null) return new HttpStatusCodeResult(404);
+
+                db.tasks.RemoveRange(db.tasks.Where(t => t.question_id == s.id).ToList());
+                db.question_tasks.RemoveRange(db.question_tasks.Where(t => t.question_id == s.id).ToList());
+
+
                 db.questions.Remove(s);
                 db.SaveChanges();
                 return RedirectToAction("Index", new RouteValueDictionary(new { controller = "Question", action = "Index", Id = id, success = "failed_remove" }));
