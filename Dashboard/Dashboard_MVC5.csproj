@@ -213,6 +213,7 @@
     <Compile Include="Helpers\XMLSmsService.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationRole.cs" />
+    <Compile Include="Libary\DownloadAction\DownloadAction.cs" />
     <Compile Include="Migrations\DatabaseConfig.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionTasks.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Models\Tasks.cs" />
     <Compile Include="ModelViews\Login.cs" />
     <Compile Include="ModelViews\PersonnelView.cs" />
+    <Compile Include="ModelViews\QuestionList.cs" />
     <Compile Include="ModelViews\QuestionsListView.cs" />
     <Compile Include="ModelViews\QuestionView.cs" />
     <Compile Include="ModelViews\TaskAdd.cs" />

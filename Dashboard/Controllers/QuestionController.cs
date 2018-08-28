@@ -11,6 +11,11 @@ using System.Data;
 using System.Data.OleDb;
 using PagedList;
 using QuestionsSYS.Identity;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Web.UI;
+using QuestionsSYS.Libary.DownloadAction;
+
 
 namespace QuestionsSYS.Controllers
 {
@@ -328,6 +333,36 @@ namespace QuestionsSYS.Controllers
             return new HttpStatusCodeResult(200);
         }
 
-      
+       [HttpPost]
+      public ActionResult ExportToExcel(QuestionList model)
+        {
+            
+            if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
+
+            try
+            {
+                List<Question> qulist = db.questions.Where(q => model.questions.Contains(q.id)).ToList();
+
+                var gv = new GridView();
+                gv.DataSource = qulist;
+                gv.DataBind();
+                Session["Excel"] = gv;
+                return new HttpStatusCodeResult(200);
+
+            }
+            catch (Exception exs)
+            {
+                return new HttpStatusCodeResult(500, exs.Message.ToString());
+            }
+
+        }
+
+        [HttpGet]
+        public DownloadAction DownloadExcelExport()
+        {
+            var grd = (GridView)Session["Excel"];
+            Session.Remove("Excel");
+            return new DownloadAction(grd, "export.xls");
+        }
     }
 }

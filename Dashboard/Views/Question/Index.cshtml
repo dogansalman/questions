@@ -27,9 +27,13 @@
                 <div class="sk-double-bounce1"></div>
                 <div class="sk-double-bounce2"></div>
             </div>
+           
             <div class="row">
-                <div class="col-md-4 col-md-offset-8">
+                <div class="col-md-1"><a id="toExcelBtn" class="btn btn-sm btn-primary search pull-left"><i class="fa fa-file-excel-o"></i> Excel Çıktı</a> </div>
+                <div class="col-md-4 col-md-offset-7">
+                   
                     <div class="input-group">
+                      
                         @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
                         <span class="input-group-btn">
                             <input type="button" id="search-btn" class="btn btn-sm btn-primary search" value="Ara" />
@@ -38,8 +42,8 @@
                 </div>
 
             </div>
-                
-                <div id="question-list" class="table-responsive"></div>
+           
+            <div id="question-list" class="table-responsive"></div>
                 <div class="m-t-md">
                     <small class="pull-right">
                         Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
@@ -106,6 +110,42 @@
                     placeholder: "Personel seçin",
                     allowClear: true
                 });
+
+                $("#toExcelBtn").on("click", function () {
+                    var questions = [];
+                    
+                    $("#question-list input:checked").each(cbx => {
+                        var item = $($("#question-list input:checked")[cbx]);
+                        var id = item.attr("data-item");
+                        questions.push(id);
+                    })
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/Question/ExportToExcel",
+                        data: { questions },
+                        beforeSend: function () {
+                            $("#question-list").toggleClass('sk-loading');
+                        },
+                        success: function (responseData) {
+                            $("#question-list").toggleClass('sk-loading');
+                            window.open("/Question/DownloadExcelExport");
+                        },
+                        error: function (e) {
+                            $("#question-list").toggleClass('sk-loading');
+
+                            if (e.status == 501) {
+                                toastr.error("Bir hata oluştu.", "Hata");
+                                return;
+                            }
+                            toastr.error("Bir hata oluştu. Sayfayı yeniledikten sonra tekrar deneyin.", "Hata");
+
+                        }
+                    })
+
+                });
+
+                    
 
                 $("#add_task").on("click", function () {
                     var data = { user_id: $(".personnel-list").val(), questions: [] };
