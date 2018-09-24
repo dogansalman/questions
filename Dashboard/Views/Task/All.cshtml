@@ -12,10 +12,7 @@
             <th>Soru Tarihi</th>
             <th>Ad Soyad</th>
             <th>Tel</th>
-            @if (User.IsInRole("Admin"))
-            {
-                <th>Kaynak</th>
-            }
+            <th>Kaynak</th>
             <th>Görevli</th>
             <th>Soru/Not</th>
             <th>Sipariş</th>
@@ -41,12 +38,9 @@
                 <td>
                     @item.phone / @item.phone2
                 </td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>
-                        @item.source
-                    </td>
-                }
+                <td>
+                    @item.source
+                </td>
                 <td>
                     <strong class="text-capitalize">@item.user_fullname</strong>
                 </td>

@@ -102,12 +102,14 @@
 
 
 <div class="pagedList">
-    @Html.PagedListPager(
-    Model,
-    page => Url.Action("All", new { page = page }),
-    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "question_untasked", OnBegin = "PageBegin()", OnComplete = "PageComplate()" })
-    )
 
+    @Html.PagedListPager(
+            Model,
+            page => Url.Action("All", new { page = page, SearchString = String.IsNullOrEmpty(Request.QueryString["SearchString"]) ? "" : Request.QueryString["SearchString"], source = String.IsNullOrEmpty(Request.QueryString["source"]) ? "" : Request.QueryString["source"]}),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "question_untasked", OnBegin = "PageBegin()", OnComplete = "PageComplate()" })
+        )
+
+    
 </div>
 
 @section Scripts{

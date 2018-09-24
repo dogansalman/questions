@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 using System.IO;
 using System.Web.UI;
 using QuestionsSYS.Libary.DownloadAction;
-
+using System.Globalization;
 
 namespace QuestionsSYS.Controllers
 {
@@ -26,6 +26,7 @@ namespace QuestionsSYS.Controllers
       
         public ActionResult Index(int page = 1)
         {
+            ViewBag.sources = db.sources.ToList();
             ViewBag.personnel = db.Users.ToList();
             return View();
         }
@@ -44,7 +45,7 @@ namespace QuestionsSYS.Controllers
             return View(model);
         }
 
-        public ActionResult All(int page = 1, string SearchString = null)
+        public ActionResult All(int page = 1, string SearchString = null, string source = null)
         {
 
             var questions = (
@@ -72,6 +73,12 @@ namespace QuestionsSYS.Controllers
             if(SearchString != null)
             {
                 questions = questions.Where(q => q.phone.Contains(SearchString) || q.phone2.Contains(SearchString) || q.fullname.Contains(SearchString));
+            }
+
+
+            if (source != null)
+            {
+                questions = questions.Where(q => q.source == source);
             }
 
             PagedList<QuestionsListView> model = new PagedList<QuestionsListView>(questions.OrderByDescending(q => q.added), page, 20);
@@ -273,7 +280,7 @@ namespace QuestionsSYS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add([Bind(Include = "question,note,state,fullname,phone,phone2,source")] Question model)
+        public ActionResult Add([Bind(Include = "question,note,state,fullname,phone,phone2,source,added")] Question model)
         {
             if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
 
@@ -298,14 +305,14 @@ namespace QuestionsSYS.Controllers
 
             Question q = new Question
             {
-                added = DateTime.Now,
+                added = model.added,
                 fullname = model.fullname,
                 note = model.note,
                 phone = model.phone,
                 phone2 = model.phone2,
                 source = model.source,
                 question = model.question,
-                state = model.state
+                state = model.state,
             };
 
             db.questions.Add(q);
@@ -314,7 +321,7 @@ namespace QuestionsSYS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(int? id, [Bind(Include = "question,note,state,fullname,phone,phone2,source")] Question model)
+        public ActionResult Update(int? id, [Bind(Include = "question,note,state,fullname,phone,phone2,source,added")] Question model)
         {
             Question q = db.questions.Where(qu => qu.id == id).FirstOrDefault();
 
@@ -328,6 +335,7 @@ namespace QuestionsSYS.Controllers
             q.question = model.question;
             q.state = model.state;
             q.note = model.note;
+            q.added = model.added;
           
             db.SaveChanges();
             return new HttpStatusCodeResult(200);

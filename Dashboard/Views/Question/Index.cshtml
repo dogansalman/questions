@@ -20,6 +20,8 @@
     </div>
 </div>
 
+
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="ibox-content">
@@ -29,9 +31,19 @@
             </div>
            
             <div class="row">
-                <div class="col-md-1"><a id="toExcelBtn" class="btn btn-sm btn-primary search pull-left"><i class="fa fa-file-excel-o"></i> Excel Çıktı</a> </div>
-                <div class="col-md-4 col-md-offset-7">
-                   
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select name="source" id="source" class="sources_select inline form-control">
+                            <option></option>
+                            @foreach (var item in ViewBag.sources)
+                            {
+                                <option value="@item.name">@item.name</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="col-md-3 col-xs-12 col-sm-5 no-padding">
                     <div class="input-group">
                       
                         @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
@@ -44,6 +56,7 @@
             </div>
            
             <div id="question-list" class="table-responsive"></div>
+            <div class="col-md-1 no-padding"><a id="toExcelBtn" class="btn btn-sm btn-primary search pull-left"><i class="fa fa-file-excel-o"></i> Excel Çıktı</a> </div>
                 <div class="m-t-md">
                     <small class="pull-right">
                         Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
@@ -52,6 +65,8 @@
             </div>
     </div>
 </div>
+
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="ibox-content task-container">
@@ -94,6 +109,7 @@
         <script type="text/javascript">
 
             $(document).ready(function () {
+
                 $.ajax({
                     type: "GET",
                     url: "All",
@@ -145,7 +161,36 @@
 
                 });
 
-                    
+            
+                $(".sources_select").select2({
+                    placeholder: "Kaynak seçin",
+                    allowClear: true
+                });
+
+
+                $("#source").on("change", function (e) {
+
+                    var typeName = $(e.target).val();
+                    var QueryString = getParameterByName("filter") || "All";
+
+                    var url = updateQueryStringParameter(location.href, "source", typeName);
+
+                    window.history.pushState({ path: url }, '', url);
+
+                    if (!typeName) url = removeURLParameter(url, "source");
+
+                    $.ajax({
+                        type: "GET",
+                        url: QueryString + new URL(url).search,
+                        beforeSend: function () {
+                            PageBegin();
+                        },
+                        success: function (responseData) {
+                            PageComplate();
+                            $('#question-list').html(responseData);
+                        }
+                    });
+                })
 
                 $("#add_task").on("click", function () {
                     var data = { user_id: $(".personnel-list").val(), questions: [] };
@@ -162,6 +207,7 @@
                         success: function (responseData) {
                             toastr.success("Görev atandı.", "Tamam");
                             $(".task-container").toggleClass('sk-loading');
+                            $('input[type="checkbox"]').prop('checked', false)
                         },
                         error: function (e) {
                             $(".task-container").toggleClass('sk-loading');
@@ -177,8 +223,6 @@
                 })
 
 
-
-
                 $("#search-btn").on("click", function () {
 
                     var SearchString = $(".searchterm").val();
@@ -188,12 +232,16 @@
                     var url = updateQueryStringParameter(location.href, "filter", QueryString);
                     url = updateQueryStringParameter(url, "SearchString", SearchString);
 
+                    if (getParameterByName("source")) {
+                        url = updateQueryStringParameter(url, "source", getParameterByName("source"));
+                    }
                     var newurl = url;
                     window.history.pushState({ path: newurl }, '', newurl);
 
+                    var queryParam = new URL(newurl).search;
                     $.ajax({
                         type: "GET",
-                        url: QueryString + "?SearchString=" + SearchString,
+                        url: QueryString + queryParam,
                         beforeSend: function () {
                             PageBegin();
                         },
