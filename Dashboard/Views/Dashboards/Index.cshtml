@@ -17,39 +17,73 @@
 @if (User.IsInRole("Admin"))
 {
     <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="ibox-content">
 
+        <div class="row">
 
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <button type="button" class="btn btn-danger m-r-sm">@ViewBag.totalQuestion</button>
-                            Toplam Soru
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary m-r-sm">@ViewBag.totalPersonnel</button>
-                            Toplam Personel
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-info m-r-sm">@ViewBag.totalTasks</button>
-                            Toplam Görev
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger m-r-sm">@ViewBag.ordertedTasks</button>
-                            Toplam Sipariş
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="col-lg-3">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h5>Soru</h5>
+                        <h1 class="no-margins">@ViewBag.totalQuestion</h1>
+                        <small>Toplam</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h5>Personel</h5>
+                        <h1 class="no-margins">@ViewBag.totalPersonnel</h1>
+                        <small>Toplam</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h5>Görev</h5>
+                        <h1 class="no-margins">@ViewBag.totalTasks</h1>
+                        <small>Toplam</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h5>Sipariş</h5>
+                        <h1 class="no-margins">@ViewBag.ordertedTasks</h1>
+                        <small>Toplam</small>
+                    </div>
+                </div>
+            </div>
 
-
-
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h3>Personel İstatistikleri</h3>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="sk-spinner sk-spinner-double-bounce">
+                            <div class="sk-double-bounce1"></div>
+                            <div class="sk-double-bounce2"></div>
+                        </div>
+                        <form role="form" class="form-inline">
+                            <div class="form-group">
+                                <label for="daterange" class="sr-only">Tarih</label>
+                                <input class="form-control" type="text" placeholder="Tarih Seçin" style="width:300px;" name="daterange" value="" />
+                            </div>
+                            <button class="btn btn-white no-margins" type="button" id="clean-btn"><i class="fa fa-undo"></i></button>
+                        </form>
+                        <div id="personnel-reports"></div>
+                    </div>
+                </div>
+            </div>    
         </div>
-
-
-
-
     </div>
 }
 
@@ -57,35 +91,118 @@
 
     @section Styles{
         @Styles.Render("~/plugins/sweetAlertStyles")
+        @Styles.Render("~/plugins/dateRangeStyles")
+        @Styles.Render("~/plugins/select2Styles")
+
+        <style>
+            .select2-container--default .select2-selection--single {
+                height: 35px;
+                padding: 2px;
+            }
+        </style>
     }
 
     @section Scripts {
-
-
         @Scripts.Render("~/plugins/sweetAlert")
-
+        @Scripts.Render("~/plugins/dateRange")
+        @Scripts.Render("~/plugins/select2")
         <script>
-            $('a.approve').click(function (e) {
-                swal({
-                    title: "Emin misiniz?",
-                    text: "İlanı onaylamak istediğinize emin misiniz ?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#1ab394",
-                    confirmButtonText: "Evet, Onayla!",
-                    closeOnConfirm: false
-                }, function () {
 
-                    $.post("/Advert/Approve/" + $(e.target).attr("data-item"))
-                        .done(function (response, status, jqxhr) {
-                            swal("Onaylandı!", "İlan kaydı onaylandı.", "success");
-                            setTimeout(() => window.location.reload(), 2000);
-                        })
-                        .fail(function (jqxhr, status, error) {
-                            swal("Hata", "İlan onaylanamadı. Tekrar deneyin.", "error");
-                        })
+            function PageBegin() {
+                $('.ibox-content').toggleClass('sk-loading');
+            }
 
+            function PageComplate() {
+                $('.ibox-content').toggleClass('sk-loading');
+                $(".sk-loading").removeClass('sk-loading');
+            }
+
+
+            $.ajax({
+                type: "GET",
+                url: "/Dashboards/Reports",
+                beforeSend: function () {
+                    PageBegin();
+                },
+                success: function (responseData) {
+                    PageComplate();
+                    $('#personnel-reports').html(responseData);
+                }
+            });
+
+            $("#clean-btn").on("click", function () {
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Dashboards/Reports",
+                    beforeSend: function () {
+                        PageBegin();
+                    },
+                    success: function (responseData) {
+                        PageComplate();
+                        $('#personnel-reports').html(responseData);
+                    }
                 });
+            });
+
+          
+
+            $('input[name="daterange"]').daterangepicker({
+                "locale": {
+                    "format": "DD/MM/YYYY",
+                    "separator": " - ",
+                    "applyLabel": "Tamam",
+                    "cancelLabel": "İptal",
+                    "fromLabel": "Başlangıç",
+                    "toLabel": "Bitiş",
+                    "customRangeLabel": "Custom",
+                    "weekLabel": "W",
+                    "daysOfWeek": [
+                        "Pt",
+                        "Sa",
+                        "Ça",
+                        "Pe",
+                        "Cu",
+                        "Ct",
+                        "Pz"
+                    ],
+                    "monthNames": [
+                        "Ocak",
+                        "Şubat",
+                        "Mart",
+                        "Nisan",
+                        "Mayıs",
+                        "Haziran",
+                        "Temmuz",
+                        "Ağustos",
+                        "Eylül",
+                        "Ekim",
+                        "Kasım",
+                        "Aralık"
+                    ],
+                    "firstDay": 1
+                }
+            }, function (start, end, label) {
+
+                var selectedDate = start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY');
+                if (!selectedDate) toastr.error("Lütfen tarih seçin.", "Uyarı");
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Dashboards/Reports" + "?date=" + selectedDate,
+                    beforeSend: function () {
+                        PageBegin();
+                    },
+                    success: function (responseData) {
+                        PageComplate();
+                        $('#personnel-reports').html(responseData);
+                    }
+                });
+            });
+
+            $(".personnel-list").select2({
+                placeholder: "Personel seçin",
+                allowClear: true
             });
 
         </script>

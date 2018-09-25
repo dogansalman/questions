@@ -1,0 +1,36 @@
+﻿@model IEnumerable<QuestionsSYS.ModelViews.PersonnelReports>
+
+@{
+    Layout = "~/Views/Shared/_Layout_Empty_White.cshtml";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Personel Ad Soyad</th>
+            <th>İstatistikler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <h2>
+                        @item.fullname
+                    </h2>
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var item2 in item.states)
+                        {
+                            <li style="list-style:none; margin-bottom:5px; border-bottom:1px solid #dedede; padding:5px;">@item2.state <span style="float: right;" class="label"><b>@item2.count</b></span> </li>
+                        }
+                        <li style="list-style:none; margin-bottom:5px; border-bottom:1px solid #dedede; padding:5px;">Toplam Görev(Atanan Soru) <span style="float: right;" class="label"><b>@item.tasks</b></span></li>
+
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

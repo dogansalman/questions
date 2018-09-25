@@ -221,6 +221,7 @@
     <Compile Include="Models\States.cs" />
     <Compile Include="Models\Tasks.cs" />
     <Compile Include="ModelViews\Login.cs" />
+    <Compile Include="ModelViews\PersonnelReports.cs" />
     <Compile Include="ModelViews\PersonnelView.cs" />
     <Compile Include="ModelViews\QuestionList.cs" />
     <Compile Include="ModelViews\QuestionsListView.cs" />
@@ -1768,6 +1769,7 @@
     <Content Include="Views\Task\All.cshtml" />
     <Content Include="Views\Task\Detail.cshtml" />
     <Content Include="Views\Task\Feedback.cshtml" />
+    <Content Include="Views\Dashboards\Reports.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
