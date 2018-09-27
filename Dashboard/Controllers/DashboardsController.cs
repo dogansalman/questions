@@ -69,8 +69,9 @@ namespace QuestionsSYS.Controllers
 
             if (date != null)
             {
-                DateTime date1_ = DateTime.ParseExact(date.Split('-')[0].Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime date2_ = DateTime.ParseExact(date.Split('-')[1].Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                DateTime date1_ = DateTime.ParseExact(date.Split('-')[0].Trim(), "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                DateTime date2_ = DateTime.ParseExact(date.Split('-')[1].Trim(), "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                if (date1_ == date2_) date2_ = date2_.AddDays(1);
 
                 foreach (var item in db.Users.ToList())
                 {
@@ -78,13 +79,13 @@ namespace QuestionsSYS.Controllers
                     PersonnelReports person = new PersonnelReports
                     {
                         fullname = item.Name + " " + item.Surname,
-                        tasks = db.tasks.Where(t => t.user_id == item.Id && t.created_date > date1_ && t.created_date < date2_).Count(),
+                        tasks = db.tasks.Where(t => (t.user_id == item.Id) && ((t.created_date >= date1_) && (t.created_date <= date2_))).Count(),
                         states = new List<PersonnelOrderState>()
                     };
 
                     order_states.ForEach(stateName =>
                     {
-                        var counts = db.tasks.Count(t => t.user_id == item.Id && t.order_state == stateName && t.created_date > date1_ && t.created_date < date2_);
+                        var counts = db.tasks.Count(t => (t.user_id == item.Id && t.order_state == stateName) && ((t.created_date >= date1_) && (t.created_date <= date2_)));
                         PersonnelOrderState pos = new PersonnelOrderState { state = stateName, count = counts };
                         person.states.Add(pos);
                     });
