@@ -206,6 +206,22 @@
                         },
                         success: function (responseData) {
                             toastr.success("Görev atandı.", "Tamam");
+                            if ($(".untasked").length === 0) {
+
+                             
+                                $.ajax({
+                                    type: "GET",
+                                    url: "Tasks",
+                                    beforeSend: function () {
+                                        PageBegin();
+                                    },
+                                    success: function (responseData) {
+                                        PageComplate();
+                                        $('#question-list').html(responseData);
+                                    }
+                                });
+
+                            }
                             $(".task-container").toggleClass('sk-loading');
                             $('input[type="checkbox"]').prop('checked', false)
                         },

@@ -118,7 +118,12 @@
         
         function AddSuccess() {
             toastr.success("Soru eklendi.", "Tamam");
-            document.getElementById("form0").reset();
+            $("input[name='fullname']").val("");
+            $("input[name='phone']").val("");
+            $("input[name='phone2']").val("");
+            $("textarea[name='question']").val("");
+            $("textarea[name='note']").val("");
+
             $('.source_select').val($("#select2-source-container").attr("title")).trigger('change');
         }
         function AddFailed() {
