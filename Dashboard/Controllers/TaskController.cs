@@ -330,10 +330,19 @@ namespace QuestionsSYS.Controllers
             
             if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
             var user_id = User.Identity.GetUserId();
-            
+            Tasks task = new Tasks();
+
             try
             {
-                Tasks task = db.tasks.Where(t => t.user_id == user_id && t.id == id).FirstOrDefault();
+                if (User.IsInRole("Admin"))
+                {
+                    task = db.tasks.Where(t => t.id == id).FirstOrDefault();
+                }
+                else
+                {
+                    task = db.tasks.Where(t => t.user_id == user_id && t.id == id).FirstOrDefault();
+                }
+             
                 if(task == null) return new HttpStatusCodeResult(404);
 
 
