@@ -86,6 +86,13 @@
                     {
                         <span class="label label-success">@item.order_state</span>
                     }
+
+                    @if (item.order_state != "İşlem Bekleniyor" && item.order_state != "Başarısız" && item.order_state != "Başarılı")
+                    {
+                        <span class="label label-default">@item.order_state</span>
+                    }
+
+
                     
                 </td>
                 <td>
