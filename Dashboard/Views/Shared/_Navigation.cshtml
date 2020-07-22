@@ -39,7 +39,7 @@
                     SB
                 </div>
             </li>
-           
+
             <li class="@Html.IsSelected(controller: "Dashboards")">
                 <a href="@Url.Action("Index", "Dashboards")"><i class="fa fa-window-maximize"></i> <span class="nav-label">Yönetim</span> </a>
             </li>
@@ -52,7 +52,7 @@
                     <li class="@Html.IsSelected(action: "Feedback")"><a href="@Url.Action("Feedback", "Task")">Geri Dönüşüm <span class="label label-warning pull-right">@feedbackTasks</span></a></li>
                 </ul>
 
-               
+
             </li>
 
             @if (User.IsInRole("Admin"))
@@ -65,6 +65,13 @@
                         <li class="@Html.IsSelected(action: "Import")"><a href="@Url.Action("Import", "Question")">Excel Import</a></li>
                     </ul>
                 </li>
+                <li class="@Html.IsSelected(controller: "Product")">
+                    <a href="@Url.Action("Index", "Product")"><i class="fa fa-cubes"></i> <span class="nav-label">Ürünler</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
+                        <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Product")">Tüm Ürünler</a></li>
+                        <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Product")">Yeni Ürün</a></li>
+                    </ul>
+                </li>
                 <li class="@Html.IsSelected(controller: "Personnel")">
                     <a href="@Url.Action("Index", "Personnel")"><i class="fa fa-user"></i> <span class="nav-label" data-i18n="nav.users">Kullanıcılar</span> </a>
                 </li>
@@ -74,9 +81,29 @@
                 <li class="@Html.IsSelected(controller: "States")">
                     <a href="@Url.Action("Index", "States")"><i class="fa fa-quote-right"></i> <span class="nav-label">Durumlar</span> </a>
                 </li>
+                <li class="@Html.IsSelected(controller: "States")">
+                    <a href="@Url.Action("Index", "Jobs")"><i class="fa fa-quote-right"></i> <span class="nav-label">Meslekler</span> </a>
+                </li>
             }
 
-            @if (Request.Url.Host.Contains("localhost").ToString() == "sad")
+            <li class="@Html.IsSelected(controller: "Customer")">
+                <a href="@Url.Action("Index", "Customer")"><i class="fa fa-address-card"></i> <span class="nav-label">Müşteri</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
+                    <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Customer")">Müşteriler</a></li>
+                    <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Customer")">Yeni Müşteri</a></li>
+                </ul>
+            </li>
+
+            <li class="@Html.IsSelected(controller: "Order")">
+                <a href="@Url.Action("Index", "Order")"><i class="fa fa-shopping-cart"></i> <span class="nav-label">Sipariş</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse @Html.IsSelected(controller: "Dashboards1", cssClass: "in")">
+                    <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Order")">Siparişler</a></li>
+                    <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Order")">Yeni Sipariş</a></li>
+                </ul>
+            </li>
+            
+            @* @if (Request.Url.Host.Contains("localhost").ToString() == "localhost")*@
+            @if (2 == 2)
             {
                 <li class="@Html.IsSelected(controller: "Dashboards1")">
                     <a href="@Url.Action("Dashboard_1", "Dashboards1")"><i class="fa fa-th-large"></i> <span class="nav-label" data-i18n="nav.dashboard">Dashboards</span> <span class="fa arrow"></span></a>
@@ -293,7 +320,7 @@
                     <a href="@Url.Action("Index", "Json")"><i class="fa fa-plug"></i> <span class="nav-label">JSON Examples</span></a>
                 </li>
             }
-           
+
         </ul>
     </div>
 </nav>

@@ -1,0 +1,292 @@
+﻿@model QuestionsSYS.Models.Customer
+
+@{
+    ViewBag.Title = Model.name + " " + Model.lastname;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Müşteri Detay</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Customer")">Müşteriler</a>
+            </li>
+            <li class="active">
+                <strong><a>@Model.name  @Model.lastname</a></strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+
+        <div class="ibox-content">
+
+            <div class="sk-spinner sk-spinner-double-bounce">
+                <div class="sk-double-bounce1"></div>
+                <div class="sk-double-bounce2"></div>
+            </div>
+
+            @using (Ajax.BeginForm("Update/" + Model.id, "Customer", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnComplate();", OnFailure = "AddFailed();", OnBegin = "Begin()" }))
+            {
+
+                <div class="form-group">
+                    <label for="name">Ad</label>
+                    <input required type="text" placeholder="Ad" value="@Model.name" name="name" id="name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Soyad</label>
+                    <input required type="text" placeholder="Soyad" value="@Model.lastname" name="lastname" id="lastname" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="address">Adres</label>
+                    <textarea required type="text" cols="3" rows="3" placeholder="Adres" name="address" id="address" class="form-control">@Model.address</textarea>
+                </div>
+                <div class="form-group">
+                    <select required name="city" id="city" class="city inline form-control">
+                        <option></option>
+                        @foreach (var item in ViewBag.cities)
+                        {
+                            if (Model.city == @item.id)
+                            {
+                                <option selected value="@item.id">@item.city_name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.id">@item.city_name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select required name="town" id="town" class="town inline form-control">
+                        @foreach (var item in ViewBag.towns)
+                        {
+                            if (Model.town == @item.id)
+                            {
+                                <option selected value="@item.id">@item.town_name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.id">@item.town_name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Tel</label>
+                    <input required type="text" value="@Model.phone" data-mask="9999 999 99 99" placeholder="Tel" name="phone" id="phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="birth_date">Doğum Tarihi</label>
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input required type="text" class="form-control" name="birth_date" value="@Model.birth_date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="job">Meslek</label>
+                    <select required name="job" id="job" class="town inline form-control">
+                        @foreach (var item in ViewBag.jobs)
+                        {
+                            if (Model.job == @item.job_name)
+                            {
+                                <option selected value="@item.job_name">@item.job_name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.job_name">@item.job_name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
+
+
+            }
+
+        </div>
+        <br/>
+
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>Müşteri Tarihçesi 
+                </h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content" style="">
+                <div class="table-responsive">
+                    
+                    @if (ViewBag.history.Count > 0)
+                    {
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Açıklama</th>
+                                    <th>Tarih</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                @foreach (var item in ViewBag.history)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="form-control description" style="border-color:#fff" placeholder="Açıklama" value="@item.description" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control date" style="border-color:#fff" placeholder="Tarih" value="@item.date" />
+                                        </td>
+                                        <td>
+                                            @Ajax.ActionLink("Sil", "DeleteHistory", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "Begin();", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
+
+                                            <a  href="/Customer/HistoryDetail/@item.id"  class="btn btn-success btn-sm pull-right" style="margin-left:5px;">Detay</a>
+
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    } else
+                    {
+                        <p>Tarihçe kaydı bulunamadı!</p>
+                    }
+                </div>
+            </div>
+            <div class="ibox-footer">
+                <a href="/Customer/History/@Model.id" class="btn  btn-primary no-margins" type="button">Yeni Kayıt Ekle</a>
+                <span class="pull-right">
+                    Toplam @ViewBag.history.Count kayıt listelendi.
+
+                </span>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/dataPicker")
+
+    <script type="text/javascript">
+
+
+        $(".city").select2({
+            placeholder: "Şehir",
+            allowClear: true
+        });
+
+        $(".town").select2({
+            placeholder: "İlçe",
+            allowClear: true
+        });
+
+        $(".job").select2({
+            placeholder: "Meslek",
+            allowClear: true
+        });
+
+        $("#city").on("change", function (e) {
+            var city_id = $(e.target).val();
+            get_towns(city_id)
+        })
+
+        function get_towns(city_id) {
+            $('.town').append(null).trigger('change');
+            $(".town option").remove();
+            if (!city_id) return
+            $.ajax({
+                type: "POST",
+                url: "/Customer/Town?id=" + city_id,
+                beforeSend: function () {
+                    Begin();
+                },
+                success: function (r) {
+                    OnComplate();
+                    if (r) {
+                        $('.town').append(null).trigger('change');
+                        r.forEach(s => {
+                            $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
+                        })
+                    }
+
+                }
+            });
+        }
+
+        $.fn.datepicker.dates['tr'] = {
+            days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+            daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
+            daysMin: ["Pz", "Pzt", "Sa", "Çr", "Pr", "Cu", "Ct"],
+            months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+            today: "Bugün",
+            clear: "Temizle",
+            weekStart: 1,
+            format: "dd.mm.yyyy"
+        };
+
+        $('.input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            language: "tr",
+            calendarWeeks: true,
+            autoclose: true,
+
+
+        });
+
+        function DeleteSuccess(e) {
+            $(e).parents("tr").remove();
+            $(".pagination-container").first().remove();
+            toastr.success("Tarihçe silindi.", "Tamam");
+        }
+        function DeleteFailed() {
+            toastr.error("Tarihçe silinemedi. tekrar deneyin.", "Hata")
+        }
+
+        function Begin() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+        function AddSuccess() {
+            toastr.success("Müşteri güncellendi.", "Tamam");
+        }
+        function AddFailed() {
+            toastr.error("Numara kullanılıyor veya bir hata oluştu tekrar deneyin.", "Hata")
+        }
+        function OnComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+
+
+    </script>
+}

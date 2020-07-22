@@ -1,0 +1,108 @@
+﻿@model IEnumerable<QuestionsSYS.Models.Product>
+
+@{
+    ViewBag.Title = "Ürünler";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Ürünler</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Ürünler</a></strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row source_list">
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Ürün Adı</th>
+                            <th>Fiyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control product_name" style="border-color:#fff" placeholder="Ürün Adı" value="@Html.DisplayFor(modelItem => item.product_name)" />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control price" style="border-color:#fff" placeholder="Fiyat" value="@Html.DisplayFor(modelItem => item.price)" />
+                            </td>
+                            <td>
+                                <button data-id="@item.id" class="btn btn-danger btn-sm pull-right delete" style="margin-right:5px;">Sil</button>
+                                <button data-id="@item.id" class="btn btn-primary btn-sm pull-right update" style="margin-right:5px;">Güncelle</button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+
+                
+       
+                <div class="m-t-md">
+                    <small class="pull-right">
+                        Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+                    </small>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+    <script type="text/javascript">
+        if (location.search.indexOf("success=failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Kayıt başarılı.", "Tamam")
+        }
+
+
+
+        $(".update").on('click', function (e) {
+            
+            $.post('Update', { 'id': $(e.target).attr('data-id'), 'product_name': $(e.target).parents("tr").find('.product_name').val(), 'price': $(e.target).parents("tr").find('.price').val()  }).done(function (data) {
+                toastr.success("Ürün güncellendi.", "Tamam");
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            }).fail(function () {
+                toastr.error("Tekrar deneyin.", "Hata");
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            }).always(function () {
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            });
+
+        });
+
+        $(".delete").on('click', function (e) {
+            $.post('Delete', { 'id': $(e.target).attr('data-id')}).done(function (data) {
+                toastr.success("Durum silindi.", "Tamam");
+                $(e.target).parents('tr').remove();
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            }).fail(function () {
+                toastr.error("Tekrar deneyin.", "Hata");
+            }).always(function () {
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            });
+
+        });
+    </script>
+}

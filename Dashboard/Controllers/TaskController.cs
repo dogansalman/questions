@@ -49,11 +49,8 @@ namespace QuestionsSYS.Controllers
                    question = q.question,
                    source = q.source,
                    state = t.state,
-                   order_price = t.order_price,
-                   offer_price = t.offer_price,
                    feedback_date = t.feedback_date,
                    contact_date = t.contact_date,
-                   order_unit = t.order_unit,
                    user_id = t.user_id,
                    user_fullname = (from u in db.Users
                                     where u.Id == t.user_id
@@ -345,13 +342,9 @@ namespace QuestionsSYS.Controllers
              
                 if(task == null) return new HttpStatusCodeResult(404);
 
-
                 task.note = model.note;
-                task.offer_price = model.offer_price;
-                task.order_price = model.order_price;
                 task.state = model.state;
                 task.order_state = model.order_state;
-                task.order_unit = model.order_unit;
                 task.feedback_date = model.feedback_date;
                 task.contact_date = model.contact_date;
 

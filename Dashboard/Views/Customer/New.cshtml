@@ -1,0 +1,197 @@
+﻿@model IEnumerable<QuestionsSYS.ModelViews.PersonnelView>
+
+@{
+    ViewBag.Title = "Yeni Müşteri";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Yeni Müşteri</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Customer")">Müşteriler</a>
+            </li>
+            <li class="active">
+                <strong><a>Yeni Müşteri</a></strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+
+        <div class="ibox-content">
+
+            <div class="sk-spinner sk-spinner-double-bounce">
+                <div class="sk-double-bounce1"></div>
+                <div class="sk-double-bounce2"></div>
+            </div>
+
+            @using (Ajax.BeginForm("Add", "Customer", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+            {
+
+                <div class="form-group">
+                    <label for="name">Ad</label>
+                    <input required type="text" placeholder="Ad" name="name" id="name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Soyad</label>
+                    <input required type="text" placeholder="Soyad" name="lastname" id="lastname" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="address">Adres</label>
+                    <textarea required type="text" cols="3" rows="3" placeholder="Adres" name="address" id="address" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <select required name="city" id="city" class="city inline form-control">
+                        <option></option>
+                        @foreach (var item in ViewBag.cities)
+                        {
+                            <option value="@item.id">@item.city_name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select required name="town" id="town" class="town inline form-control">
+                        <option></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Tel</label>
+                    <input required type="text" data-mask="9999 999 99 99" placeholder="Tel" name="phone" id="phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="birth_date">Doğum Tarihi</label>
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input required type="text" class="form-control" name="birth_date" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="job">Meslek</label>
+                    <select required name="job" id="job" class="job inline form-control">
+
+                        <option></option>
+                        @foreach (var item in ViewBag.jobs)
+                        {
+                            <option value="@item.id">@item.job_name</option>
+                        }
+                    </select>
+                </div>
+
+                <button class="btn  btn-primary no-margins" type="submit">Ekle</button>
+            }
+
+        </div>
+
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/dataPicker")
+
+    <script type="text/javascript">
+
+        $(".job").select2({
+            placeholder: "Meslek",
+            allowClear: true
+        });
+
+        $(".city").select2({
+            placeholder: "Şehir",
+            allowClear: true
+        });
+
+        $(".town").select2({
+            placeholder: "İlçe",
+            allowClear: true
+        });
+
+        $("#city").on("change", function (e) {
+            var city_id = $(e.target).val();
+            get_towns(city_id)
+        })
+
+        function get_towns(city_id) {
+            $('.town').append(null).trigger('change');
+            $(".town option").remove();
+            if(!city_id) return
+            $.ajax({
+                type: "POST",
+                url: "/Customer/Town?id=" + city_id,
+                beforeSend: function () {
+                    OnAdding();
+                },
+                success: function (r) {
+                    OnAddComplate();
+                    if (r) {
+                        $('.town').append(null).trigger('change');
+                        r.forEach(s => {
+                            $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
+                        })
+                    }
+                    
+                }
+            });
+        }
+
+        $.fn.datepicker.dates['tr'] = {
+            days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+            daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
+            daysMin: ["Pz", "Pzt", "Sa", "Çr", "Pr", "Cu", "Ct"],
+            months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+            today: "Bugün",
+            clear: "Temizle",
+            weekStart: 1,
+            format: "dd.mm.yyyy"
+        };
+
+        $('.input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            language: "tr",
+            calendarWeeks: true,
+            autoclose: true,
+
+        });
+        
+        function AddSuccess() {
+            toastr.success("Müşteri eklendi.", "Tamam");
+            $("input[type='text']").val("")
+            $("textarea").val("");
+            $('.city').append(null).trigger('change');
+            $('.town option').remove();
+            $('.town').append(null).trigger('change');
+        }
+        function AddFailed() {
+            toastr.error("Numara kullanılıyor veya bir hata oluştu tekrar deneyin.", "Hata")
+        }
+
+        function OnAdding() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function OnAddComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+     
+    </script>
+}

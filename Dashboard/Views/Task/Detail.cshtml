@@ -32,7 +32,7 @@
                 <div class="form-group">
                     <label for="name">Ad Soyad</label>
                     <p>@Html.DisplayFor(modelItem => modelItem.fullname)</p>
-                 
+
                 </div>
                 <div class="form-group">
                     <label for="phone">Tel</label>
@@ -56,20 +56,17 @@
                     <p>@Html.DisplayFor(modelItem => modelItem.user_fullname)</p>
                 </div>
                 <div class="form-group">
+                    <label for="source">Sipariş Durumu</label>
+                    <br />
+                    <span name="state" id="state">@((Model.is_ordered) == true ? "Alındı" : "Alınmadı")</span>
+                </div>
+                <div class="form-group">
                     <label for="question">Görev Notu</label>
                     <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3">
 @Html.DisplayFor(modelItem => modelItem.note)
                     </textarea>
                 </div>
-                <div class="form-group">
-                    <label for="source">Sipariş Durumu</label>
-                    <br />
-                    <select name="state" id="state" class="state_select form-control">
-                        <option></option>                       
-                        <option @((Model.state) == true ? "selected" : String.Empty) value="true">Alındı</option>
-                        <option @((Model.state) == false ? "selected" : String.Empty) value="false">Alınmadı</option>
-                    </select>
-                </div>
+
                 <div class="form-group">
                     <label for="order_state">Görev Durumu</label>
                     <br />
@@ -88,29 +85,15 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="order_price">Sipariş Tutarı</label>
-                    <input type="text" placeholder="Sipariş Tutarı" name="order_price" id="order_price" value="@Html.DisplayFor(modelItem => modelItem.order_price)" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="order_unit">Sipariş Adedi</label>
-                    <input type="number"  placeholder="Sipariş Adedi" name="order_unit" id="order_unit" value="@Html.DisplayFor(modelItem => modelItem.order_unit)" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="order_unit">Teklif Fiyatı</label>
-                    <input type="text" placeholder="Teklif Fiyat" name="offer_price" id="offer_price" value="@Html.DisplayFor(modelItem => modelItem.offer_price)" class="form-control">
-                </div>
-
                 <div class="form-group" id="feedback_date">
                     <label for="feedback_date">Geri Dönüşüm Tarihi</label>
                     <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="feedback_date" id="feedback_date"  value="@Html.DisplayFor(modelItem => modelItem.feedback_date)" class="form-control" >
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="feedback_date" id="feedback_date" value="@Html.DisplayFor(modelItem => modelItem.feedback_date)" class="form-control">
                     </div>
                 </div>
 
                 <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
+                <a href="/Order/New/@Html.DisplayFor(modelItem => modelItem.id)" class="btn  btn-primary no-margins"> <i class="fa fa-shopping-cart"></i> Yeni Sipariş Oluştur</a>
             }
         </div>
     </div>

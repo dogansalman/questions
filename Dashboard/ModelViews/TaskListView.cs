@@ -17,9 +17,7 @@ namespace QuestionsSYS.ModelViews
         public string user_id { get; set; }
         public string user_fullname { get; set; }
         public bool state { get; set; }
-        public int order_unit { get; set; }
-        public double order_price { get; set; }
-        public double offer_price { get; set; }
+        public bool is_ordered { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? feedback_date { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]

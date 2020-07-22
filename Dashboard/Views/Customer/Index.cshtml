@@ -1,0 +1,151 @@
+﻿@model IEnumerable<QuestionsSYS.ModelViews.CustomerList>
+
+@{
+    ViewBag.Title = "Müşteriler";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Müşteriler</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Müşteriler</a></strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2"></div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row ibox-content">
+        <div class="sk-spinner sk-spinner-double-bounce">
+            <div class="sk-double-bounce1"></div>
+            <div class="sk-double-bounce2"></div>
+        </div>
+
+        <table class="table table-striped table-bordered table-hover dataTables-example">
+               <thead>
+        <tr>
+            <th>Ad Soyad</th>
+            <th>Tel</th>
+            <th>İl/İlçe</th>
+            <th>Adres</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                   @item.name @item.lastname
+                </td>
+                <td>
+                    @item.phone 
+                </td>
+                <td>
+                    @item.city / @item.town
+                </td>
+                <td>
+                    <strong class="text-capitalize">@item.address</strong>
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "Begin();", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
+                    }
+
+                    @Html.ActionLink(
+                        linkText: "Detay",
+                        actionName: "Detail",
+                        controllerName: "Customer",
+
+                        routeValues: new
+                        {
+                            id = item.id
+                        },
+                        htmlAttributes: new { @class = "btn btn-sm btn-success pull-right", @target = "_blank" }
+                    )
+                </td>
+           
+                
+            </tr>
+        }
+    </tbody>
+        </table>
+
+
+        <div id="list-container"></div>
+
+        <div class="m-t-md">
+            <small class="pull-right">
+                Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+            </small>
+
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+
+        function DeleteSuccess(e) {
+            $(e).parents("tr").remove();
+            $(".pagination-container").first().remove();
+            toastr.success("Kayıt silindi.", "Tamam");
+        }
+        function DeleteFailed() {
+            toastr.error("Kayıt silinmedi. tekrar deneyin.", "Hata")
+        }
+
+        function Begin() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function OnComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+            $('.ibox-content').removeClass('sk-loading');
+        }
+
+
+        $(document).ready(function () {
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy' },
+                    { extend: 'csv' },
+                    { extend: 'excel', title: 'ExampleFile' },
+                    { extend: 'pdf', title: 'ExampleFile' },
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ]
+
+            });
+        });
+
+
+    </script>
+}

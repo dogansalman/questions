@@ -1,22 +1,20 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using QuestionsSYS.Identity;
 
 namespace QuestionsSYS.ModelViews
 {
-    public class QuestionView
+    public class CustomerList
     {
-
+ 
         public int id { get; set; }
-        public string question { get; set; }
-        public string note { get; set; }
-        public int state { get; set; }
         public string name { get; set; }
         public string lastname { get; set; }
+        public string city { get; set; }
+        public string town { get; set; }
+        public string address { get; set; }
         public string phone { get; set; }
-        public string phone2 { get; set; }
-        public ApplicationUser user { get; set; }
-        public string source { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime added { get; set; } = DateTime.Now;
+        public string user_id { get; set; }
     }
 }

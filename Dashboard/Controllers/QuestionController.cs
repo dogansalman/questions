@@ -302,10 +302,11 @@ namespace QuestionsSYS.Controllers
             }
 
 
+            DateTime d = DateTime.Now;
 
             Question q = new Question
             {
-                added = model.added,
+                //added = DateTime.Now,
                 fullname = model.fullname,
                 note = model.note,
                 phone = model.phone,

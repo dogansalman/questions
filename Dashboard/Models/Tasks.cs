@@ -14,10 +14,8 @@ namespace QuestionsSYS.Models
         public DateTime created_date { get; set; } = DateTime.Now;
         public DateTime? called_date { get; set; }
         public bool state { get; set; }
+        public bool is_ordered { get; set; } = false;
         public string order_state { get; set; }
-        public int order_unit { get; set; }
-        public double order_price { get; set; }
-        public double offer_price { get; set; }
         public DateTime? feedback_date { get; set; }
         public DateTime? contact_date { get; set; }
         public string note { get; set; }
