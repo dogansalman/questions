@@ -5,9 +5,25 @@
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Yeni Sipariş</h2>
-        <ol class="breadcrumb">
+    <div class="col-lg-12">
+        <h2>
+            Sipariş Detayları
+            @if (Model.state == "Onay Bekliyor")
+            {
+                <span style="float:right" class="label label-warning">Onay Bekleniyor</span>
+            }
+            @if (Model.state == "Onaylandı")
+            {
+                <span style="float:right" class="label label-primary">Onaylandı</span>
+            }
+            @if (Model.state == "Red Edildi")
+            {
+                <span style="float:right" class="label label-danger">Red</span>
+            }
+        </h2>
+
+
+        <l class="breadcrumb">
             <li>
                 <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
             </li>
@@ -15,11 +31,10 @@
                 <a href="@Url.Action("Index", "Order")">Siparişlerim</a>
             </li>
             <li class="active">
-                <strong>Yeni Sipariş</strong>
+                <strong>Sipariş Detayları</strong>
             </li>
-        </ol>
+        </l>
     </div>
-
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -30,18 +45,16 @@
                 <div class="form-group">
                     <h2>
                         Sipariş Bilgileri
-                        @if (Model.state == "Onay Bekliyor")
+                        @if (User.IsInRole("Admin") || User.IsInRole("Logistics User"))
                         {
-                            <span style="float:right" class="label label-warning">Onay Bekleniyor</span>
+                            <select required style="width:200px; float:right;" name="state" id="state" class="state form-control">
+                                <option @(Model.state == "Onaylandı" ? "selected" : String.Empty) value="Onaylandı">Onaylandı</option>
+                                <option @(Model.state == "İptal" ? "selected" : String.Empty) value="İptal">İptal</option>
+                                <option @(Model.state == "Onay Bekliyor" ? "selected" : String.Empty) value="Onay Bekliyor">Onay Bekliyor</option>
+                            </select>
+
                         }
-                        @if (Model.state == "Onaylandı")
-                        {
-                            <span style="float:right" class="label label-primary">Onaylandı</span>
-                        }
-                        @if (Model.state == "Red Edildi")
-                        {
-                            <span style="float:right" class="label label-danger">Red</span>
-                        }
+
                     </h2>
                     <label for="customer_id">Müşteri</label>
                     <select required name="customer_id" id="customer_id" class="customer_id inline form-control">
@@ -87,10 +100,6 @@
                     <label for="phone">Tel</label>
                     <input autocomplete="off" type="number" value="@Model.phone" required type="text" placeholder="Tel" name="phone" id="phone" class="form-control">
                 </div>
-
-
-
-
                 <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
             </form>
         </div>
@@ -99,22 +108,67 @@
         <div class="row">
             <div class="ibox-content">
                 <h2>Ürün Bilgileri</h2>
-                <form role="form" action="/Order/ProductsAdd/@Model.id" method="post">
-                    <div class="table-responsive">
-                        <table class="table table-responsive">
-                            <thead>
-                                <tr>
-                                    <th>Ürün</th>
-                                    <th>Miktar</th>
-                                    <th>Fiyat</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tfoot>
+                <div class="table-responsive">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Ürün</th>
+                                <th>Miktar</th>
+                                <th>Fiyat</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.order_products)
+                            {
                                 <tr>
                                     <td>
                                         <div class="form-group">
-                                            <select required name="product_name" id="products" class="products inline form-control">
+                                            <input type="hidden" id="id" value="@item.id" />
+                                            <select style="width:300px;" required name="product_name" id="products" class="products inline form-control">
+                                                <option></option>
+                                                @foreach (var pro in ViewBag.products)
+                                                {
+                                                    <option @(item.product_name == pro.product_name ? "selected" : String.Empty) value="@pro.product_name">@pro.product_name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input autocomplete="off" type="number" value="@item.qty" required placeholder="Miktar" name="qty" id="qty" class="form-control">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input autocomplete="off" type="text" value="@item.price" data-val-regex-pattern="([a-zA-Z0-9 .&amp;&#39;-]+)" required type="text" placeholder="Fiyat" name="price " id="price" class="form-control">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" style="margin-left:5px;" class="btn btn-success btn-sm pull-right update_product_btn">Güncelle</button>
+
+
+                                        @Ajax.ActionLink("Ürün Sil", "DeleteProduct", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "Success('Ürün kaydı silindi.');", OnComplete = "LoadComplate(true);", OnFailure = "Failed('Bir hata oluştu. Tekrar deneyin');", OnBegin = "OnLoading()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
+                                    </td>
+                                </tr>
+
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <form role="form" action="/Order/ProductsAdd/@Model.id" method="post">
+                                <tr>
+                                    <td colspan="3">
+                                        <h3>
+                                            Yeni Ürün Ekle
+                                            <small>(Siparişi eklemek istediğiniz ürünü seçiniz.)</small>
+                                        </h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <select style="width:300px" required name="product_name" id="products" class="products inline form-control">
                                                 <option></option>
                                                 @foreach (var item in ViewBag.products)
                                                 {
@@ -135,95 +189,168 @@
                                     </td>
                                     <td><button class="btn  btn-primary no-margins" type="submit">Ekle</button></td>
                                 </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                            </form>
+                        </tfoot>
+                    </table>
 
-                </form>
+                    <h2 style="display:block">Tutar: @String.Format("{0:c}", (Model.total - Model.discount))</h2>
+                    <label for="discount">İndirim (TL)</label>
+                    <form role="form" class="form-inline" action="/Order/Discount?order_id=@Model.id" method="post">
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" value="@Model.discount" data-val-regex-pattern="([a-zA-Z0-9 .&amp;&#39;-]+)" required type="text" placeholder="İndirim Tutarı" name="discount" id="discount" class="form-control">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Uygula</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-    </div>
+</div>
 
-    @section Styles{
-        @Styles.Render("~/plugins/toastrStyles")
-        @Styles.Render("~/plugins/select2Styles")
-    }
-    @section Scripts{
-        @Scripts.Render("~/plugins/toastr")
-        @Scripts.Render("~/plugins/select2")
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/select2Styles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
 
-        <script type="text/javascript">
+<script type="text/javascript">
 
-            function AddSuccess() {
-                toastr.success("Ürün eklendi.", "Tamam");
+        function Success(msg) {
+            toastr.success(msg, "Tamam");
+        }
+        function Failed(msg) {
+            toastr.error(msg, "Hata")
+        }
+
+        function OnLoading() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function LoadComplate(reload_req = false) {
+            if (reload_req) {
+               window.location.reload();
             }
-            function AddFailed() {
-                toastr.error("Numara kullanılıyor veya bir hata oluştu tekrar deneyin.", "Hata")
-            }
+            $('.ibox-content').toggleClass('sk-loading');
+        }
 
-            function OnAdding() {
-                $('.ibox-content').toggleClass('sk-loading');
-            }
+        if (location.search.indexOf("success=failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
 
-            function OnAddComplate() {
-                $('.ibox-content').toggleClass('sk-loading');
-            }
+        if (location.search.indexOf("exist_product=1") > -1) {
+            toastr.error("Eklemek istenen ürün zaten siparişte bulunmaktadır.", "Hata")
+        }
 
-            if (location.search.indexOf("success=failed") > -1) {
-                toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
-            }
-            if (location.search.indexOf("success=ok") > -1) {
-                toastr.success("Kayıt güncellendi.", "Tamam")
-            }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Kayıt güncellendi.", "Tamam")
+        }
 
-            $(".customer_id").select2({
-                placeholder: "Müşteri seçin",
-                allowClear: true
-            });
+        $(".customer_id").select2({
+            placeholder: "Müşteri seçin",
+            allowClear: true
+        });
 
 
-            $(".city").select2({
-                placeholder: "Şehir",
-                allowClear: true
-            });
-            $(".products").select2({
-                placeholder: "Ürünler",
-                allowClear: true
-            });
+        $(".city").select2({
+            placeholder: "Şehir",
+            allowClear: true
+        });
+        $(".products").select2({
+            placeholder: "Ürünler",
+            allowClear: true
+        });
 
-            $(".town").select2({
-                placeholder: "İlçe",
-                allowClear: true
-            });
+        $(".town").select2({
+            placeholder: "İlçe",
+            allowClear: true
+        });
 
-            $("#city").on("change", function (e) {
-                var city_id = $(e.target).val();
-                get_towns(city_id)
-            })
+        $("#city").on("change", function (e) {
+            var city_id = $(e.target).val();
+            get_towns(city_id)
+        })
 
-            function get_towns(city_id) {
-                $('.town').append(null).trigger('change');
-                $(".town option").remove();
-                if (!city_id) return
-                $.ajax({
-                    type: "POST",
-                    url: "/Customer/Town?id=" + city_id,
-                    beforeSend: function () {
-                        OnAdding();
-                    },
-                    success: function (r) {
-                        OnAddComplate();
-                        if (r) {
-                            $('.town').append(null).trigger('change');
-                            r.forEach(s => {
-                                $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
-                            })
-                        }
-
+        function get_towns(city_id) {
+            $('.town').append(null).trigger('change');
+            $(".town option").remove();
+            if (!city_id) return
+            $.ajax({
+                type: "POST",
+                url: "/Customer/Town?id=" + city_id,
+                beforeSend: function () {
+                    OnLoading();
+                },
+                success: function (r) {
+                    LoadComplate();
+                    if (r) {
+                        $('.town').append(null).trigger('change');
+                        r.forEach(s => {
+                            $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
+                        })
                     }
-                });
-            }
 
-        </script>
+                }
+            });
+        }
+
+        $(".state").on("change", (e) => {
+            var state = e.target.value;
+            $.ajax({
+                type: "POST",
+                url: "/Order/State?order_id=" + @Model.id,
+                data: {
+                    state: state
+                },
+                beforeSend: function () {
+                    OnLoading();
+                },
+                success: function (r) {
+                    LoadComplate(true);
+                }
+            });
+
+        })
+
+
+        $(".update_product_btn").on('click', function (e) {
+            var price = $(e.target).parents("tr").find("#price").val();
+            var qty = $(e.target).parents("tr").find("#qty").val();
+            var product_name = $(e.target).parents("tr").find("#products").val();
+            var id = $(e.target).parents("tr").find("#id").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Order/ProductUpdate?order_id=" + @Model.id,
+                data: {
+                    order_id: @Model.id,
+                    price: price,
+                    qty: qty,
+                    id: id,
+                    product_name: product_name
+
+                },
+                beforeSend: function () {
+                    OnLoading();
+                },
+                success: function (r) {
+                    toastr.success("Ürün güncellendi.", "Tamam")
+                    LoadComplate(true);
+
+                }
+            });
+        });
+
+
+    if("Onay Bekliyor" != "@Model.state.ToString()") {
+        $("input").attr("readonly", true)
+        $("textarea").attr("readonly", true)
+        $(".ibox-content button").attr("disabled", true)
+        $(".ibox-content a").attr("disabled", true)
     }
+
+
+</script>
+}

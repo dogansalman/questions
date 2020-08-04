@@ -23,29 +23,34 @@
             userManager = new UserManager<ApplicationUser>(userStore);
 
 
-            // Add roles
-            //RoleStore<ApplicationRole> roleStore = new RoleStore<ApplicationRole>(db);
-            //RoleManager<ApplicationRole> roleManager = new RoleManager<ApplicationRole>(roleStore);
+            //Add roles
+            RoleStore<ApplicationRole> roleStore = new RoleStore<ApplicationRole>(db);
+            RoleManager<ApplicationRole> roleManager = new RoleManager<ApplicationRole>(roleStore);
 
-            //if (!roleManager.RoleExists("Admin"))
-            //{
-            //    ApplicationRole adminRole = new ApplicationRole("Admin", "Sistem yöneticisi");
-            //    roleManager.Create(adminRole);
-            //}
-            //if (!roleManager.RoleExists("User"))
-            //{
-            //    ApplicationRole userRole = new ApplicationRole("User", "Sistem kullanıcısı, yorum eklemek için gereklidir");
-            //    roleManager.Create(userRole);
-            //}
+            if (!roleManager.RoleExists("Admin"))
+            {
+                ApplicationRole adminRole = new ApplicationRole("Admin", "Sistem yöneticisi");
+                roleManager.Create(adminRole);
+            }
+            if (!roleManager.RoleExists("User"))
+            {
+                ApplicationRole userRole = new ApplicationRole("User", "Sistem kullanıcısı");
+                roleManager.Create(userRole);
+            }
+            if (!roleManager.RoleExists("Logistics User"))
+            {
+                ApplicationRole userRole = new ApplicationRole("Logistics User", "Sistem kullanıcısı, Ürün lojistik yetkisi");
+                roleManager.Create(userRole);
+            }
 
 
-            //ApplicationUser user = new ApplicationUser();
-            //user.Name = "Ad";
-            //user.Surname = "Soyad";
-            //user.Email = "admin@mail.com";
-            //user.UserName = "admin";
-            //IdentityResult Iresult = userManager.Create(user, "password");
-            //userManager.AddToRole(user.Id, "Admin");
+            ApplicationUser user = new ApplicationUser();
+            user.Name = "Ad";
+            user.Surname = "Soyad";
+            user.Email = "admin@mail.com";
+            user.UserName = "admin";
+            IdentityResult Iresult = userManager.Create(user, "password");
+            userManager.AddToRole(user.Id, "Admin");
 
 
 
