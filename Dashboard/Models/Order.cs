@@ -40,7 +40,10 @@ namespace QuestionsSYS.Models
         public string state { get; set; } = "Onay Bekliyor";
         public List<OrderProduct> order_products {get; set; }
         
+        [StringLength(255)]
+        public string cargo { get; set; }
 
-
+        [StringLength(255)]
+        public string cargo_barcode { get; set; }
     }
 }

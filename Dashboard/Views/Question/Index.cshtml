@@ -75,21 +75,19 @@
             </div>
             <h2>Görev</h2>
             <p>
-                <small>Seçtiğiniz soruları personele görevlendirmek aşağıda formu doldurun.</small>
+    
+                <small>Seçtiğiniz görev olarak atamak için aşağıdaki butonları kullanabilirsiniz.</small>
             </p>            
             <div class="form-inline">
-                <div class="form-group">
-                    <label for="role" class="sr-only">Rol</label>
-                    <select name="source" id="source" class="personnel-list form-control">
-                        <option></option>
-                        @foreach (var item in ViewBag.personnel)
-                        {
-                            <option value="@item.Id">@item.Name @item.Surname </option>
-                        }
-                    </select>
-                    <button id="add_task" class="btn  btn-sm btn-primary no-margins">Görev Ekle</button>
-                </div>
-             </div>
+              
+            <div class="form-group">
+                @foreach (var item in ViewBag.personnel)
+                {
+
+                <button style="background-color: @item.color; border-color:@item.color" user-id="@item.Id" class="btn  btn-sm btn-primary no-margins add_task">@item.Name @item.Surname</button>
+                }
+            </div>
+            </div>
             
             
         </div>
@@ -191,8 +189,10 @@
                     });
                 })
 
-                $("#add_task").on("click", function () {
-                    var data = { user_id: $(".personnel-list").val(), questions: [] };
+
+                $(".add_task").on("click", function (e) {
+                    
+                    var data = { user_id: e.target.getAttribute("user-id"), questions: [] };
                     var selectedQuestions = Array.from($(".checkbox-success input:checked"));
                     selectedQuestions.forEach(sq => data.questions.push($(sq).attr("data-item")));
 
@@ -207,7 +207,7 @@
                             toastr.success("Görev atandı.", "Tamam");
                             if ($(".untasked").length === 0) {
 
-                             
+
                                 $.ajax({
                                     type: "GET",
                                     url: "Tasks",
@@ -232,7 +232,7 @@
                                 return;
                             }
                             toastr.error("Personel seçmediniz veya bir hata oluştu. Sayfayı yenileyip tekrar deneyin.", "Hata");
-                            
+
                         }
                     })
                 })

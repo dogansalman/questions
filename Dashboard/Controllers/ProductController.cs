@@ -9,6 +9,11 @@ using System.Security.Permissions;
 
 namespace QuestionsSYS.Controllers
 {
+
+    public class ProductName
+    {
+        public string product_name { get; set; }
+    }
     public class ProductController : Controller
     {
         DatabaseContexts db = new DatabaseContexts();
@@ -85,5 +90,24 @@ namespace QuestionsSYS.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Price([Bind(Include = "product_name")] ProductName model)
+        {
+            if (!ModelState.IsValid) return new HttpStatusCodeResult(400);
+            try
+            {
+                Product s = db.products.Where(src => src.product_name == model.product_name).FirstOrDefault();
+                return Json(s);
+               
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500);
+                throw;
+            }
+        }
+
     }
 }

@@ -71,10 +71,11 @@
                 }
             </td>
             <td>
-                @if (User.IsInRole("Admin"))
+                @if (item.order_state == "Onay Bekliyor")
                 {
                     @Ajax.ActionLink("Sil", "Delete", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "Begin();", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
                 }
+
 
                 @Html.ActionLink(
                     linkText: "Detay",

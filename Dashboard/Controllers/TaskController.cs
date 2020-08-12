@@ -8,6 +8,7 @@ using QuestionsSYS.Models;
 using Microsoft.AspNet.Identity;
 using PagedList;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace QuestionsSYS.Controllers
 {
@@ -65,7 +66,7 @@ namespace QuestionsSYS.Controllers
             return View(tasks);
         }
 
-        public ActionResult All(int page = 1, string SearchString = null, string type = null, string personnel = null)
+        public ActionResult All(int page = 1, string SearchString = null, string type = null, string personnel = null, string sort = null)
         {
             ViewBag.SearchString = SearchString;
             ViewBag.personnel = personnel;
@@ -96,15 +97,17 @@ namespace QuestionsSYS.Controllers
                                     ).FirstOrDefault()
                }
                );
+
+            
             if (!User.IsInRole("Admin"))
             {
                 tasks = tasks.Where(t => t.user_id == user_id);
             }
-            if(SearchString != null)
+            if(!String.IsNullOrEmpty(SearchString))
             {
                 tasks = tasks.Where(t => t.phone.Contains(SearchString) || t.phone2.Contains(SearchString) || t.fullname.Contains(SearchString));
             }
-            if (type != null)
+            if (!String.IsNullOrEmpty(type))
             {
                 tasks = tasks.Where(t => t.order_state.ToLower() == type.ToLower());
             }
@@ -113,7 +116,17 @@ namespace QuestionsSYS.Controllers
                 tasks = tasks.Where(t => t.user_id == personnel);
             }
 
-            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.OrderByDescending(ta => ta.created_date), page, 20);
+            if (!String.IsNullOrEmpty(sort) && sort == "question_date")
+            {
+                tasks = tasks.OrderBy(a => a.created_date);
+            }
+
+            if (!String.IsNullOrEmpty(sort) && sort == "state")
+            {
+                tasks = tasks.OrderBy(a => a.contact_date);
+            }
+
+            PagedList<TaskListView> model = new PagedList<TaskListView>(tasks.ToList(), page, 20);
             return View(model);
             
         }

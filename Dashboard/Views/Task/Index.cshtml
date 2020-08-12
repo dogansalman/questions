@@ -38,9 +38,16 @@
                         <option value="İşlem Bekleniyor">İşlem Bekleniyor</option>
                     </select>
                 </div>
-
             </div>
-
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select name="sort" id="sort" class="sort_select inline form-control">
+                        <option></option>
+                        <option value="question_date">Soru Tarihine Göre</option>
+                        <option value="state">Görüşme Durumuna Göre</option>
+                    </select>
+                </div>
+            </div>
             @if (User.IsInRole("Admin"))
             {
                 <div class="col-md-3">
@@ -56,13 +63,13 @@
 
                 </div>
             }
-            
-            
-            <div class="col-md-6 pull-right">
+
+
+            <div class="col-md-3 pull-right">
                 <div class="input-group">
                     @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "input-sm form-control searchterm", @placeholder = "Ad, Soyad, Tel" })
                     <span class="input-group-btn">
-                        <input type="button" id="search-btn"  class="btn btn-sm btn-primary search" value="Ara" />
+                        <input type="button" id="search-btn" class="btn btn-sm btn-primary search" value="Ara" />
                     </span>
                 </div>
             </div>
@@ -145,6 +152,12 @@
             placeholder: "Görev Durumu",
             allowClear: true
         });
+
+        $(".sort_select").select2({
+            placeholder: "Sıralama",
+            allowClear: true
+        });
+
         $(".personnel_select").select2({
             placeholder: "Personel seçin",
             allowClear: true
@@ -201,6 +214,37 @@
                 }
             });
         })
+
+
+        $("#sort").on("change", function (e) {
+
+            var name = $(e.target).val();
+            var QueryString = getParameterByName("filter") || "All";
+
+
+           
+
+            var url = updateQueryStringParameter(location.href, "sort", name);
+
+            window.history.pushState({ path: url }, '', url);
+
+            if (!name) url = removeURLParameter(url, "sort");
+
+            $.ajax({
+                type: "GET",
+                url: QueryString + new URL(url).search,
+                beforeSend: function () {
+                    PageBegin();
+                },
+                success: function (responseData) {
+                    PageComplate();
+                    $('#list-container').html(responseData);
+                }
+            });
+        })
+
+
+
         var query = getParameterByName("filter") || "All";
 
         $("#search-btn").on("click", function () {

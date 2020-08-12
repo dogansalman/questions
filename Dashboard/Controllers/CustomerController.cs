@@ -54,6 +54,7 @@ namespace QuestionsSYS.Controllers
         {
             ViewBag.cities = db.cities.ToList();
             ViewBag.jobs = db.jobs.ToList();
+           
 
             return View();
         }
@@ -215,6 +216,14 @@ namespace QuestionsSYS.Controllers
                 return new HttpStatusCodeResult(500, exs.Message.ToString());
             }
            
+        }
+        [HttpPost]
+        [Authorize]
+        public ActionResult Customer(int id)
+        {
+            Customer c = db.customers.Where(cu => cu.id == id).FirstOrDefault();
+            if (c == null) Json(null);
+            return Json(c);
         }
         public ActionResult Detail(int? id)
         {

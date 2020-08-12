@@ -100,6 +100,22 @@
                     <label for="phone">Tel</label>
                     <input autocomplete="off" type="number" value="@Model.phone" required type="text" placeholder="Tel" name="phone" id="phone" class="form-control">
                 </div>
+
+                <div class="form-group">
+                    <label for="cargo">Kargo</label>
+                    <select  @(!User.IsInRole("Admin") && !User.IsInRole("Logistics User") ? "disabled" : String.Empty) required name="cargo" id="cargo" class="cargo inline form-control">
+                        <option></option>
+                        @foreach (var item in ViewBag.cargo)
+                        {
+                            <option @(item.cargo_company == Model.cargo ? "selected" : String.Empty) value="@item.cargo_company">@item.cargo_company</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="barcode">Barkod</label>
+                    <input autocomplete="off"   @(!User.IsInRole("Admin") && !User.IsInRole("Logistics User") ? "disabled" : String.Empty) type="number" value="@Model.cargo_barcode" required type="text" placeholder="Barcode" name="cargo_barcode" id="cargo_barcode" class="form-control">
+                </div>
+
                 <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
             </form>
         </div>
@@ -268,12 +284,34 @@
             allowClear: true
         });
 
-        $("#city").on("change", function (e) {
+        $("#city").on("change", function (e, d) {
             var city_id = $(e.target).val();
-            get_towns(city_id)
+            get_towns(city_id, d)
         })
 
-        function get_towns(city_id) {
+
+        $(".products").on("change", function (e) {
+            var product_name = $(e.target).val();
+            console.log(product_name);
+            $.ajax({
+                type: "POST",
+                url: "/Product/Price?product_name=" + product_name,
+                beforeSend: function () {
+                    OnLoading();
+                },
+                success: function (r) {
+                    LoadComplate();
+                    if (r) {
+                        $(e.target).parents("tr").find("#price").val(r.price);
+                    }
+
+                }
+            });
+         
+        })
+
+
+        function get_towns(city_id, town = null) {
             $('.town').append(null).trigger('change');
             $(".town option").remove();
             if (!city_id) return
@@ -286,15 +324,52 @@
                 success: function (r) {
                     LoadComplate();
                     if (r) {
-                        $('.town').append(null).trigger('change');
+                        
                         r.forEach(s => {
                             $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
                         })
+                        $('.town').append(null).trigger('change');
+                        if (town) $('.town').val(town.town_id).trigger("change");
                     }
 
                 }
             });
         }
+
+        $(".customer_id").on("change", function (e) {
+            var customer_id = $(e.target).val();
+            get_customer(customer_id)
+        })
+
+
+        function get_customer(customer_id) {
+
+            if (!customer_id) return
+            $.ajax({
+                type: "POST",
+                url: "/Customer/Customer?id=" + customer_id,
+                data: {
+                    id: customer_id
+                },
+                beforeSend: function () {
+                    OnLoading();
+                },
+                success: function (r) {
+                    console.log(r);
+                    LoadComplate();
+                    if (r) {
+                        $("#name").val(r.name);
+                        $("#lastname").val(r.lastname);
+                        $("#address").val(r.address);
+                        $("#phone").val(r.phone);
+                        $("#city").val(r.city).trigger("change", { town_id: r.town });
+                        $("#phone").val(r.phone);
+
+                    }
+                }
+            });
+        }
+
 
         $(".state").on("change", (e) => {
             var state = e.target.value;

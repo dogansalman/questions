@@ -15,6 +15,7 @@ namespace QuestionsSYS.ModelViews
         [Required]
         public string Username { get; set; }
         public string Password { get; set; }
+        public string color { get; set; }
 
     }
 }

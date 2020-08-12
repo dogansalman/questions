@@ -192,6 +192,7 @@
     <Compile Include="Context\DatabaseContexts.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AppViewsController.cs" />
+    <Compile Include="Controllers\CargoController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\CSSAnimationsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\CustomerHistory.cs" />
+    <Compile Include="Models\Cargo.cs" />
     <Compile Include="Models\Jobs.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderProduct.cs" />
@@ -1806,6 +1808,7 @@
     <Content Include="Views\Order\New.cshtml" />
     <Content Include="Views\Order\Detail.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\Cargo\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

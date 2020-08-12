@@ -44,13 +44,13 @@
             }
 
 
-            ApplicationUser user = new ApplicationUser();
-            user.Name = "Ad";
-            user.Surname = "Soyad";
-            user.Email = "admin@mail.com";
-            user.UserName = "admin";
-            IdentityResult Iresult = userManager.Create(user, "password");
-            userManager.AddToRole(user.Id, "Admin");
+            //ApplicationUser user = new ApplicationUser();
+            //user.Name = "Ad";
+            //user.Surname = "Soyad";
+            //user.Email = "admin@mail.com";
+            //user.UserName = "admin";
+            //IdentityResult Iresult = userManager.Create(user, "password");
+            //userManager.AddToRole(user.Id, "Admin");
 
 
 

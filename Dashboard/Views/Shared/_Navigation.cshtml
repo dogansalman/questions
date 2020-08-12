@@ -81,8 +81,11 @@
                 <li class="@Html.IsSelected(controller: "States")">
                     <a href="@Url.Action("Index", "States")"><i class="fa fa-quote-right"></i> <span class="nav-label">Durumlar</span> </a>
                 </li>
-                <li class="@Html.IsSelected(controller: "States")">
-                    <a href="@Url.Action("Index", "Jobs")"><i class="fa fa-quote-right"></i> <span class="nav-label">Meslekler</span> </a>
+                <li class="@Html.IsSelected(controller: "Jobs")">
+                    <a href="@Url.Action("Index", "Jobs")"><i class="fa fa-suitcase"></i> <span class="nav-label">Meslekler</span> </a>
+                </li>
+                <li class="@Html.IsSelected(controller: "Cargo")">
+                    <a href="@Url.Action("Index", "Cargo")"><i class="fa fa-truck"></i> <span class="nav-label">Kargo Firmaları</span> </a>
                 </li>
             }
 
@@ -101,7 +104,7 @@
                     <li class="@Html.IsSelected(action: "New")"><a href="@Url.Action("New", "Order")">Yeni Sipariş</a></li>
                 </ul>
             </li>
-            
+
             @* @if (Request.Url.Host.Contains("localhost").ToString() == "localhost")*@
             @if (2 == 3)
             {

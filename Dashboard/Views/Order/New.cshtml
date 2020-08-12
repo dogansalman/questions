@@ -23,15 +23,12 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="ibox-content">
-
+            <h2>Sipariş Bilgileri</h2>
             <form role="form" action="/Order/New/@ViewBag.task_id" method="post">
-                <div class="form-group">
-
+                <div class="form-group customer_id_container">
                     <input type="hidden" name="task_id" value="@ViewBag.task_id" />
-
-                    <h2>Sipariş Bilgileri</h2>
                     <label for="customer_id">Müşteri</label>
-                    <select required name="customer_id" id="customer_id" class="customer_id inline form-control">
+                    <select name="customer_id" id="customer_id" class="customer_id inline form-control">
                         <option></option>
                         @foreach (var item in ViewBag.customers)
                         {
@@ -39,14 +36,19 @@
                         }
                     </select>
                 </div>
-            
+
                 <div class="form-group">
-                    <label for="name">Ad</label>
-                    <input autocomplete="off" type="text" placeholder="Ad" name="name" id="name" value="" class="form-control">
+                    <small> (Eğer müşteri bulunamadı ise lütfen yeni müşteri olarak kaydet seçeneğini kullanın.)</small><br /><br />
+                    <label> <input type="checkbox" class="i-checks new-customer-check"> Yeni Müşteri Olarak Kaydet</label>
+
                 </div>
                 <div class="form-group">
-                    <label for="lastname">Ad</label>
-                    <input autocomplete="off" type="text" placeholder="Soyad" name="last_name" id="last_name" value="" class="form-control">
+                    <label for="name">Ad</label>
+                    <input autocomplete="off" type="text" placeholder="Ad" name="name" id="name" value="@ViewBag.name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Soyad</label>
+                    <input autocomplete="off" type="text" placeholder="Soyad" name="last_name" id="last_name" value="@ViewBag.lastname" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="address">Adres</label>
@@ -66,9 +68,11 @@
                         <option></option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label for="phone">Tel</label>
-                    <input autocomplete="off" type="number" required type="text" placeholder="Tel" name="phone" id="phone" class="form-control">
+                    <input autocomplete="off" type="text" required data-mask="9999 999 99 99" value="@ViewBag.task_phone" placeholder="Tel" name="phone" id="phone" class="form-control">
+
                 </div>
                 <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
             </form>
@@ -84,10 +88,14 @@
 @section Styles{
     @Styles.Render("~/plugins/toastrStyles")
     @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
     @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/iCheck")
 
     <script type="text/javascript">
 
@@ -134,12 +142,18 @@
             allowClear: true
         });
 
-        $("#city").on("change", function (e) {
+        $("#city").on("change", function (e, d) {
             var city_id = $(e.target).val();
-            get_towns(city_id)
+            get_towns(city_id, d)
         })
 
-        function get_towns(city_id) {
+        $("#town").on("change", function (e, d) {
+            if (d) {
+                setTimeout(() => { $("#town").val(d.town_id); }, 2000)
+            }
+        })
+
+        function get_towns(city_id, town = null) {
             $('.town').append(null).trigger('change');
             $(".town option").remove();
             if (!city_id) return
@@ -152,15 +166,60 @@
                 success: function (r) {
                     OnAddComplate();
                     if (r) {
-                        $('.town').append(null).trigger('change');
                         r.forEach(s => {
                             $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
                         })
+                        $('.town').append(null).trigger('change');
+                        if (town) $('.town').val(town.town_id).trigger("change");
                     }
 
                 }
             });
         }
+
+        $(".customer_id").on("change", function (e) {
+            var customer_id = $(e.target).val();
+            get_customer(customer_id)
+        })
+
+
+        function get_customer(customer_id) {
+            
+            if (!customer_id) return
+            $.ajax({
+                type: "POST",
+                url: "/Customer/Customer?id=" + customer_id,
+                data: {
+                    id: customer_id
+                },
+                beforeSend: function () {
+                    OnAdding();
+                },
+                success: function (r) {
+                    OnAddComplate();
+                    if (r) {
+                        $("#name").val(r.name);
+                        $("#last_name").val(r.lastname);
+                        $("#address").val(r.address);
+                        $("#phone").val(r.phone);
+                        $("#city").val(r.city).trigger("change", { town_id: r.town });
+                        $("#phone").val(r.phone);
+
+                    }
+
+                }
+            });
+        }
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $(".new-customer-check").on("ifChanged", (e) => {
+            $(".customer_id").val(null);
+            $(".customer_id_container").toggle();
+        })
 
     </script>
 }

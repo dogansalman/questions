@@ -23,6 +23,7 @@ namespace QuestionsSYS.Context
         public DbSet<Order> orders { get; set; }
         public DbSet<OrderProduct> order_products { get; set; }
 
+        public DbSet<Cargo> cargo { get; set; }
         public DbSet<Jobs> jobs { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -46,6 +47,7 @@ namespace QuestionsSYS.Context
             modelBuilder.Entity<Jobs>().ToTable("Jobs");
             modelBuilder.Entity<Order>().ToTable("Orders");
             modelBuilder.Entity<Order>().Property(e => e.added).HasColumnType("datetime2");
+            modelBuilder.Entity<Cargo>().ToTable("Cargo");
 
 
 

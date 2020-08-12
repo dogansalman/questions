@@ -26,52 +26,55 @@
     <div class="row">
         <div class="ibox-content">
 
-                <form role="form" action="/Personnel/Update/ @Html.DisplayFor(modelItem => modelItem.Id)" method="post">
-                    <div class="form-group">
-                        <label for="name">Ad</label>
-                        <input type="text" placeholder="Ad" name="name" id="name" value="@Html.DisplayFor(modelItem => modelItem.Name)" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="surname">Soyad</label>
-                        <input type="text" placeholder="Soyad" name="surname" id="surname" value="@Html.DisplayFor(modelItem => modelItem.Surname)" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Kullancı Adı</label>
-                        <input type="text" placeholder="Kullanıcı Adı" name="username" id="username" value="@Html.DisplayFor(modelItem => modelItem.Username)" class="form-control">
-                    </div>
+            <form role="form" action="/Personnel/Update/ @Html.DisplayFor(modelItem => modelItem.Id)" method="post">
+                <div class="form-group">
+                    <label for="name">Ad</label>
+                    <input type="text" placeholder="Ad" name="name" id="name" value="@Html.DisplayFor(modelItem => modelItem.Name)" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="surname">Soyad</label>
+                    <input type="text" placeholder="Soyad" name="surname" id="surname" value="@Html.DisplayFor(modelItem => modelItem.Surname)" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="username">Kullancı Adı</label>
+                    <input type="text" placeholder="Kullanıcı Adı" name="username" id="username" value="@Html.DisplayFor(modelItem => modelItem.Username)" class="form-control">
+                </div>
 
-                    <div class="form-group">
-                        <label for="role">Rol</label>
-                        <select id="role" name="role" class="form-control">
-                            <option value="Admin" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Admin" ? "selected" : String.Empty)>Admin</option>
-                            <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "User" ? "selected" : String.Empty)>User</option>
-                            <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Logistics User" ? "selected" : String.Empty)>Logistics User</option>
-                            
-                        </select>
+                <div class="form-group">
+                    <label for="role">Rol</label>
+                    <select id="role" name="role" class="form-control">
+                        <option value="Admin" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Admin" ? "selected" : String.Empty)>Admin</option>
+                        <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "User" ? "selected" : String.Empty)>User</option>
+                        <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Logistics User" ? "selected" : String.Empty)>Logistics User</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" placeholder="Şifre" name="password" id="password" class="form-control">
+                    <small>Yeni şifre belirtmek için lütfen aşağıdaki şifre alanını doldurunuz.</small>
+                </div>
+                <div class="form-group">
+                    <label for="color">Renk</label>
+                    <div class="input-group m-b">
+                        <span class="input-group-btn">
+                            <button type="button" style="background:@Model.color" class="btn"> &nbsp; &nbsp;</button>
+                        </span> <input  name="color" id="color" type="text" autocomplete="off" value="@Model.color" class="form-control colorpicker">
                     </div>
-                    <div class="form-group">
-                        <label for="password">Şifre</label>
-                        <input type="password" placeholder="Şifre" name="password" id="password" class="form-control">
-                        <small>Yeni şifre belirtmek için lütfen aşağıdaki şifre alanını doldurunuz.</small>
-                    </div>
-
-                    <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
-                </form>
-            </div>
-
-        
-
-        
-
+                </div>
+                <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
+            </form>
+        </div>
     </div>
 </div>
 
 @section Styles{
     @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
-
+    @Scripts.Render("~/plugins/colorpicker")
     <script type="text/javascript">
         if (location.search.indexOf("success=failed") > -1) {
             toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
@@ -79,5 +82,9 @@
         if (location.search.indexOf("success=ok") > -1) {
             toastr.success("Kayıt güncellendi.", "Tamam")
         }
+        $('.colorpicker').colorpicker();
+
+   
     </script>
+
 }

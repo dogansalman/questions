@@ -217,7 +217,9 @@ namespace QuestionsSYS.Controllers
         [Authorize]
         public ActionResult Detail(int id)
         {
+            ViewBag.cargo = db.cargo.ToList();
             ViewBag.products = db.products.ToList();
+
             var user_id = User.Identity.GetUserId();
             ViewBag.task_id = id;
             var customers = (
@@ -226,6 +228,7 @@ namespace QuestionsSYS.Controllers
                join d in db.towns on t.town equals d.id
                select new CustomerList
                {
+                   id = t.id,
                    name = t.name,
                    lastname = t.lastname,
                    city = c.city_name,
@@ -288,7 +291,7 @@ namespace QuestionsSYS.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Update(int id, [Bind(Include = "task_id, name, last_name, customer_id, address, city, town, phone")] Order model)
+        public ActionResult Update(int id, [Bind(Include = "task_id, name, last_name, customer_id, address, city, town, phone, cargo, cargo_barcode")] Order model)
         {
             if(!ModelState.IsValid)
             {
@@ -303,7 +306,7 @@ namespace QuestionsSYS.Controllers
                 order.Where(o => o.user_id == user_id);
             }
             Order order_detail = order.FirstOrDefault();
-            if(order_detail != null && order_detail.state == "Onay Bekiyor")
+            if(order_detail != null && order_detail.state == "Onay Bekliyor")
             {
                 order_detail.name = model.name;
                 order_detail.last_name = model.last_name;
@@ -312,6 +315,13 @@ namespace QuestionsSYS.Controllers
                 order_detail.city = model.city;
                 order_detail.town = model.town;
                 order_detail.phone = model.phone;
+
+                if(User.IsInRole("Logistics User") || User.IsInRole("Admin"))
+                {
+                    order_detail.cargo = model.cargo;
+                    order_detail.cargo_barcode = model.cargo_barcode;
+                }
+       
                 db.SaveChanges();
                 return RedirectToAction("Detail/" + id, "Order", new { success = "ok" });
             }
@@ -320,8 +330,34 @@ namespace QuestionsSYS.Controllers
         }
 
         [Authorize]
-        public ActionResult New(string id)
+        public ActionResult New(int? id)
         {
+            
+            if(id != null && id != 0)
+            {
+                Tasks ta = db.tasks.Where(i => i.id == id).FirstOrDefault();
+                
+                Question q = db.questions.Where(s => s.id == ta.question_id).FirstOrDefault();
+
+                if (ta == null || q == null)
+                {
+                    return new HttpStatusCodeResult(404);
+                }
+                ViewBag.task_phone = q.phone;
+
+                string[] ssizes = q.fullname.Split(' ', '\t');
+
+                for (int i = 0; i < ssizes.Length; i++)
+                {
+                    if (i != ssizes.Length - 1)
+                    {
+                        ViewBag.name += " " + ssizes[i];
+                    }
+                }
+                ViewBag.lastname = ssizes[ssizes.Length - 1];
+            }
+            
+
             var user_id = User.Identity.GetUserId();
             ViewBag.task_id = id;
             var customers = (
@@ -330,6 +366,7 @@ namespace QuestionsSYS.Controllers
                join d in db.towns on t.town equals d.id
                select new CustomerList
                {
+                   id = t.id,
                    name = t.name,
                    lastname = t.lastname,
                    city = c.city_name,
@@ -348,9 +385,28 @@ namespace QuestionsSYS.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> New([Bind(Include = "task_id, name, last_name, customer_id, address, city, town, phone")] Order order)
+        public async Task<ActionResult> New([Bind(Include = "customer_id, task_id, name, last_name, address, city, town, phone, cargo, cargo_barcode")] Order order)
         {
             var user_id = User.Identity.GetUserId();
+
+            if (order.customer_id == 0)
+            {
+                Customer c = new Customer
+                {
+                    name = order.name,
+                    lastname = order.last_name,
+                    address = order.address,
+                    town = order.town,
+                    city = order.city,
+                    job = "Belirtilmedi",
+                    birth_date = DateTime.Now,
+                    phone = order.phone,
+                    user_id = user_id
+                };
+                db.customers.Add(c);
+                db.SaveChanges();
+                order.customer_id = c.id;
+            }
 
             if (!ModelState.IsValid) return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
 
@@ -364,7 +420,9 @@ namespace QuestionsSYS.Controllers
                 address = order.address,
                 customer_id = order.customer_id,
                 city = order.city,
-                town = order.town
+                town = order.town,
+                cargo = order.cargo,
+                cargo_barcode = order.cargo_barcode
             };
 
             db.orders.Add(o);
@@ -382,21 +440,22 @@ namespace QuestionsSYS.Controllers
         }
         [Authorize]
         [HttpPost]
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int id)
         {
-            //try
-            //{
-            //    ApplicationUser s = db.Users.Where(q => q.Id == id).FirstOrDefault();
-            //    if (s == null) return new HttpStatusCodeResult(404);
-            //    db.Users.Remove(s);
-            //    db.SaveChanges();
-            //    return new HttpStatusCodeResult(200);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return new HttpStatusCodeResult(500);
-            //    throw;
-            //}
+            var user_id = User.Identity.GetUserId();
+            Order order = db.orders.Where(o => o.id == id).FirstOrDefault();
+            if(order.state != "Onay Bekliyor") return new HttpStatusCodeResult(403);
+
+            if (order == null) return new HttpStatusCodeResult(404);
+
+            if(order.user_id != user_id)
+            {
+                if ((!User.IsInRole("Admin") && !User.IsInRole("Logistics User")))
+                {
+                    return new HttpStatusCodeResult(403);
+                }
+            }
+            db.orders.Remove(order);
             return new HttpStatusCodeResult(200);
         }
 

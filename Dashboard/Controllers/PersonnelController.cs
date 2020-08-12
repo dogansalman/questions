@@ -50,6 +50,7 @@ namespace QuestionsSYS.Controllers
                               Name = user.Name,
                               Surname = user.Surname,
                               Username = user.UserName,
+                              color = user.color,
                               Role = (from userRole in user.Roles
                                       where userRole.UserId == user.Id
                                       join role in db.Roles on userRole.RoleId
@@ -57,9 +58,10 @@ namespace QuestionsSYS.Controllers
                                       select role.Name).FirstOrDefault()
                           }
                  ).FirstOrDefault();
-
+            
             if (Person == null) return RedirectToAction("Index", "Personnel");
 
+            if (Person.color == null) Person.color = "#1ab394";
             return View(Person);
             
 
@@ -109,7 +111,7 @@ namespace QuestionsSYS.Controllers
         }
         [HttpPost]
         [Authorize]
-        public ActionResult Update(string id, [Bind(Include = "password,name,surname,role,username")] PersonnelView person)
+        public ActionResult Update(string id, [Bind(Include = "password,name,surname,role,username, color")] PersonnelView person)
         {
             id = id.Trim();
             UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
@@ -121,7 +123,7 @@ namespace QuestionsSYS.Controllers
             user.Name = person.Name;
             user.Surname = person.Surname;
             user.UserName = person.Username;
-
+            user.color = person.color;
 
             string role_id = user.Roles.SingleOrDefault().RoleId;
             string role_name = db.Roles.SingleOrDefault(r => r.Id == role_id).Name;
