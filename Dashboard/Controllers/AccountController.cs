@@ -41,6 +41,8 @@ namespace QuestionsSYS.Controllers
                     authProps.IsPersistent = true;
                     authManager.SignIn(authProps, identity);
 
+                    AuthService.LoginStateSave(User.Identity.GetUserId());
+
                     return RedirectToAction("Index", "Dashboards");
                 }
                 else
@@ -59,6 +61,8 @@ namespace QuestionsSYS.Controllers
         [Authorize]
         public ActionResult Logout()
         {
+
+            AuthService.LogoutStateSave(User.Identity.GetUserId());
             IAuthenticationManager authManager = HttpContext.GetOwinContext().Authentication;
             authManager.SignOut();
             return RedirectToAction("Login", "Pages");

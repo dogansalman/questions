@@ -8,5 +8,6 @@ namespace QuestionsSYS.Identity
         public string Surname { get; set; }
 
         public string color { get; set; }
+        public int? employee_type { get; set; }
     }
 }

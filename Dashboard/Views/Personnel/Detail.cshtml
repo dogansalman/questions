@@ -59,9 +59,24 @@
                     <div class="input-group m-b">
                         <span class="input-group-btn">
                             <button type="button" style="background:@Model.color" class="btn"> &nbsp; &nbsp;</button>
-                        </span> <input  name="color" id="color" type="text" autocomplete="off" value="@Model.color" class="form-control colorpicker">
+                        </span> <input name="color" id="color" type="text" autocomplete="off" value="@Model.color" class="form-control colorpicker">
                     </div>
                 </div>
+
+
+                <div class="form-group">
+                    <label for="employee_type">Uzmanlık Alanı</label>
+                    <select name="employee_type" id="employee_type" class="employee_type form-control">
+                        <option></option>
+                        @foreach (var item in ViewBag.employee_type)
+                        {
+                            <option @(item.id == Model.employee_type ? "selected" : String.Empty) value="@item.id">@item.type_name</option>
+                        }
+                    </select>
+                </div>
+
+
+
                 <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
             </form>
         </div>
@@ -71,9 +86,11 @@
 @section Styles{
     @Styles.Render("~/plugins/toastrStyles")
     @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
     @Scripts.Render("~/plugins/colorpicker")
     <script type="text/javascript">
         if (location.search.indexOf("success=failed") > -1) {
@@ -84,7 +101,12 @@
         }
         $('.colorpicker').colorpicker();
 
-   
+
+        $(".employee_type").select2({
+            placeholder: "Uzmanlık alanı seçin",
+            allowClear: true
+        });
+
     </script>
 
 }

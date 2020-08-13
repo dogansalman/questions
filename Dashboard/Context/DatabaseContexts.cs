@@ -23,8 +23,10 @@ namespace QuestionsSYS.Context
         public DbSet<Order> orders { get; set; }
         public DbSet<OrderProduct> order_products { get; set; }
 
+        public DbSet<EmployeeType> employee_type { get; set; }
         public DbSet<Cargo> cargo { get; set; }
         public DbSet<Jobs> jobs { get; set; }
+        public DbSet<AuthHistory> auth_history { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
@@ -48,7 +50,10 @@ namespace QuestionsSYS.Context
             modelBuilder.Entity<Order>().ToTable("Orders");
             modelBuilder.Entity<Order>().Property(e => e.added).HasColumnType("datetime2");
             modelBuilder.Entity<Cargo>().ToTable("Cargo");
-
+            modelBuilder.Entity<EmployeeType>().ToTable("EmployeeType");
+            modelBuilder.Entity<AuthHistory>().ToTable("AuthHistory");
+            modelBuilder.Entity<AuthHistory>().Property(e => e.login_date).HasColumnType("datetime2");
+            modelBuilder.Entity<AuthHistory>().Property(e => e.logout_date).HasColumnType("datetime2");
 
 
 

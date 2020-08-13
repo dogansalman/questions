@@ -16,6 +16,7 @@ namespace QuestionsSYS.ModelViews
         public string Username { get; set; }
         public string Password { get; set; }
         public string color { get; set; }
+        public int? employee_type { get; set; }
 
     }
 }

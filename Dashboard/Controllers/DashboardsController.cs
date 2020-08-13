@@ -6,7 +6,9 @@ using System.Web.Mvc;
 using QuestionsSYS.ModelViews;
 using QuestionsSYS.Context;
 using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 using System.Globalization;
+using QuestionsSYS.Identity;
 
 namespace QuestionsSYS.Controllers
 {
@@ -53,8 +55,21 @@ namespace QuestionsSYS.Controllers
                 ViewBag.personnel = db.Users.ToList();
               
             }
-
-
+            var user_id = User.Identity.GetUserId();
+            AuthService.LoginStateSave(user_id);
+            
+            //AuthHistory ah = db.auth_history.Where(s => s.login_date.Day == DateTime.Now.Day && s.login_date.Month == s.login_date.Month && s.login_date.Year == DateTime.Now.Year).FirstOrDefault();
+            //if(ah == null)
+            //{
+            //    var user_id = User.Identity.GetUserId();
+            //    AuthHistory ah_ = new AuthHistory
+            //    {
+            //        login_date = DateTime.Now,
+            //        user_id = user_id
+            //    };
+            //    db.auth_history.Add(ah_);
+            //    db.SaveChanges();
+            //} 
 
             return View();
         }

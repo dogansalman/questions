@@ -84,9 +84,9 @@
                     <input required type="text" value="@Model.phone" data-mask="9999 999 99 99" placeholder="Tel" name="phone" id="phone" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="birth_date">Doğum Tarihi <span class="age"></span> </label>
+                    <label for="birth_year">Doğum Tarihi <span class="age"></span> </label>
                     <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input required type="text" class="form-control" name="birth_date" value="@Model.birth_date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input required data-mask="9999" class="form-control" name="birth_year" value="@Model.birth_year">
                     </div>
                 </div>
 
@@ -254,16 +254,17 @@
             format: "dd.mm.yyyy"
         };
 
-        $('.input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            language: "tr",
-            calendarWeeks: true,
-            autoclose: true,
+        //$('.input-group.date').datepicker({
+        //    todayBtn: "linked",
+        //    format: "yyyy",
+        //    keyboardNavigation: false,
+        //    forceParse: false,
+        //    language: "tr",
+        //    calendarWeeks: true,
+        //    autoclose: true,
 
 
-        });
+        //});
 
         function DeleteSuccess(e) {
             $(e).parents("tr").remove();
@@ -288,7 +289,7 @@
         }
 
         $(document).ready(function () {
-            var y1 = new Date($("input[name='birth_date']").val()).getFullYear();
+            var y1 = $("input[name='birth_year']").val()
             var y2 = new Date().getFullYear();
             $(".age").text( "(YAŞ: "  + (y2 - y1) + ")");
 

@@ -190,7 +190,7 @@ namespace QuestionsSYS.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add([Bind(Include = "name, lastname, address, city, town, phone, birth_date, job")] Customer model)
+        public ActionResult Add([Bind(Include = "name, lastname, address, city, town, phone, birth_year, job")] Customer model)
         {
             try
             {
@@ -204,7 +204,7 @@ namespace QuestionsSYS.Controllers
                     town = model.town,
                     job = model.job,
                     user_id = user_id,
-                    birth_date = model.birth_date  
+                    birth_year = model.birth_year  
                 };
                 db.customers.Add(q);
                 db.SaveChanges();
@@ -270,7 +270,7 @@ namespace QuestionsSYS.Controllers
 
 
         [HttpPost]
-        public ActionResult Update(int? id, [Bind(Include = "name, lastname, address, city, town, phone, birth_date, job")] Customer model)
+        public ActionResult Update(int? id, [Bind(Include = "name, lastname, address, city, town, phone, birth_year, job")] Customer model)
         {
             var user_id = User.Identity.GetUserId();
             Customer q = db.customers.Where(qu => qu.id == id).FirstOrDefault();
@@ -290,7 +290,7 @@ namespace QuestionsSYS.Controllers
             q.city = model.city;
             q.town = model.town;
             q.job = model.job;
-            q.birth_date = model.birth_date;
+            q.birth_year = model.birth_year;
 
             db.SaveChanges();
             return new HttpStatusCodeResult(200);

@@ -399,7 +399,7 @@ namespace QuestionsSYS.Controllers
                     town = order.town,
                     city = order.city,
                     job = "Belirtilmedi",
-                    birth_date = DateTime.Now,
+                    birth_year = null,
                     phone = order.phone,
                     user_id = user_id
                 };

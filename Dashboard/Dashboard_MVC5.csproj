@@ -197,6 +197,7 @@
     <Compile Include="Controllers\CSSAnimationsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\EcommerceController.cs" />
+    <Compile Include="Controllers\EmployeeTypeController.cs" />
     <Compile Include="Controllers\FormsController.cs" />
     <Compile Include="Controllers\GalleryController.cs" />
     <Compile Include="Controllers\GraphsController.cs" />
@@ -228,12 +229,15 @@
     <Compile Include="Helpers\XMLSmsService.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationRole.cs" />
+    <Compile Include="Identity\AuthService.cs" />
     <Compile Include="Libary\DownloadAction\DownloadAction.cs" />
     <Compile Include="Migrations\DatabaseConfig.cs" />
+    <Compile Include="Models\AuthHistory.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\CustomerHistory.cs" />
     <Compile Include="Models\Cargo.cs" />
+    <Compile Include="Models\EmployeeType.cs" />
     <Compile Include="Models\Jobs.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderProduct.cs" />
@@ -1809,6 +1813,7 @@
     <Content Include="Views\Order\Detail.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\Cargo\Index.cshtml" />
+    <Content Include="Views\EmployeeType\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

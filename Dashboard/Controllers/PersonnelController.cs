@@ -42,6 +42,7 @@ namespace QuestionsSYS.Controllers
         [Authorize]
         public ActionResult Detail(string id)
         {
+            ViewBag.employee_type = db.employee_type.ToList();
             var Person = (from user in db.Users
                           where user.Id == id
                           select new PersonnelView
@@ -51,6 +52,7 @@ namespace QuestionsSYS.Controllers
                               Surname = user.Surname,
                               Username = user.UserName,
                               color = user.color,
+                              employee_type = user.employee_type,
                               Role = (from userRole in user.Roles
                                       where userRole.UserId == user.Id
                                       join role in db.Roles on userRole.RoleId
@@ -111,7 +113,7 @@ namespace QuestionsSYS.Controllers
         }
         [HttpPost]
         [Authorize]
-        public ActionResult Update(string id, [Bind(Include = "password,name,surname,role,username, color")] PersonnelView person)
+        public ActionResult Update(string id, [Bind(Include = "password,name,surname,role,username, color, employee_type")] PersonnelView person)
         {
             id = id.Trim();
             UserStore<ApplicationUser> userStore = new UserStore<ApplicationUser>(db);
@@ -124,6 +126,7 @@ namespace QuestionsSYS.Controllers
             user.Surname = person.Surname;
             user.UserName = person.Username;
             user.color = person.color;
+            user.employee_type = person.employee_type;
 
             string role_id = user.Roles.SingleOrDefault().RoleId;
             string role_name = db.Roles.SingleOrDefault(r => r.Id == role_id).Name;

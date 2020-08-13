@@ -25,7 +25,10 @@ namespace QuestionsSYS.Models
         [StringLength(255)]
         public string phone { get; set; }
 
-        public DateTime birth_date { get; set; }
+      
+
+        public int? birth_year { get; set; }
+
         [StringLength(255)]
         public string job { get; set; }
 

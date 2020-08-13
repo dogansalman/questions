@@ -84,6 +84,9 @@
                 <li class="@Html.IsSelected(controller: "Jobs")">
                     <a href="@Url.Action("Index", "Jobs")"><i class="fa fa-suitcase"></i> <span class="nav-label">Meslekler</span> </a>
                 </li>
+                <li class="@Html.IsSelected(controller: "EmployeeType")">
+                    <a href="@Url.Action("Index", "EmployeeType")"><i class="fa fa-suitcase"></i> <span class="nav-label">Uzmanlık Alanları</span> </a>
+                </li>
                 <li class="@Html.IsSelected(controller: "Cargo")">
                     <a href="@Url.Action("Index", "Cargo")"><i class="fa fa-truck"></i> <span class="nav-label">Kargo Firmaları</span> </a>
                 </li>

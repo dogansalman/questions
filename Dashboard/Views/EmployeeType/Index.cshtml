@@ -1,0 +1,135 @@
+﻿@model IEnumerable<QuestionsSYS.Models.EmployeeType>
+
+@{
+    ViewBag.Title = "Çalışan Uzmanlık Alanları";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Uzmanlık Alanları</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li class="active">
+                <strong><a>Uzmanlık Alanları</a></strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row source_list">
+     
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Yeni Uzmanlık Alanı Ekle</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="sk-spinner sk-spinner-double-bounce">
+                    <div class="sk-double-bounce1"></div>
+                    <div class="sk-double-bounce2"></div>
+                </div>
+
+                <form role="form" action="Add" method="post">
+                    <div class="input-group">
+                        <input type="text" name="type_name" autocomplete="off" placeholder="Uzmanlık Alanı" class="form-control"> <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">
+                                Ekle
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="ibox-content">
+            
+
+   
+
+            <div class="table-responsive">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Adı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                   <input  type="text" class="form-control type_name" autocomplete="off" style="border-color:#fff" placeholder="Uzmanlık Alanı" value="@Html.DisplayFor(modelItem => item.type_name)" />
+                                </td>
+
+                                <td>
+                                    <button data-id="@item.id" class="btn btn-danger btn-sm pull-right delete" style="margin-right:5px;">Sil</button>
+                                    <button data-id="@item.id" class="btn btn-primary btn-sm pull-right update" style="margin-right:5px;">Güncelle</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                
+       
+                <div class="m-t-md">
+                    <small class="pull-right">
+                        Son Liste Tarihi: @Html.Label(DateTime.Now.ToLongDateString())
+                    </small>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+    <script type="text/javascript">
+        if (location.search.indexOf("success=failed") > -1) {
+            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+        }
+        if (location.search.indexOf("success=ok") > -1) {
+            toastr.success("Kayıt başarılı.", "Tamam")
+        }
+
+
+
+        $(".update").on('click', function (e) {
+            
+            $.post('Update', { 'id': $(e.target).attr('data-id'), 'type_name': $(e.target).parents("tr").find('.type_name').val() }).done(function (data) {
+                toastr.success("Uzmanlık alanı güncellendi.", "Tamam");
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            }).fail(function () {
+                toastr.error("Tekrar deneyin.", "Hata");
+            }).always(function () {
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            });
+
+        });
+
+        $(".delete").on('click', function (e) {
+            $.post('Delete', { 'id': $(e.target).attr('data-id')}).done(function (data) {
+                toastr.success("Uzmanlık alanı silindi.", "Tamam");
+                $(e.target).parents('tr').remove();
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            }).fail(function () {
+                toastr.error("Tekrar deneyin.", "Hata");
+            }).always(function () {
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            });
+
+        });
+    </script>
+}
