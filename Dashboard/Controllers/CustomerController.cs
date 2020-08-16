@@ -39,13 +39,13 @@ namespace QuestionsSYS.Controllers
                    town = s.town_name,
                    user_id = t.user_id
                }
-               ).Where(d => d.user_id == user_id);
+               );
 
-            if (!User.IsInRole("Admin"))
+            if(User.IsInRole("User"))
             {
                 customers = customers.Where(t => t.user_id == user_id);
-                return View(customers);
             }
+        
             return View(customers);
 
         }
@@ -252,6 +252,14 @@ namespace QuestionsSYS.Controllers
         [HttpPost]
         public ActionResult Delete(int? id)
         {
+
+            // order validate
+            var is_exist_order = db.orders.Where(o => o.customer_id == id).FirstOrDefault();
+            if(is_exist_order != null)
+            {
+                return new HttpStatusCodeResult(500);
+            }
+
             try
             {
                 Customer s = db.customers.Where(q => q.id == id).FirstOrDefault();

@@ -215,6 +215,7 @@
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\JobsController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\StatesController.cs" />
     <Compile Include="Controllers\SourceController.cs" />
     <Compile Include="Controllers\TablesController.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="ModelViews\QuestionList.cs" />
     <Compile Include="ModelViews\QuestionsListView.cs" />
     <Compile Include="ModelViews\QuestionView.cs" />
+    <Compile Include="ModelViews\ReportsView.cs" />
     <Compile Include="ModelViews\TaskAdd.cs" />
     <Compile Include="ModelViews\TaskListView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1814,6 +1816,7 @@
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\Cargo\Index.cshtml" />
     <Content Include="Views\EmployeeType\Index.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

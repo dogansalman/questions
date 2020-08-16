@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuestionsSYS.Models
@@ -9,5 +10,6 @@ namespace QuestionsSYS.Models
         public int id { get; set; }
         public int question_id { get; set; }
         public string user_id { get; set; }
+        public DateTime added { get; set; } = DateTime.Now;
     }
 }

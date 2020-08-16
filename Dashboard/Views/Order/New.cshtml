@@ -24,7 +24,7 @@
     <div class="row">
         <div class="ibox-content">
             <h2>Sipariş Bilgileri</h2>
-            <form role="form" action="/Order/New/@ViewBag.task_id" method="post">
+            <form class="form-order" role="form" action="/Order/New/@ViewBag.task_id" method="post">
                 <div class="form-group customer_id_container">
                     <input type="hidden" name="task_id" value="@ViewBag.task_id" />
                     <label for="customer_id">Müşteri</label>
@@ -74,7 +74,7 @@
                     <input autocomplete="off" type="text" required data-mask="9999 999 99 99" value="@ViewBag.task_phone" placeholder="Tel" name="phone" id="phone" class="form-control">
 
                 </div>
-                <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
+                <button class="btn save-btn  btn-primary no-margins" type="submit">Tamam</button>
             </form>
         </div>
 
@@ -99,6 +99,16 @@
 
     <script type="text/javascript">
 
+  
+
+        $(".save-btn").on("click", (e) => {
+            if (!$(".customer_id").val() && !$(".new-customer-check").prop("checked")) {
+                toastr.error("Müşteri kaydını seçmelisiniz.", "Hata")
+                e.preventDefault();
+            }
+           
+        })
+
         function AddSuccess() {
             toastr.success("Müşteri eklendi.", "Tamam");
             $("input[type='text']").val("")
@@ -120,7 +130,7 @@
         }
 
         if (location.search.indexOf("success=failed") > -1) {
-            toastr.error("Lütfen tüm bilgileri eksiksiz doldurun.", "Hata")
+            toastr.error("Sipariş bilgisi eksik veya müşteri telefon numarası zaten kayıtlı.", "Hata")
         }
         if (location.search.indexOf("success=ok") > -1) {
             toastr.success("Kayıt güncellendi.", "Tamam")

@@ -98,12 +98,12 @@
                 </div>
                 <div class="form-group">
                     <label for="phone">Tel</label>
-                    <input autocomplete="off" type="number" value="@Model.phone" required type="text" placeholder="Tel" name="phone" id="phone" class="form-control">
+                    <input autocomplete="off"value="@Model.phone" required data-mask="9999 999 99 99" type="text" placeholder="Tel" name="phone" id="phone" class="form-control">
                 </div>
 
                 <div class="form-group">
                     <label for="cargo">Kargo</label>
-                    <select  @(!User.IsInRole("Admin") && !User.IsInRole("Logistics User") ? "disabled" : String.Empty) required name="cargo" id="cargo" class="cargo inline form-control">
+                    <select @(!User.IsInRole("Admin") && !User.IsInRole("Logistics User") ? "disabled" : String.Empty) required name="cargo" id="cargo" class="cargo inline form-control">
                         <option></option>
                         @foreach (var item in ViewBag.cargo)
                         {
@@ -113,7 +113,7 @@
                 </div>
                 <div class="form-group">
                     <label for="barcode">Barkod</label>
-                    <input autocomplete="off"   @(!User.IsInRole("Admin") && !User.IsInRole("Logistics User") ? "disabled" : String.Empty) type="number" value="@Model.cargo_barcode" required type="text" placeholder="Barcode" name="cargo_barcode" id="cargo_barcode" class="form-control">
+                    <input autocomplete="off" @(!User.IsInRole("Admin") && !User.IsInRole("Logistics User") ? "disabled" : String.Empty) type="number" value="@Model.cargo_barcode" required type="text" placeholder="Barcode" name="cargo_barcode" id="cargo_barcode" class="form-control">
                 </div>
 
                 <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
@@ -226,13 +226,17 @@
 @section Styles{
     @Styles.Render("~/plugins/toastrStyles")
     @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
     @Scripts.Render("~/plugins/select2")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/dataPicker")
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
         function Success(msg) {
             toastr.success(msg, "Tamam");
@@ -307,7 +311,7 @@
 
                 }
             });
-         
+
         })
 
 
@@ -324,7 +328,7 @@
                 success: function (r) {
                     LoadComplate();
                     if (r) {
-                        
+
                         r.forEach(s => {
                             $(".town").append("<option value='" + s.id + "'>" + s.town_name + "</option>");
                         })
@@ -427,5 +431,5 @@
     }
 
 
-</script>
+    </script>
 }

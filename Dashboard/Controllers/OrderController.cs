@@ -389,6 +389,13 @@ namespace QuestionsSYS.Controllers
         {
             var user_id = User.Identity.GetUserId();
 
+            // validate customer phone
+            var exist_customer = db.customers.Where(f => f.phone == order.phone).FirstOrDefault();
+            if(exist_customer != null)
+            {
+                return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
+            }
+
             if (order.customer_id == 0)
             {
                 Customer c = new Customer
@@ -408,8 +415,10 @@ namespace QuestionsSYS.Controllers
                 order.customer_id = c.id;
             }
 
-            if (!ModelState.IsValid) return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
-
+            if(order.name == null || order.last_name == null || order.address == null || order.city == null || order.town == null || order.phone == null)
+            {
+                return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
+            }
             Order o = new Order
             {
                 name = order.name,
@@ -456,6 +465,7 @@ namespace QuestionsSYS.Controllers
                 }
             }
             db.orders.Remove(order);
+            db.SaveChanges();
             return new HttpStatusCodeResult(200);
         }
 
