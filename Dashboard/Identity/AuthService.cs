@@ -11,7 +11,7 @@ namespace QuestionsSYS.Identity
         {
             DatabaseContexts db = new DatabaseContexts();
 
-            AuthHistory ah = db.auth_history.Where(s => s.login_date.Day == DateTime.Now.Day && s.login_date.Month == s.login_date.Month && s.login_date.Year == DateTime.Now.Year).FirstOrDefault();
+            AuthHistory ah = db.auth_history.Where(s => s.user_id == user_id && s.login_date.Day == DateTime.Now.Day && s.login_date.Month == s.login_date.Month && s.login_date.Year == DateTime.Now.Year).FirstOrDefault();
             if (ah == null)
             {
                 AuthHistory ah_ = new AuthHistory
@@ -27,7 +27,7 @@ namespace QuestionsSYS.Identity
         public static void LogoutStateSave(string user_id)
         {
             DatabaseContexts db = new DatabaseContexts();
-            AuthHistory ah = db.auth_history.Where(s => s.login_date.Day == DateTime.Now.Day && s.login_date.Month == s.login_date.Month && s.login_date.Year == DateTime.Now.Year).FirstOrDefault();
+            AuthHistory ah = db.auth_history.Where(s => s.user_id == user_id && s.login_date.Day == DateTime.Now.Day && s.login_date.Month == s.login_date.Month && s.login_date.Year == DateTime.Now.Year).FirstOrDefault();
             
             if(ah != null) {
                 ah.logout_date = DateTime.Now;

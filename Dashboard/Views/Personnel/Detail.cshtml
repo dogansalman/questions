@@ -45,7 +45,7 @@
                     <select id="role" name="role" class="form-control">
                         <option value="Admin" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Admin" ? "selected" : String.Empty)>Admin</option>
                         <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "User" ? "selected" : String.Empty)>User</option>
-                        <option value="User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Logistics User" ? "selected" : String.Empty)>Logistics User</option>
+                        <option value="Logistics User" @(Html.DisplayFor(modelItem => modelItem.Role).ToString() == "Logistics User" ? "selected" : String.Empty)>Logistics User</option>
 
                     </select>
                 </div>

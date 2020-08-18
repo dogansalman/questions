@@ -41,7 +41,8 @@ namespace QuestionsSYS.Controllers
                     authProps.IsPersistent = true;
                     authManager.SignIn(authProps, identity);
 
-                    AuthService.LoginStateSave(User.Identity.GetUserId());
+                    
+                    AuthService.LoginStateSave(user.Id);
 
                     return RedirectToAction("Index", "Dashboards");
                 }

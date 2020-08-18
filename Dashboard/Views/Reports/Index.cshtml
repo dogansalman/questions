@@ -20,7 +20,7 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row ibox-content">
-        <h2>Tarih seçin</h2>
+        <h3> <small>Onaylanan sipariş kayıtları hesaplanarak rapor oluşturulmaktadır.</small> </h3>
         <form role="form" class="form-inline">
             <div class="form-group">
                 <label for="daterange" class="sr-only">Tarih</label>
@@ -62,7 +62,15 @@
                                 @item.orders
                             </td>
                             <td>
-                                @String.Format("{0:c}", item.order_total)
+                                @if (item.order_total == null)
+                                {
+                                    @String.Format("{0:c}", 0)
+                                }
+                                else
+                                {
+                                    @String.Format("{0:c}", item.order_total)
+                                }
+
                             </td>
                             <td>
                                 @item.tasks
