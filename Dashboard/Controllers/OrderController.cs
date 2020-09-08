@@ -251,11 +251,11 @@ namespace QuestionsSYS.Controllers
                 order_.Where(c => c.user_id == user_id);
             }
             Order o = order_.FirstOrDefault();
-
-            o.order_products = db.order_products.Where(op => op.orderId == o.id).ToList();
-
-            ViewBag.towns = db.towns.Where(t => t.city_id == o.city).ToList();
-
+            if(o != null)
+            {
+                o.order_products = db.order_products.Where(op => op.orderId == o.id).ToList();
+                ViewBag.towns = db.towns.Where(t => t.city_id == o.city).ToList();
+            }
             return View(o);
         }
 
@@ -288,6 +288,43 @@ namespace QuestionsSYS.Controllers
             return RedirectToAction("Detail/" + o.id, "Order", new { success = "failed" });
 
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult UpdateProducts(int? id, [Bind(Include = "id, qty, price")] OrderProduct model)
+        {
+            if(model.qty <= 0) return new HttpStatusCodeResult(500);
+            OrderProduct op = db.order_products.Where(_op => _op.id == model.id).FirstOrDefault();
+            Order o = db.orders.Where(_o => _o.id == op.orderId).FirstOrDefault();
+            var user_id = User.Identity.GetUserId();
+            try
+            {
+                if (!User.IsInRole("Admin"))
+                {
+                    if (o.user_id != user_id)
+                    {
+                        return RedirectToAction("Detail/" + o.id, "Order", new { success = "failed" });
+                    }
+                }
+                if (o != null && o.state == "Onay Bekliyor")
+                {
+                    op.price = model.price;
+                    op.qty = model.qty;
+
+                    db.SaveChanges();
+                    calculateOrderTotal(op.orderId);
+                    return RedirectToAction("Detail/" + o.id, "Order");
+                }
+
+                return new HttpStatusCodeResult(200);
+            }
+            catch (Exception ex)
+            {
+
+                return new HttpStatusCodeResult(500);
+            }
+        }
+
 
         [Authorize]
         [HttpPost]
@@ -389,15 +426,17 @@ namespace QuestionsSYS.Controllers
         {
             var user_id = User.Identity.GetUserId();
 
-            // validate customer phone
-            var exist_customer = db.customers.Where(f => f.phone == order.phone).FirstOrDefault();
-            if(exist_customer != null)
-            {
-                return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
-            }
+      
 
             if (order.customer_id == 0)
             {
+                // Eğer müşteri seçili değil ise yeni müşteri eklerken telefon numarası daha önce kayıtlımı kontrol et.
+                var exist_customer = db.customers.Where(f => f.phone == order.phone).FirstOrDefault();
+                if (exist_customer != null)
+                {
+                    return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
+                }
+
                 Customer c = new Customer
                 {
                     name = order.name,

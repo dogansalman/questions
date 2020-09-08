@@ -14,8 +14,6 @@ namespace QuestionsSYS.App_Start
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = "ApplicationCookie",
-                SlidingExpiration = true,
-                //ExpireTimeSpan = TimeSpan.FromMinutes(1),
                 LoginPath = new PathString("/Pages/Login")
             });
 

@@ -61,9 +61,10 @@
                     <br />
                     <select name="source" id="source" class="source_select form-control">
                         <option></option>
-                        @foreach (var item in ViewBag.soruces)
+                        @foreach (var item in ViewBag.sources)
                         {
-                            <option @(Html.DisplayFor(modelItem => modelItem.source).ToString() == item.name ? "selected" : String.Empty) value="@item.name">@item.name</option>
+
+                            <option @(item.name == Model.source ? "selected" : String.Empty) value="@item.name">@item.name</option>
                         }
 
                     </select>
@@ -142,10 +143,10 @@
         }
 
 
-        $(".source_select").select2({
-            placeholder: "Kaynak seçin",
-            allowClear: true
-        });
+        //$(".source_select").select2({
+        //    placeholder: "Kaynak seçin",
+        //    allowClear: true
+        //});
 
     </script>
 }

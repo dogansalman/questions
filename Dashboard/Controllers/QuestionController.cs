@@ -94,8 +94,9 @@ namespace QuestionsSYS.Controllers
 
         public ActionResult Detail(int? id)
         {
-            ViewBag.soruces = db.sources.ToList();
+            ViewBag.sources = db.sources.ToList();
             Question q = db.questions.Where(qu => qu.id == id).FirstOrDefault();
+
             if (q == null) return new HttpStatusCodeResult(404);
             return View(q);
         }

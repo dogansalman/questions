@@ -152,17 +152,17 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <input autocomplete="off" type="number" value="@item.qty" required placeholder="Miktar" name="qty" id="qty" class="form-control">
+                                            <input data-id="quantity" autocomplete="off" type="number" value="@item.qty" required placeholder="Miktar" name="qty" id="qty" class="quantity form-control">
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <input autocomplete="off" type="text" value="@item.price" data-val-regex-pattern="([a-zA-Z0-9 .&amp;&#39;-]+)" required type="text" placeholder="Fiyat" name="price " id="price" class="form-control">
+                                            <input autocomplete="off" type="text" value="@item.price" data-val-regex-pattern="([a-zA-Z0-9 .&amp;&#39;-]+)" required type="text" placeholder="Fiyat" name="price " id="price" class="price form-control">
                                         </div>
                                     </td>
                                     <td>
-                                        <button type="button" style="margin-left:5px;" class="btn btn-success btn-sm pull-right update_product_btn">Güncelle</button>
 
+                                        <button data-id="@item.id" class="btn btn-success btn-sm pull-right update-product" style="margin-right:5px;">Güncelle</button>
 
                                         @Ajax.ActionLink("Ürün Sil", "DeleteProduct", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "Success('Ürün kaydı silindi.');", OnComplete = "LoadComplate(true);", OnFailure = "Failed('Bir hata oluştu. Tekrar deneyin');", OnBegin = "OnLoading()", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
                                     </td>
@@ -237,6 +237,21 @@
     @Scripts.Render("~/plugins/dataPicker")
 
     <script type="text/javascript">
+
+
+        $(".update-product").on('click', function (e) {
+
+            $.post('/Order/UpdateProducts', { 'id': $(e.target).attr('data-id'), 'qty': $(e.target).parents("tr").find('.quantity').val(), 'price': $(e.target).parents("tr").find('.price').val() }).done(function (data) {
+                toastr.success("Ürün güncellendi.", "Tamam");
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+                location.reload();
+            }).fail(function () {
+                toastr.error("Tekrar deneyin.", "Hata");
+            }).always(function () {
+                $('.source_list').find('.ibox-content').toggleClass('sk-loading');
+            });
+
+        });
 
         function Success(msg) {
             toastr.success(msg, "Tamam");
@@ -428,6 +443,7 @@
         $("textarea").attr("readonly", true)
         $(".ibox-content button").attr("disabled", true)
         $(".ibox-content a").attr("disabled", true)
+        $(".ibox-content select").attr("disabled", true)
     }
 
 
