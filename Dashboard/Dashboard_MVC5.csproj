@@ -247,6 +247,7 @@
     <Compile Include="Models\QuestionTasks.cs" />
     <Compile Include="Models\Soruce.cs" />
     <Compile Include="Models\States.cs" />
+    <Compile Include="Models\TaskHistory.cs" />
     <Compile Include="Models\Tasks.cs" />
     <Compile Include="Models\Town.cs" />
     <Compile Include="ModelViews\Product.cs" />
@@ -261,6 +262,7 @@
     <Compile Include="ModelViews\ReportsView.cs" />
     <Compile Include="ModelViews\TaskAdd.cs" />
     <Compile Include="ModelViews\TaskListView.cs" />
+    <Compile Include="ModelViews\UserView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1817,6 +1819,8 @@
     <Content Include="Views\Cargo\Index.cshtml" />
     <Content Include="Views\EmployeeType\Index.cshtml" />
     <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Task\History.cshtml" />
+    <Content Include="Views\Task\HistoryDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

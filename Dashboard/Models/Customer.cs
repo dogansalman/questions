@@ -38,5 +38,9 @@ namespace QuestionsSYS.Models
         [Required]
         [StringLength(255)]
         public string user_id { get; set; }
+
+        [Required]
+        [StringLength(255)]
+        public string user_fullname { get; set; }
     }
 }

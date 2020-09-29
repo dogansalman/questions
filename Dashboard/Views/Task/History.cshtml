@@ -11,7 +11,7 @@
                 <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
             </li>
             <li>
-                <a href="@Url.Action("Detail/" + ViewBag.customer_id, "Customer")">@ViewBag.customer.name @ViewBag.customer.lastname</a>
+                <a href="@Url.Action("/Detail/" + ViewBag.task_id, "Task")">Görev Tarihcesi</a>
             </li>
             <li class="active">
                 <strong><a>Yeni Tarihçe</a></strong>
@@ -30,15 +30,33 @@
                 <div class="sk-double-bounce2"></div>
             </div>
 
-            
-            @using (Ajax.BeginForm("AddHistory", "Customer", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+
+            @using (Ajax.BeginForm("AddHistory", "Task", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
             {
-                <input type="hidden" name="customer_id" value="@ViewBag.customer_id" />
+                <input type="hidden" name="task_id" value="@ViewBag.task_id" />
+
                 <div class="form-group">
-                    <label for="description">Açıklama</label>
-                    <textarea required type="text" cols="4" rows="4" placeholder="Açıklama" name="description" id="description" class="form-control"></textarea>
+                    <label for="state">Görev Durumu</label>
+                    <br />
+                    <select name="state" id="state" class="task_state form-control">
+                        @foreach (var item in ViewBag.states)
+                        {
+                            <option value="@item.name">@item.name</option>
+                        }
+                    </select>
                 </div>
-               
+
+                <div class="form-group">
+                    <label for="note">Note</label>
+                    <textarea required type="text" cols="4" rows="4" placeholder="Not" name="note" id="note" class="form-control"></textarea>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="added">Tarih</label>
+                        @DateTime.Now.ToShortDateString();
+                </div>
+
                 <button class="btn  btn-primary no-margins" type="submit">Ekle</button>
             }
 
@@ -50,21 +68,27 @@
     @Styles.Render("~/plugins/toastrStyles")
     @Styles.Render("~/plugins/jasnyBootstrapStyles")
     @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
 
 }
 @section Scripts{
     @Scripts.Render("~/plugins/toastr")
-
+    @Scripts.Render("~/plugins/select2")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
     @Scripts.Render("~/plugins/jasnyBootstrap")
     @Scripts.Render("~/plugins/dataPicker")
 
+
     <script type="text/javascript">
 
 
-       
 
-     
+        $(".task_state").select2({
+            placeholder: "Görev Durumu",
+            allowClear: true
+        });
+
+
         $.fn.datepicker.dates['tr'] = {
             days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
             daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
@@ -75,7 +99,7 @@
             clear: "Temizle",
             weekStart: 1,
             //format: "dd.mm.yyyy"
-      
+
         };
 
         $('.input-group.date').datepicker({
@@ -88,12 +112,12 @@
             //format: "dd.mm.yyyy"
 
         });
-        
+
         function AddSuccess() {
             toastr.success("Tarihçe eklendi.", "Tamam");
             $("input[type='text']").val("")
             $("textarea").val("");
-         
+
         }
         function AddFailed() {
             toastr.error("Bir hata oluştu tekrar deneyin.", "Hata")
@@ -107,6 +131,6 @@
             $('.ibox-content').toggleClass('sk-loading');
         }
 
-     
+
     </script>
 }

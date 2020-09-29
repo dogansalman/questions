@@ -1,6 +1,7 @@
-﻿
+﻿@model  QuestionsSYS.Models.TaskHistory
+
 @{
-    ViewBag.Title = "Yeni Tarihçe";
+    ViewBag.Title = "Tarihçe";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -11,10 +12,10 @@
                 <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
             </li>
             <li>
-                <a href="@Url.Action("Detail/" + ViewBag.customer_id, "Customer")">@ViewBag.customer.name @ViewBag.customer.lastname</a>
+                <a href="@Url.Action("Detail/" + ViewBag.task.id, "Task")">Görev</a>
             </li>
             <li class="active">
-                <strong><a>Yeni Tarihçe</a></strong>
+                <strong><a>Tarihçe</a></strong>
             </li>
         </ol>
     </div>
@@ -30,16 +31,35 @@
                 <div class="sk-double-bounce2"></div>
             </div>
 
-            
-            @using (Ajax.BeginForm("AddHistory", "Customer", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+            @using (Ajax.BeginForm("UpdateHistory", "Task", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
             {
-                <input type="hidden" name="customer_id" value="@ViewBag.customer_id" />
+
+
                 <div class="form-group">
-                    <label for="description">Açıklama</label>
-                    <textarea required type="text" cols="4" rows="4" placeholder="Açıklama" name="description" id="description" class="form-control"></textarea>
+                    <label for="state">Görev Durumu</label>
+                    <br />
+                    <select name="state" id="state" class="task_state form-control">
+                        @foreach (var item in ViewBag.states)
+                        {
+                            <option @(ViewBag.task.order_state == item.name ? "selected" : String.Empty) value="@item.name">@item.name</option>
+                        }
+                    </select>
                 </div>
-               
-                <button class="btn  btn-primary no-margins" type="submit">Ekle</button>
+
+                <input type="hidden" name="id" value="@Model.id" />
+                <div class="form-group">
+                    <label for="description">Not</label>
+                    <textarea required type="text" cols="4" rows="4" placeholder="Açıklama" name="note" id="description" class="form-control">@Model.note</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Tarih</label>
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input readonly required type="text" class="form-control" name="added" value="@Model.added">
+                    </div>
+                </div>
+
+                <button class="btn  btn-primary no-margins" type="submit">Güncelle</button>
             }
 
         </div>
@@ -74,26 +94,21 @@
             today: "Bugün",
             clear: "Temizle",
             weekStart: 1,
-            //format: "dd.mm.yyyy"
-      
+            format: "dd.mm.yyyy"
         };
 
-        $('.input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            language: "tr",
-            calendarWeeks: true,
-            autoclose: true,
-            //format: "dd.mm.yyyy"
+        //$('.input-group.date').datepicker({
+        //    todayBtn: "linked",
+        //    keyboardNavigation: false,
+        //    forceParse: false,
+        //    language: "tr",
+        //    calendarWeeks: true,
+        //    autoclose: true,
 
-        });
+        //});
         
         function AddSuccess() {
-            toastr.success("Tarihçe eklendi.", "Tamam");
-            $("input[type='text']").val("")
-            $("textarea").val("");
-         
+            toastr.success("Tarihçe güncellendi.", "Tamam");         
         }
         function AddFailed() {
             toastr.error("Bir hata oluştu tekrar deneyin.", "Hata")

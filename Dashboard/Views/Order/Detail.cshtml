@@ -20,6 +20,10 @@
             {
                 <span style="float:right" class="label label-danger">Red</span>
             }
+            @if (User.IsInRole("Admin"))
+            {
+                <h2 style="float:right"><i class="fa fa-user"></i> @Model.user_fullname</h2>
+            }
         </h2>
 
 
@@ -52,7 +56,6 @@
                                 <option @(Model.state == "İptal" ? "selected" : String.Empty) value="İptal">İptal</option>
                                 <option @(Model.state == "Onay Bekliyor" ? "selected" : String.Empty) value="Onay Bekliyor">Onay Bekliyor</option>
                             </select>
-
                         }
 
                     </h2>
@@ -236,7 +239,7 @@
     @Scripts.Render("~/plugins/jasnyBootstrap")
     @Scripts.Render("~/plugins/dataPicker")
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
 
         $(".update-product").on('click', function (e) {
@@ -438,14 +441,18 @@
         });
 
 
-    if("Onay Bekliyor" != "@Model.state.ToString()") {
-        $("input").attr("readonly", true)
-        $("textarea").attr("readonly", true)
-        $(".ibox-content button").attr("disabled", true)
-        $(".ibox-content a").attr("disabled", true)
-        $(".ibox-content select").attr("disabled", true)
-    }
+        if ("@ViewBag.allow_for_edit" == "False") {
+            if ("Onay Bekliyor" != "@Model.state.ToString()") {
+                console.log("girdi");
+                    $("input").attr("readonly", true)
+                    $("textarea").attr("readonly", true)
+                    $(".ibox-content button").attr("disabled", true)
+                    $(".ibox-content a").attr("disabled", true)
+                    $(".ibox-content select").attr("disabled", true)
+            }
+        }
 
 
-    </script>
+
+</script>
 }

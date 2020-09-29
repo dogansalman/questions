@@ -45,5 +45,8 @@ namespace QuestionsSYS.Models
 
         [StringLength(255)]
         public string cargo_barcode { get; set; }
+
+        [StringLength(255)]
+        public string user_fullname { get; set; }
     }
 }

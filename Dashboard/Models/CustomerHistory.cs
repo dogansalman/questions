@@ -14,7 +14,7 @@ namespace QuestionsSYS.Models
 
         [Required]
         [Column(TypeName = "datetime2")]
-        public DateTime date { get; set; }
+        public DateTime date { get; set; } = DateTime.Now;
         
         [Required]
         public int customer_id { get; set; }

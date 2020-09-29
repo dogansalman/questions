@@ -219,7 +219,7 @@ namespace QuestionsSYS.Controllers
         {
             ViewBag.cargo = db.cargo.ToList();
             ViewBag.products = db.products.ToList();
-
+            ViewBag.allow_for_edit = (User.IsInRole("Admin") || User.IsInRole("Logistics User"));
             var user_id = User.Identity.GetUserId();
             ViewBag.task_id = id;
             var customers = (
@@ -330,7 +330,7 @@ namespace QuestionsSYS.Controllers
         [HttpPost]
         public ActionResult Update(int id, [Bind(Include = "task_id, name, last_name, customer_id, address, city, town, phone, cargo, cargo_barcode")] Order model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return RedirectToAction("Detail/" + id, "Order", new { success = "failed" });
             }
@@ -338,12 +338,20 @@ namespace QuestionsSYS.Controllers
 
             var user_id = User.Identity.GetUserId();
             var order = db.orders.Where(o => o.id == id);
-            if(!User.IsInRole("Admin"))
+
+            if(User.IsInRole("User"))
             {
                 order.Where(o => o.user_id == user_id);
             }
+          
             Order order_detail = order.FirstOrDefault();
-            if(order_detail != null && order_detail.state == "Onay Bekliyor")
+
+            if(order_detail == null)
+            {
+                return RedirectToAction("Detail/" + id, "Order", new { success = "failed" });
+            }
+
+            if(order_detail.state == "Onay Bekliyor" || !User.IsInRole("User"))
             {
                 order_detail.name = model.name;
                 order_detail.last_name = model.last_name;
@@ -373,6 +381,8 @@ namespace QuestionsSYS.Controllers
             if(id != null && id != 0)
             {
                 Tasks ta = db.tasks.Where(i => i.id == id).FirstOrDefault();
+
+                ta.is_ordered = true;
                 
                 Question q = db.questions.Where(s => s.id == ta.question_id).FirstOrDefault();
 
@@ -426,7 +436,8 @@ namespace QuestionsSYS.Controllers
         {
             var user_id = User.Identity.GetUserId();
 
-      
+
+            var u = db.Users.Where(p => p.Id == user_id).FirstOrDefault();
 
             if (order.customer_id == 0)
             {
@@ -436,6 +447,8 @@ namespace QuestionsSYS.Controllers
                 {
                     return RedirectToAction("New/" + order.task_id, "Order", new { success = "failed" });
                 }
+
+               
 
                 Customer c = new Customer
                 {
@@ -447,7 +460,8 @@ namespace QuestionsSYS.Controllers
                     job = "Belirtilmedi",
                     birth_year = null,
                     phone = order.phone,
-                    user_id = user_id
+                    user_id = user_id,
+                    user_fullname = u.Name + " " + u.Surname
                 };
                 db.customers.Add(c);
                 db.SaveChanges();
@@ -470,7 +484,8 @@ namespace QuestionsSYS.Controllers
                 city = order.city,
                 town = order.town,
                 cargo = order.cargo,
-                cargo_barcode = order.cargo_barcode
+                cargo_barcode = order.cargo_barcode,
+                user_fullname = u.Name + " " + u.Surname
             };
 
             db.orders.Add(o);

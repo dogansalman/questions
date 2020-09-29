@@ -4,178 +4,270 @@
     ViewBag.Title = "Düzenle";
 }
 
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-9">
-            <h2>Düzenle</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Index", "Task")">Görevler</a>
-                </li>
-                <li class="active">
-                    <strong><a>Düzenle</a></strong>
-                </li>
-            </ol>
-            
-        </div>
-        <div style="padding:30px;" class="col-lg-3">
-            <a href="/Order/New/@Html.DisplayFor(modelItem => modelItem.id)" class="btn  btn-primary no-margins"> <i class="fa fa-shopping-cart"></i> Yeni Sipariş / Müşteri Oluştur</a>
-        </div>
-        </div>
-        <div class="wrapper wrapper-content animated fadeInRight">
-            <div class="row">
-                <div class="ibox-content">
-                    <div class="sk-spinner sk-spinner-double-bounce">
-                        <div class="sk-double-bounce1"></div>
-                        <div class="sk-double-bounce2"></div>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-9">
+        <h2>Düzenle</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Index", "Dashboards")">Yönetim</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Task")">Görevler</a>
+            </li>
+            <li class="active">
+                <strong><a>Düzenle</a></strong>
+            </li>
+        </ol>
+
+    </div>
+    <div style="padding:30px;" class="col-lg-3">
+        <a href="/Order/New/@Html.DisplayFor(modelItem => modelItem.id)" class="btn  btn-primary no-margins"> <i class="fa fa-shopping-cart"></i> Yeni Sipariş / Müşteri Oluştur</a>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="ibox-content">
+            <div class="sk-spinner sk-spinner-double-bounce">
+                <div class="sk-double-bounce1"></div>
+                <div class="sk-double-bounce2"></div>
+            </div>
+            @using (Ajax.BeginForm("Update/" + Html.DisplayFor(modelItem => modelItem.id), "Task", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+            {
+                <div class="form-group">
+                    <label for="name">Ad Soyad</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.fullname)</p>
+
+                </div>
+                <div class="form-group">
+                    <label for="phone">Tel</label>
+                    <p> @Html.DisplayFor(modelItem => modelItem.phone) / @Html.DisplayFor(modelItem => modelItem.phone2)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="question">Kaynak</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.source)</p>
+                </div>
+                <div class="form-group">
+                    <label for="question">Soru</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.question)</p>
+                </div>
+                <div class="form-group">
+                    <label>Soru Notu</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.question_note)</p>
+                </div>
+                <div class="form-group">
+                    <label>Görevli</label>
+                    <p>@Html.DisplayFor(modelItem => modelItem.user_fullname)</p>
+                </div>
+                <div class="form-group">
+                    <label for="source">Sipariş Durumu</label>
+                    <br />
+                    <span name="state" id="state">@((Model.is_ordered) == true ? "Alındı" : "Alınmadı")</span>
+                </div>
+                <div class="form-group">
+                    <label for="question">Görev Notu</label>
+                    <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3">@Html.DisplayFor(modelItem => modelItem.note)</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="order_state">Görev Durumu</label>
+                    <br />
+                    <select disabled name="order_state" id="order_state" class="task_state form-control">
+                        @foreach (var item in ViewBag.states)
+                        {
+                            <option disabled @(Model.order_state == item.name ? "selected" : String.Empty) value="@item.name">@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group" id="contact_date">
+                    <label for="contact_date">İlk Görüşme Tarihi</label>
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input autocomplete="off" type="text" name="contact_date" id="contact_date" value="@Html.DisplayFor(modelItem => modelItem.contact_date)" class="form-control">
                     </div>
-                    @using (Ajax.BeginForm("Update/" + Html.DisplayFor(modelItem => modelItem.id), "Task", new AjaxOptions { HttpMethod = "POST", OnSuccess = "AddSuccess();", OnComplete = "OnAddComplate();", OnFailure = "AddFailed();", OnBegin = "OnAdding()" }))
+                </div>
+
+                <div class="form-group" id="feedback_date">
+                    <label for="feedback_date">Geri Dönüşüm Tarihi</label>
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" autocomplete="off" name="feedback_date" id="feedback_date" value="@Html.DisplayFor(modelItem => modelItem.feedback_date)" class="form-control">
+                    </div>
+                </div>
+
+                <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
+
+            }
+        </div>
+
+
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>
+                    Görev Tarihçesi
+                </h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="ibox-content" style="">
+                <div class="table-responsive">
+
+                    @if (ViewBag.history.Count > 0)
                     {
-                        <div class="form-group">
-                            <label for="name">Ad Soyad</label>
-                            <p>@Html.DisplayFor(modelItem => modelItem.fullname)</p>
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Durum</th>
+                                    <th>Not</th>
+                                    <th>Görüşme Tarihi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Tel</label>
-                            <p> @Html.DisplayFor(modelItem => modelItem.phone) / @Html.DisplayFor(modelItem => modelItem.phone2)</p>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="question">Kaynak</label>
-                            <p>@Html.DisplayFor(modelItem => modelItem.source)</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="question">Soru</label>
-                            <p>@Html.DisplayFor(modelItem => modelItem.question)</p>
-                        </div>
-                        <div class="form-group">
-                            <label>Soru Notu</label>
-                            <p>@Html.DisplayFor(modelItem => modelItem.question_note)</p>
-                        </div>
-                        <div class="form-group">
-                            <label>Görevli</label>
-                            <p>@Html.DisplayFor(modelItem => modelItem.user_fullname)</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="source">Sipariş Durumu</label>
-                            <br />
-                            <span name="state" id="state">@((Model.is_ordered) == true ? "Alındı" : "Alınmadı")</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="question">Görev Notu</label>
-                            <textarea placeholder="Not" name="note" id="note" class="form-control" cols="3" rows="3">
-@Html.DisplayFor(modelItem => modelItem.note)
-                    </textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="order_state">Görev Durumu</label>
-                            <br />
-                            <select name="order_state" id="order_state" class="task_state form-control">
-                                @foreach (var item in ViewBag.states)
+                                @foreach (var item in ViewBag.history)
                                 {
-                                    <option @(Model.order_state == item.name ? "selected" : String.Empty) value="@item.name">@item.name</option>
+                                    <tr>
+                                        <td>
+                                            @item.state
+                                        </td>
+                                        <td>
+                                            @item.note
+                                        </td>
+                                        <td>
+                                            @item.added
+                                        </td>
+                                        <td>
+                                            @Ajax.ActionLink("Sil", "DeleteHistory", new { id = item.id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "DeleteSuccess(this);", OnComplete = "OnComplate();", OnFailure = "DeleteFailed();", OnBegin = "Begin();", Confirm = "Devam etmek istediğiniz emin misiniz ?" }, new { @class = "btn btn-danger btn-sm pull-right", @style = "margin-left: 5px;" })
+
+                                            <a href="/Task/HistoryDetail/@item.id" class="btn btn-success btn-sm pull-right" style="margin-left:5px;">Detay</a>
+
+                                        </td>
+                                    </tr>
                                 }
-                            </select>
-                        </div>
 
-                        <div class="form-group" id="contact_date">
-                            <label for="contact_date">Görüşme Tarihi</label>
-                            <div class="input-group date">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input autocomplete="off" type="text" name="contact_date" id="contact_date" value="@Html.DisplayFor(modelItem => modelItem.contact_date)" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="feedback_date">
-                            <label for="feedback_date">Geri Dönüşüm Tarihi</label>
-                            <div class="input-group date">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" autocomplete="off" name="feedback_date" id="feedback_date" value="@Html.DisplayFor(modelItem => modelItem.feedback_date)" class="form-control">
-                            </div>
-                        </div>
-
-                        <button class="btn  btn-primary no-margins" type="submit">Tamam</button>
-
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Tarihçe kaydı bulunamadı!</p>
                     }
                 </div>
             </div>
+
+            <div class="ibox-footer">
+                <a href="/Task/History/@Model.id" class="btn  btn-primary no-margins" type="button">Yeni Kayıt Ekle</a>
+                <span class="pull-right">
+                    Toplam @ViewBag.history.Count kayıt listelendi.
+                </span>
+                <br />
+            </div>
         </div>
 
-        @section Styles{
-            @Styles.Render("~/plugins/toastrStyles")
-            @Styles.Render("~/plugins/select2Styles")
-            @Styles.Render("~/plugins/jasnyBootstrapStyles")
-            @Styles.Render("~/plugins/dataPickerStyles")
-            @Styles.Render("~/plugins/dateRangeStyles")
+            
+        </div>
+    </div>
+
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+}
+@section Scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/dateRange")
+    <script type="text/javascript">
+
+
+        function Begin() {
+            $('.ibox-content').toggleClass('sk-loading');
         }
-        @section Scripts{
-            @Scripts.Render("~/plugins/toastr")
-            @Scripts.Render("~/plugins/select2")
-            @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js");
-            @Scripts.Render("~/plugins/jasnyBootstrap")
-            @Scripts.Render("~/plugins/dataPicker")
-            @Scripts.Render("~/plugins/dateRange")
-            <script type="text/javascript">
-
-                $.fn.datepicker.dates['tr'] = {
-                    days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
-                    daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
-                    daysMin: ["Pz", "Pzt", "Sa", "Çr", "Pr", "Cu", "Ct"],
-                    months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
-                    monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
-                    today: "Bugün",
-                    clear: "Temizle",
-                    weekStart: 1,
-                    format: "dd.mm.yyyy"
-                };
-
-                $('#feedback_date .input-group.date').datepicker({
-                    todayBtn: "linked",
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    calendarWeeks: true,
-                    autoclose: true,
-                    format: 'dd.mm.yyyy',
-                    language: 'tr'
-
-                });
-
-                $('#contact_date .input-group.date').datepicker({
-                    todayBtn: "linked",
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    calendarWeeks: true,
-                    autoclose: true,
-                    format: 'dd.mm.yyyy',
-                    language: 'tr'
-
-                });
-
-
-                function AddSuccess() {
-                    toastr.success("Güncellendi.", "Tamam");
-                }
-                function AddFailed() {
-                    toastr.error("Bir hata oluştu tekrar deneyin.", "Hata")
-                }
-
-                function OnAdding() {
-                    $('.ibox-content').toggleClass('sk-loading');
-                }
-
-                function OnAddComplate() {
-                    $('.ibox-content').toggleClass('sk-loading');
-                }
-                $(".state_select").select2({
-                    placeholder: "Sipariş Durumu",
-                    allowClear: true
-                });
-                $(".task_state").select2({
-                    placeholder: "Görev Durumu",
-                    allowClear: true
-                });
-
-            </script>
+        function DeleteSuccess(e) {
+            $(e).parents("tr").remove();
+            $(".pagination-container").first().remove();
+            toastr.success("Tarihçe silindi.", "Tamam");
         }
+        function DeleteFailed() {
+            toastr.error("Tarihçe silinemedi. tekrar deneyin.", "Hata")
+        }
+        function OnComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+
+
+        $.fn.datepicker.dates['tr'] = {
+            days: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+            daysShort: ["Pz", "Pzt", "Sal", "Çrş", "Prş", "Cu", "Cts"],
+            daysMin: ["Pz", "Pzt", "Sa", "Çr", "Pr", "Cu", "Ct"],
+            months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthsShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+            today: "Bugün",
+            clear: "Temizle",
+            weekStart: 1,
+            format: "dd.mm.yyyy"
+        };
+
+        $('#feedback_date .input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            language: 'tr'
+
+        });
+
+        $('#contact_date .input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            language: 'tr'
+
+        });
+
+
+        function AddSuccess() {
+            toastr.success("Güncellendi.", "Tamam");
+        }
+        function AddFailed() {
+            toastr.error("Bir hata oluştu tekrar deneyin.", "Hata")
+        }
+
+        function OnAdding() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+
+        function OnAddComplate() {
+            $('.ibox-content').toggleClass('sk-loading');
+        }
+        $(".state_select").select2({
+            placeholder: "Sipariş Durumu",
+            allowClear: true
+        });
+        $(".task_state").select2({
+            placeholder: "Görev Durumu",
+            allowClear: true
+        });
+
+    </script>
+}

@@ -12,16 +12,16 @@
     {
 
         totalTasks = db.tasks.Count().ToString();
-        orderedTasks = db.tasks.Where(t => t.state == true).Count().ToString();
-        unorderedTasks = db.tasks.Where(t => !t.state).Count().ToString();
+        orderedTasks = db.tasks.Where(t => t.is_ordered == true).Count().ToString();
+        unorderedTasks = db.tasks.Where(t => !t.is_ordered).Count().ToString();
         feedbackTasks = db.tasks.Where(t => t.feedback_date != null).Count().ToString();
     }
     else
     {
         string user_id = User.Identity.GetUserId();
         totalTasks = db.tasks.Where(t => t.user_id == user_id).Count().ToString();
-        orderedTasks = db.tasks.Where(t => t.state == true && t.user_id == user_id).Count().ToString();
-        unorderedTasks = db.tasks.Where(t => !t.state && t.user_id == user_id).Count().ToString();
+        orderedTasks = db.tasks.Where(t => t.is_ordered == true && t.user_id == user_id).Count().ToString();
+        unorderedTasks = db.tasks.Where(t => !t.is_ordered && t.user_id == user_id).Count().ToString();
         feedbackTasks = db.tasks.Where(t => t.feedback_date != null && t.user_id == user_id).Count().ToString();
     }
 

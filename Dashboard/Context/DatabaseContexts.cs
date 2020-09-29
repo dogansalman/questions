@@ -27,6 +27,8 @@ namespace QuestionsSYS.Context
         public DbSet<Cargo> cargo { get; set; }
         public DbSet<Jobs> jobs { get; set; }
         public DbSet<AuthHistory> auth_history { get; set; }
+
+        public DbSet<TaskHistory> task_history { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
@@ -54,6 +56,9 @@ namespace QuestionsSYS.Context
             modelBuilder.Entity<AuthHistory>().ToTable("AuthHistory");
             modelBuilder.Entity<AuthHistory>().Property(e => e.login_date).HasColumnType("datetime2");
             modelBuilder.Entity<AuthHistory>().Property(e => e.logout_date).HasColumnType("datetime2");
+
+            modelBuilder.Entity<TaskHistory>().ToTable("TaskHistory");
+            modelBuilder.Entity<TaskHistory>().Property(e => e.added).HasColumnType("datetime2");
 
 
 

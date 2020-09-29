@@ -9,6 +9,7 @@ using QuestionsSYS.ModelViews;
 using Microsoft.AspNet.Identity;
 using PagedList;
 using System.Web.Routing;
+using System.Security.Claims;
 
 namespace QuestionsSYS.Controllers
 {
@@ -59,6 +60,7 @@ namespace QuestionsSYS.Controllers
             return View();
         }
 
+
         [Route("History/{*id}")]
         public ActionResult History(int id)
         {
@@ -92,6 +94,7 @@ namespace QuestionsSYS.Controllers
                 };
                 db.customer_history.Add(q);
                 db.SaveChanges();
+
                 return new HttpStatusCodeResult(200);
 
             }
@@ -194,7 +197,11 @@ namespace QuestionsSYS.Controllers
         {
             try
             {
+                
                 string user_id = User.Identity.GetUserId();
+                var u = db.Users.Where(p => p.Id == user_id).FirstOrDefault();
+
+
                 Customer q = new Customer {
                     name = model.name,
                     lastname = model.lastname,
@@ -204,7 +211,9 @@ namespace QuestionsSYS.Controllers
                     town = model.town,
                     job = model.job,
                     user_id = user_id,
-                    birth_year = model.birth_year  
+                    birth_year = model.birth_year,
+                    user_fullname = u.Name + " " + u.Surname
+
                 };
                 db.customers.Add(q);
                 db.SaveChanges();
@@ -230,7 +239,7 @@ namespace QuestionsSYS.Controllers
             ViewBag.cities = db.cities.ToList();
             ViewBag.jobs = db.jobs.ToList();
             ViewBag.history = db.customer_history.Where(c => c.customer_id == id).ToList();
-
+            
             var user_id = User.Identity.GetUserId();
 
             if (!User.IsInRole("Admin"))

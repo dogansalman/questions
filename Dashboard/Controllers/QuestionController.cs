@@ -17,6 +17,7 @@ using System.Web.UI;
 using QuestionsSYS.Libary.DownloadAction;
 using System.Globalization;
 
+
 namespace QuestionsSYS.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -27,7 +28,20 @@ namespace QuestionsSYS.Controllers
         public ActionResult Index(int page = 1)
         {
             ViewBag.sources = db.sources.ToList();
-            ViewBag.personnel = db.Users.ToList();
+            var usersWithRoles = (from user in db.Users
+                                  from userRole in user.Roles
+                                  join role in db.Roles on userRole.RoleId equals
+                                  role.Id
+                                  select new UserView
+                                  {
+                                      Id = user.Id,
+                                      Name = user.Name,
+                                      Surname = user.Surname,
+                                      color = user.color,
+                                      Role = role.Name
+                                  }
+                                  ).ToList().Where(r => r.Role == "User").ToList();
+            ViewBag.personnel = usersWithRoles;
             return View();
         }
  
